@@ -1,9 +1,7 @@
-from __future__ import annotations
-
-import logging
 from abc import ABC
 from typing import TYPE_CHECKING, Self
 
+from aoc import log
 from aoc.geo3d import P3D
 from aoc.problems import ParsedProblem
 
@@ -49,7 +47,7 @@ class _Problem(ParsedProblem[tuple[P3D, P3D], int], ABC):
 
     def __init__(self) -> None:
         self.bricks = sorted([Brick(p_min, p_max + P3D.unity()) for p_min, p_max in self.parsed_input])
-        logging.debug(self.bricks)
+        log.debug(self.bricks)
         tops: dict[P2, Brick] = {}
         for brick in self.bricks:
             bricks_below: set[Brick] = {

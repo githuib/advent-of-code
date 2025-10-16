@@ -1,6 +1,5 @@
 from abc import ABC
 from itertools import batched
-from typing import Generic, TypeVar
 
 from aoc.geo2d import P2, Dir2
 from aoc.year2019.intcode import IntcodeProblem
@@ -8,16 +7,13 @@ from aoc.year2019.intcode import IntcodeProblem
 DIRECTIONS = [Dir2.up, Dir2.right, Dir2.down, Dir2.left]
 
 
-T = TypeVar("T")
-
-
-class _Problem(IntcodeProblem[T], ABC, Generic[T]):
+class _Problem[T](IntcodeProblem[T], ABC):
     def paint_panels(self, starting_color: int) -> dict[P2, int]:
         runner = self.computer.run_to_next_output(starting_color)
         x, y, direction = 0, 0, 0
         painted_panels = {}
 
-        for color, turn in batched(runner, 2):
+        for color, turn in batched(runner, 2, strict=True):
             # Paint current panel.
             painted_panels[x, y] = color
 

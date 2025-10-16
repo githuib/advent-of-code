@@ -1,8 +1,11 @@
 from abc import ABC
-from collections.abc import Iterable
+from typing import TYPE_CHECKING
 
 from aoc.geo2d import P2, Dir2, Line2, intersect_segments_2, manhattan_dist_2
 from aoc.problems import ParsedProblem, var
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def coverage(sensor: P2, beacon: P2, y: int) -> P2 | None:

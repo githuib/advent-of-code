@@ -1,8 +1,11 @@
 from abc import ABC
-from collections.abc import Iterator
 from math import prod
+from typing import TYPE_CHECKING
 
 from aoc.problems import NumberGridProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class _Problem(NumberGridProblem[int], ABC):

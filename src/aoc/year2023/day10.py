@@ -1,8 +1,11 @@
 from abc import ABC
-from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 from aoc.geo2d import P2, Dir2, grid_area, loop_length
 from aoc.problems import GridProblem, NoSolutionFoundError
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 CONNECTIONS = {
     "S": Dir2.direct_neighbors,
@@ -52,7 +55,7 @@ class Problem2(_Problem):
 
 
 # FANCY_TILES = dict(zip('S.|-LJ7F', '╬.║═╚╝╗╔'))
-# def logging.debug_grid(self, outside: set[P2] = None) -> None:
+# def log.debug_grid(self, outside: set[P2] = None) -> None:
 #     def color(v: int | None, o: bool) -> str:
 #         v = v or 1
 #         match v, o:
@@ -65,8 +68,8 @@ class Problem2(_Problem):
 #             case _:
 #                 return '?'  # should never happen
 #
-#     logging.debug(' ')
-#     logging.debug(lambda: self.grid.to_str(lambda p, v: color(v, p in outside if outside else False)))
+#     log.debug(' ')
+#     log.debug(lambda: self.grid.to_str(lambda p, v: color(v, p in outside if outside else False)))
 
 
 # TEST_INPUT = """

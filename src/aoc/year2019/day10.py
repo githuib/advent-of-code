@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from abc import ABC
 from math import atan2, pi
 from typing import TYPE_CHECKING

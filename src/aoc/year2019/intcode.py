@@ -1,12 +1,10 @@
-from __future__ import annotations
-
 from abc import ABC
 from enum import IntEnum
-from typing import TYPE_CHECKING, Generic
+from typing import TYPE_CHECKING
 
 from more_itertools import last
 
-from aoc.problems import OneLineProblem, T
+from aoc.problems import OneLineProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -170,7 +168,7 @@ class IntcodeComputer:
         return last(self.run_to_next_output(*input_), default=0)
 
 
-class IntcodeProblem(OneLineProblem[T], ABC, Generic[T]):
+class IntcodeProblem[T](OneLineProblem[T], ABC):
     computer: IntcodeComputer
 
     def process_input(self) -> None:

@@ -1,10 +1,12 @@
 from abc import ABC
-from collections.abc import Iterator
-from typing import NamedTuple, Self
+from typing import TYPE_CHECKING, NamedTuple, Self
 
 from aoc.geo2d import P2, Dir2, Grid2, Range
 from aoc.problems import NumberGridProblem
 from aoc.search import DijkstraState
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class Constants:

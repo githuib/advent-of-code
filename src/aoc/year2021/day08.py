@@ -1,10 +1,13 @@
 from abc import ABC
-from collections.abc import Iterable
+from typing import TYPE_CHECKING
 
 from more_itertools import partition
 
 from aoc.problems import ParsedProblem
 from aoc.utils import compose_number, contains, invert_dict
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def __parse_codes(s: str) -> list[str]:

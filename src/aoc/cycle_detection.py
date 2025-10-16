@@ -1,20 +1,22 @@
-from collections.abc import Iterator
+from dataclasses import dataclass
 from itertools import islice, tee
-from typing import NamedTuple, TypeVar
+from typing import TYPE_CHECKING
 
-T = TypeVar("T")
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class CycleNotFoundError(Exception):
     pass
 
 
-class Cycle(NamedTuple):
+@dataclass(frozen=True)
+class Cycle:
     start: int
     length: int
 
 
-def floyd(it: Iterator[T]) -> Cycle:
+def floyd[T](it: Iterator[T]) -> Cycle:
     """
     https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare
     """
@@ -37,7 +39,7 @@ def floyd(it: Iterator[T]) -> Cycle:
     raise CycleNotFoundError
 
 
-def brent(it: Iterator[T]) -> Cycle:
+def brent[T](it: Iterator[T]) -> Cycle:
     """
     https://en.wikipedia.org/wiki/Cycle_detection#Brent's_algorithm
     """

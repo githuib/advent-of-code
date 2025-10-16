@@ -1,13 +1,17 @@
-import logging
 from abc import ABC
-from collections.abc import Iterable, Iterator
 from functools import reduce
 from itertools import batched
+from typing import TYPE_CHECKING
 
 from more_itertools import split_at
 
-from aoc.geo2d import Range
+from aoc import log
 from aoc.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator
+
+    from aoc.geo2d import Range
 
 MapEntry = tuple[int, int, int]
 
@@ -18,8 +22,8 @@ class _Problem(MultiLineProblem[int], ABC):
         self.seeds = [int(i) for i in seeds[0][7:].split()]
         items = [[[int(i) for i in vals.split()] for vals in m[1:]] for m in maps]
         self.maps = [sorted((s, s + o, d - s) for d, s, o in f) for f in items]
-        logging.debug("Seeds: %s", self.seeds)
-        logging.debug("Maps: %s", self.maps)
+        log.debug("Seeds: %s", self.seeds)
+        log.debug("Maps: %s", self.maps)
 
 
 class Problem1(_Problem):
@@ -55,7 +59,7 @@ class Problem2(_Problem):
                 else:
                     if s < e:
                         yield s, e
-        seed_ranges: Iterable[Range] = ((s, s + o) for s, o in batched(self.seeds, 2))
+        seed_ranges: Iterable[Range] = ((s, s + o) for s, o in batched(self.seeds, 2, strict=True))
         return min(s for s, _ in reduce(get_next_ranges, self.maps, seed_ranges))
 
 

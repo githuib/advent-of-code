@@ -1,9 +1,12 @@
 from abc import ABC
-from collections.abc import Iterable
 from copy import copy
 from itertools import permutations
+from typing import TYPE_CHECKING
 
 from aoc.year2019.intcode import IntcodeProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class _Problem(IntcodeProblem[int], ABC):

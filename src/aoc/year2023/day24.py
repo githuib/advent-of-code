@@ -1,7 +1,7 @@
-import logging
 from abc import ABC
 from itertools import combinations
 
+from aoc import log
 from aoc.geo2d import intersect_lines_2
 from aoc.geo3d import P3D, Grid3D
 from aoc.problems import NoSolutionFoundError, ParsedProblem, var
@@ -62,7 +62,7 @@ class Problem2(_Problem):
         if not all(len(v) == 1 for v in potential_v):
             # For the test case, several possible velocities are found, although the first
             # values actually (coincidentally?) result in the correct answer.
-            logging.warning(f"Multiple possible velocity matches found:\n{
+            log.warning(f"Multiple possible velocity matches found:\n{
                 '\n'.join(f'{c}: {v}' for c, v in zip('xyz', potential_v, strict=False))
             }")
 
@@ -74,7 +74,7 @@ class Problem2(_Problem):
         px = round(((p2.y - (m2 * p2.x)) - (p1.y - (m1 * p1.x))) / (m1 - m2))
         t = (px - p1.x) / (v1.x - v_rock.x)
         p_rock = P3D(px, round(p1.y + (v1.y - v_rock.y) * t), round(p1.z + (v1.z - v_rock.z) * t))
-        logging.debug("Position: %s\nVelocity: %s\nTime: %d", p_rock, v_rock, t)
+        log.debug("Position: %s\nVelocity: %s\nTime: %d", p_rock, v_rock, t)
         return p_rock.manhattan_length
 
 

@@ -1,13 +1,10 @@
-from __future__ import annotations
-
-import logging
 from abc import ABC
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Generic, NamedTuple, TypeVar
+from typing import TYPE_CHECKING, NamedTuple
 
 from yachalk import chalk
 
-from aoc import AOC
+from aoc import AOC, log
 from aoc.geo2d import P2, Grid2
 from aoc.problems import NumberGridProblem
 from aoc.search import AStarState, BFSState, DijkstraState, State
@@ -28,11 +25,7 @@ class Variables(NamedTuple):
     pos: P2
 
 
-C = TypeVar("C", bound=Constants)
-V = TypeVar("V", bound=Variables)
-
-
-class _State(State[C, V], ABC, Generic[C, V]):
+class _State[C: Constants, V: Variables](State[C, V], ABC):
     def __repr__(self) -> str:
         return f"{self.v.pos}"
 
@@ -106,7 +99,7 @@ class _Problem(NumberGridProblem[int], ABC):
         if AOC.debugging:
             p_points: set[P2] = {s.v.pos for s in p_bfs.states}
             hill_chars = {p: {0: "S", 27: "E"}.get(h, chr(h + PRE_A)) for p, h in self.grid.items()}
-            logging.debug(self.grid.to_str(lambda p, _: (
+            log.debug(self.grid.to_str(lambda p, _: (
                 chalk.hex("034").bg_hex("bdf")(hill_chars[p]) if (
                     p in {start_pos, end_pos} | ep
                 ) else chalk.hex("068").bg_hex("0af")(hill_chars[p]) if (
@@ -121,7 +114,7 @@ class _Problem(NumberGridProblem[int], ABC):
                     hill_chars[p] == end_val
                 ) else chalk.hex("222").bg_hex("000")(hill_chars[p])
             )))
-            logging.debug(" ")
+            log.debug(" ")
             debug_table([("Legend", "Algorithm", "Visited", "Path found in"), ("", "BFS", len(p_bfs.visited), t_bfs), ((f"{chalk.hex('034').bg_hex('bdf')('S')} start", 7), "Dijkstra", len(p_dijkstra.visited), t_dijkstra), *a_star_result, ((f"{chalk.hex('068').bg_hex('0af')('p')} path", 6), "", "", "", ""), ((f"{chalk.hex('535').bg_hex('848')('x')} visited by all algorithms (A*, Dijkstra & BFS)", 48), "", "", "", ""), ((f"{chalk.hex('424').bg_hex('636')('y')} only visited by Dijkstra & BFS", 32), "", "", "", ""), ((f"{chalk.hex('212').bg_hex('424')('z')} only visited by BFS", 21), "", "", "", ""), ((f"{chalk.hex('222').bg_hex('333')('a')} possible starting points (including un-escapable)", 51 + 68), "", "", "", ""), ((f"{chalk.hex('222').bg_hex('000')('w')} wild, unexplored terrain", 26), "", "", "", "")])
         return p_bfs.length
 

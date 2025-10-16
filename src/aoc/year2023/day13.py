@@ -1,10 +1,13 @@
 from abc import ABC
-from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 from more_itertools import split_at
 
 from aoc.geo2d import Grid2
 from aoc.problems import MultiLineProblem, NoSolutionFoundError
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class _Problem(MultiLineProblem[int], ABC):

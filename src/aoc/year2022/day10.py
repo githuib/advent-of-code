@@ -1,15 +1,15 @@
 from abc import ABC
-from collections.abc import Iterator
 from itertools import batched
-from typing import Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from aoc.problems import MultiLineProblem
 from aoc.utils import try_convert
 
-T = TypeVar("T")
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
-class _Problem(MultiLineProblem[T], ABC, Generic[T]):
+class _Problem[T](MultiLineProblem[T], ABC):
     def moves(self) -> Iterator[int]:
         x = 1
         for line in self.lines:
@@ -53,7 +53,7 @@ class Problem2(_Problem[str]):
         return "\n".join("".join(
             "█" if p - 1 <= i <= p + 1 else "░"
             for i, p in enumerate(sprite_positions)
-        ) for sprite_positions in batched(self.moves(), 40))
+        ) for sprite_positions in batched(self.moves(), 40, strict=True))
 
 
 TEST_INPUT = """

@@ -1,7 +1,6 @@
-import logging
-
 from yachalk import chalk
 
+from aoc import log
 from aoc.geo2d import P2, Grid2
 from aoc.problems import GridProblem, MultiLineProblem
 from aoc.utils import first_duplicate
@@ -11,7 +10,7 @@ SeaCucumbers = list[set[P2]]
 
 def board_str(sea_cucumbers: SeaCucumbers) -> str:
     east, south = sea_cucumbers
-    board = Grid2[str]({p: ">" for p in east} | {p: "v" for p in south})
+    board = Grid2[str](dict.fromkeys(east, ">") | dict.fromkeys(south, "v"))
     return board.to_str(lambda _, v: {
         None: chalk.hex("0af").bg_hex("0af")("."),
         ">": chalk.hex("888").bg_hex("888")(">"),
@@ -43,7 +42,7 @@ class Problem1(GridProblem[int]):
 
     def solution(self) -> int:
         n, sea_cucumbers = first_duplicate(self)
-        logging.debug(board_str(sea_cucumbers))
+        log.debug(board_str(sea_cucumbers))
         return n
 
 

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from abc import ABC
 from collections.abc import Iterable
 from copy import deepcopy
@@ -16,14 +14,14 @@ class Moon:
         self.velocity = P3D()
 
     def change_velocity(self, other: Moon) -> None:
-        self.velocity += P3D(
-            x=compare(self.position.x, other.position.x),
-            y=compare(self.position.y, other.position.y),
-            z=compare(self.position.z, other.position.z),
-        )
+        x, y, z = self.position
+        ox, oy, oz = other.position
+        vx, vy, vz = self.velocity
+        self.velocity = P3D(compare(x, ox) + vx, compare(y, oy) + vy, compare(z, oz) + vz)
+        # self.velocity = self.velocity + P3D(compare(x, ox), compare(y, oy), compare(z, oz))
 
     def apply_gravity(self) -> None:
-        self.position += self.velocity
+        self.position = self.position + self.velocity
 
     @property
     def total_energy(self) -> int:

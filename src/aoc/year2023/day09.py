@@ -1,9 +1,12 @@
-import logging
-from collections.abc import Iterator
 from itertools import pairwise
+from typing import TYPE_CHECKING
 
+from aoc import log
 from aoc.problems import MultiLineProblem
 from aoc.utils import Unique
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class Problem1(MultiLineProblem[int]):
@@ -18,7 +21,7 @@ class Problem1(MultiLineProblem[int]):
             while any(seq):
                 yield seq[-1]
                 seq = [b - a for a, b in pairwise(seq)]
-        logging.debug({Unique(sum(diffs(seq))): list(diffs(seq)) for seq in self.sequences})
+        log.debug({Unique(sum(diffs(seq))): list(diffs(seq)) for seq in self.sequences})
         return sum(sum(diffs(seq)) for seq in self.sequences)
 
 

@@ -1,8 +1,8 @@
-import logging
 from abc import ABC
 
 from more_itertools import last
 
+from aoc import log
 from aoc.geo2d import Grid2, manhattan_dist_2
 from aoc.problems import GridProblem
 from aoc.utils import repeat_transform
@@ -12,7 +12,7 @@ class _Problem(GridProblem[int], ABC):
     empty_factor: int
 
     def __init__(self):
-        logging.debug(self.grid)
+        log.debug(self.grid)
 
     def solution(self) -> int:
         def expand(grid: Grid2[str]) -> Grid2[str]:

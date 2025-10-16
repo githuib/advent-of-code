@@ -1,35 +1,41 @@
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-solve = "aoc.cli:main"
-
-[tool.poetry]
+[project]
 name = "advent-of-code"
 version = "1.33.7"
 description = "Advent of Code"
-authors = []
-packages = [{ include = "aoc", from = "src" }]
+requires-python = ">=3.14"
+authors = [
+    { name = "Huib Piguillet", email = "huib@proton.me" },
+]
+dependencies = [
+    "cairocffi",
+    "igraph",
+    "matplotlib",
+    "more_itertools",
+    "parse",
+    "yachalk",
+]
 
-[tool.poetry.dependencies]
-python = "^3.13"
-cairocffi = "*"
-igraph = "*"
-matplotlib = "*"
-more_itertools = "*"
-#numpy = "*"
-parse = "*"
-#sympy = "*"
-yachalk = "*"
+[dependency-groups]
+typing = [
+    "matplotlib-stubs",
+]
+qa = [
+    "mypy",
+    "pytest",
+    "ruff",
+]
+dev = [
+    { include-group = "typing" },
+    { include-group = "qa" },
+]
 
-[tool.poetry.group.typing.dependencies]
-matplotlib-stubs = "*"
+[project.scripts]
+solve = "aoc.cli:main"
 
-[tool.poetry.group.qa.dependencies]
-mypy = "*"
-pytest = "*"
-ruff = "*"
+[tool.poetry]
+packages = [
+    { include = "aoc", from = "src" },
+]
 
 [tool.mypy]
 files = ["src", "tests"]
@@ -40,7 +46,7 @@ warn_unused_ignores = true
 [tool.ruff]
 indent-width = 4
 line-length = 120
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = [

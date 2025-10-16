@@ -1,9 +1,13 @@
-from collections.abc import Iterator
+
+from typing import TYPE_CHECKING
 
 from parse import with_pattern  # type: ignore[import-untyped]
 
 from aoc.geo2d import P2
 from aoc.problems import ParsedProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class Knot:

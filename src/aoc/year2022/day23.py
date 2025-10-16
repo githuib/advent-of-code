@@ -1,14 +1,17 @@
-import logging
 from abc import ABC
 from collections import defaultdict
-from collections.abc import Iterator
 from itertools import count
+from typing import TYPE_CHECKING
 
 from more_itertools import nth_or_last
 
+from aoc import log
 from aoc.geo2d import P2, Dir2, Grid2
 from aoc.problems import GridProblem
 from aoc.utils import first_duplicate
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 DIRECTIONS = [
     (Dir2.up, {Dir2.up, Dir2.left_up, Dir2.right_up}),
@@ -51,10 +54,10 @@ class Problem1(_Problem):
     my_solution = 3788
 
     def solution(self) -> int:
-        logging.debug(self.grid)
-        logging.debug(" ")
+        log.debug(self.grid)
+        log.debug(" ")
         elfs = Grid2(nth_or_last(self.dance(), 10), default=1)
-        logging.debug(elfs)
+        log.debug(elfs)
         return elfs.area - len(elfs)
 
 
@@ -63,10 +66,10 @@ class Problem2(_Problem):
     my_solution = 921
 
     def solution(self) -> int:
-        logging.debug(self.grid)
-        logging.debug(" ")
+        log.debug(self.grid)
+        log.debug(" ")
         n, elfs = first_duplicate(self.dance())
-        logging.debug(Grid2(elfs, default=1))
+        log.debug(Grid2(elfs, default=1))
         return n
 
 

@@ -1,7 +1,10 @@
 from abc import abstractmethod
-from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 from aoc.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class _Problem(MultiLineProblem[int]):

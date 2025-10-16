@@ -1,6 +1,6 @@
-import logging
 from abc import ABC
 
+from aoc import log
 from aoc.problems import ParsedProblem
 
 
@@ -13,7 +13,7 @@ class _Problem(ParsedProblem[tuple[set[str], set[str]], int], ABC):
 
     def __init__(self) -> None:
         self.matching = [len(winning & mine) for winning, mine in self.parsed_input]
-        logging.debug(self.matching)
+        log.debug(self.matching)
 
 
 class Problem1(_Problem):
@@ -34,7 +34,7 @@ class Problem2(_Problem):
         for i, w in enumerate(self.matching, 1):
             for j in range(i, min(i + w, n)):
                 cards[j] += cards[i - 1]
-        logging.debug(cards)
+        log.debug(cards)
         return sum(cards)
 
 

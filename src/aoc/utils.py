@@ -1,30 +1,20 @@
-import logging
 from collections.abc import Callable, Hashable, Iterable, Iterator
 from itertools import chain, count, pairwise, repeat, takewhile, tee
 from time import perf_counter_ns
 from typing import (
     Protocol,
-    TypeVar,
     overload,
     runtime_checkable,
 )
 
 from yachalk import chalk
 
-from aoc import AOC
-
-# from aoc import AOC
-
-T = TypeVar("T")
-K = TypeVar("K")
-V = TypeVar("V")
-R = TypeVar("R")
-
+from aoc import AOC, log
 
 Predicate = Callable[..., bool]
 
 
-def timed(func: Callable[[], T]) -> tuple[T, int, str]:
+def timed[T](func: Callable[[], T]) -> tuple[T, int, str]:
     start = perf_counter_ns()
     result = func()
     end = perf_counter_ns()
@@ -103,7 +93,7 @@ def debug_table(table: Iterable[Iterable[object]], widths: Iterable[int] | None 
     for i, w in enumerate(widths or []):
         widths_[i] = w
     for i, row in enumerate(rows):
-        logging.debug(" %s", "   ".join(
+        log.debug(" %s", "   ".join(
             (chalk.underline(s) if i == 0 else s) + " " * (w - length) for (s, length), w in zip(row, widths_, strict=False)
         ))
 
@@ -142,35 +132,35 @@ def compare(v1: int, v2: int) -> int:
 
 
 @overload
-def try_convert(cls: Callable[[T], R], val: T, default: R) -> R: ...
+def try_convert[T, R](cls: Callable[[T], R], val: T, default: R) -> R: ...
 
 
 @overload
-def try_convert(cls: Callable[[T], R], val: T, default: None) -> R | None: ...
+def try_convert[T, R](cls: Callable[[T], R], val: T, default: None) -> R | None: ...
 
 
-def try_convert(cls: Callable[[T], R], val: T, default: R = None) -> R | None:
+def try_convert[T, R](cls: Callable[[T], R], val: T, default: R = None) -> R | None:
     try:
         return cls(val)
     except ValueError:
         return default
 
 
-def invert_dict(d: dict[K, V]) -> dict[V, K]:
+def invert_dict[K, V](d: dict[K, V]) -> dict[V, K]:
     return {v: k for k, v in d.items()}
 
 
-def pairwise_circular(it: Iterable[T]) -> Iterator[tuple[T, T]]:
+def pairwise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T]]:
     a, b = tee(it)
     return zip(a, chain(b, (next(b),)), strict=False)
 
 
-def triplewise_circular(it: Iterable[T]) -> Iterator[tuple[T, T, T]]:
+def triplewise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T, T]]:
     a, b, c = tee(it, 3)
     return zip(a, chain(b, (next(b),)), chain(c, (next(c), next(c))), strict=False)
 
 
-def repeat_transform(
+def repeat_transform[T](
     value: T,
     transform: Callable[[T], T],
     times: int | None = None,
@@ -184,14 +174,14 @@ def repeat_transform(
             yield value
 
 
-def first_when(it: Iterable[T], predicate: Callable[[T], bool]) -> tuple[int, T]:
+def first_when[T](it: Iterable[T], predicate: Callable[[T], bool]) -> tuple[int, T]:
     for step, item in enumerate(it, 1):
         if predicate(item):
             return step, item
     raise StopIteration
 
 
-def first_duplicate(it: Iterable[T]) -> tuple[int, T]:
+def first_duplicate[T](it: Iterable[T]) -> tuple[int, T]:
     for i, (item1, item2) in enumerate(pairwise(it), 1):
         if item1 == item2:
             return i, item1
@@ -206,7 +196,7 @@ def smart_range(start: int, stop: int, inclusive: bool = False) -> Iterable[int]
     return range(start, stop, direction)
 
 
-def grouped(input_values: Iterable[T], delimeter: T = None) -> Iterator[list[T]]:
+def grouped[T](input_values: Iterable[T], delimeter: T = None) -> Iterator[list[T]]:
     group: list[T] = []
     for value in input_values:
         if (delimeter and value == delimeter) or not value:
@@ -217,7 +207,7 @@ def grouped(input_values: Iterable[T], delimeter: T = None) -> Iterator[list[T]]
     yield group
 
 
-def group_tuples(items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
+def group_tuples[K, V](items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
     """
     Group items in a dict by key(item).
     >>> group_tuples([('m', 'Arnold'), ('f', 'Billie'), ('m', 'Charles'), ('m', 'Dirk'), ('f', 'Emma')])
@@ -229,7 +219,7 @@ def group_tuples(items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
     return result
 
 
-def group_by(items: Iterable[V], key: Callable[[V], K]) -> dict[K, list[V]]:
+def group_by[K, V](items: Iterable[V], key: Callable[[V], K]) -> dict[K, list[V]]:
     """
     Group items in a dict by key(item).
     >>> group_by(['Alice', 'Bill', 'Bob', 'Charles', 'Arnold', 'Chuck'], key=lambda s: s[0])
@@ -246,10 +236,7 @@ def transposed(lines: Iterable[str]) -> Iterator[str]:
         yield "".join(col)
 
 
-D = TypeVar("D", bound=Iterator | list | tuple | dict)
-
-
-def map_to_int_ids(data: D) -> D:
+def map_to_int_ids[D: Iterator | list | tuple | dict](data: D) -> D:
     ids = {}
     ids_gen = count()
 
@@ -281,7 +268,7 @@ def split_at(s: str, pos: int) -> tuple[str, str]:
     return s[:pos], s[pos:]
 
 
-def split_conditional(
+def split_conditional[T](
     collection: list[T],
     condition: Callable[[T], bool],
 ) -> tuple[list[T], list[T]]:
@@ -290,5 +277,5 @@ def split_conditional(
     return left, right
 
 
-def contains(this: Iterable[T], that: Iterable[T]) -> bool:
+def contains[T](this: Iterable[T], that: Iterable[T]) -> bool:
     return all(c in this for c in that)

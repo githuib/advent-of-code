@@ -1,7 +1,7 @@
-import logging
 from abc import ABC
 from enum import IntEnum
 
+from aoc import log
 from aoc.geo3d import P3D, Dir3D, Grid3D, Span3D
 from aoc.problems import MultiLineProblem
 from aoc.utils import timed
@@ -38,7 +38,7 @@ class Problem2(_Problem):
 
     def __init__(self) -> None:
         super().__init__()
-        self.lava_and_outside = Grid3D({cube: Mat.LAVA for cube in self.lava})
+        self.lava_and_outside = Grid3D(dict.fromkeys(self.lava, Mat.LAVA))
         p1, p2 = self.lava_and_outside.span
         self.span = Span3D(p1 - P3D.unity(), p2 + P3D.unity())
 
@@ -77,8 +77,8 @@ class Problem2(_Problem):
         solution_a, ta, ta_str = timed(self.solution_a)
         solution_b, tb, tb_str = timed(self.solution_b)
         assert solution_a == solution_b
-        logging.info("Runtime solution A: %s %s", ta_str, "<-- congrats!" if ta <= tb else "")
-        logging.info("Runtime solution B: %s %s", tb_str, "<-- congrats!" if tb <= ta else "")
+        log.info("Runtime solution A: %s %s", ta_str, "<-- congrats!" if ta <= tb else "")
+        log.info("Runtime solution B: %s %s", tb_str, "<-- congrats!" if tb <= ta else "")
         return solution_a
 
 

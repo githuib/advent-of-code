@@ -1,14 +1,18 @@
 from abc import ABC
-from collections.abc import Callable, Iterator
 from itertools import pairwise
+from typing import TYPE_CHECKING
 
 from igraph import EdgeSeq, Graph, Layout, plot  # type: ignore[import-untyped]
 from matplotlib import pyplot as plt
-from matplotlib.axes import Axes
 
 from aoc import AOC
 from aoc.geo2d import P2, Dir2, Grid2
 from aoc.problems import GridProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
+
+    from matplotlib.axes import Axes
 
 
 def longest_path(graph: Graph, weighted_edges: bool) -> tuple[EdgeSeq, int]:

@@ -1,16 +1,18 @@
-import logging
 from abc import ABC
-from collections.abc import Callable, Iterator
 from enum import IntEnum
 from itertools import pairwise
+from typing import TYPE_CHECKING
 
 from parse import parse  # type: ignore[import-untyped]
 from yachalk import chalk
 
-from aoc import AOC
+from aoc import AOC, log
 from aoc.geo2d import P2, Grid2
 from aoc.problems import MultiLineProblem
 from aoc.utils import smart_range
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterator
 
 
 class Material(IntEnum):
@@ -51,7 +53,7 @@ class _Problem(MultiLineProblem[int], ABC):
     def debug(self):
         if AOC.debugging:
             sx, _ = START
-            logging.debug(self.map.to_str(lambda _, v: {
+            log.debug(self.map.to_str(lambda _, v: {
                 Material.AIR: chalk.hex("111").bg_hex("111")("."),
                 Material.ROCK: chalk.hex("654").bg_hex("654")("#"),
                 Material.SAND: chalk.hex("fdb").bg_hex("fdb")("o"),

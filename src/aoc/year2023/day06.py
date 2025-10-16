@@ -1,8 +1,8 @@
-import logging
 import re
 from abc import ABC
 from math import ceil, prod, sqrt
 
+from aoc import log
 from aoc.problems import MultiLineProblem
 from aoc.utils import compose_number
 
@@ -20,7 +20,7 @@ def ways_to_win(time: int, dist: int) -> int:
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self):
         self.parsed = [[int(s) for s in re.findall(r"\d+", line)] for line in self.lines]
-        logging.debug(self.parsed)
+        log.debug(self.parsed)
 
 
 class Problem1(_Problem):

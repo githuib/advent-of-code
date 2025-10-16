@@ -1,28 +1,24 @@
-import logging
 import sys
 import unicodedata
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import ClassVar, Generic, NamedTuple, Self, TypeVar
+from typing import ClassVar, NamedTuple, Self
 
 from more_itertools import strip
 from parse import findall  # type: ignore[import-untyped]
 from yachalk import chalk
 
-from aoc import AOC, InputMode
-from aoc.geo2d import E, Grid2
+from aoc import AOC, InputMode, log
+from aoc.geo2d import Grid2
 from aoc.geo3d import P3D
 from aoc.utils import human_readable_duration, timed
-
-T = TypeVar("T")
-
 
 
 def strlen(s: str) -> int:
     return sum((2 if unicodedata.east_asian_width(c) == "W" else 1) for c in s)
 
 
-def solution_lines(my_solution: T, actual_solution: T) -> list[str]:
+def solution_lines[T](my_solution: T, actual_solution: T) -> list[str]:
     mine: list[str] = my_solution.strip().splitlines() if isinstance(my_solution, str) else [str(my_solution)]
     actual: list[str] = [""] if (
         actual_solution is None
@@ -52,7 +48,7 @@ def duration_emoji(duration_str) -> str:
     return "🚀"
 
 
-def var(test: T, puzzle: T) -> T:
+def var[T](test: T, puzzle: T) -> T:
     return test if AOC.input_mode == InputMode.TEST else puzzle
 
 
@@ -65,7 +61,7 @@ class FatalError(Exception):
         self.message = message
 
 
-class Problem(ABC, Generic[T]):
+class Problem[T](ABC):
     class Data(NamedTuple):
         year: int
         day: int
@@ -80,7 +76,7 @@ class Problem(ABC, Generic[T]):
     input: str
     corrected_input: str
 
-    def __new__(cls: type["Self"]) -> "Self":
+    def __new__(cls: type[Self]) -> Self:
         # Read input into problem instance before its actual __init__() will be called.
         self: Self = super().__new__(cls)
         if AOC.input_mode == InputMode.NONE:
@@ -122,7 +118,7 @@ class Problem(ABC, Generic[T]):
         except NoSolutionFoundError:
             lines = ["No solution found!? 🤷‍️"]
         except FatalError as exc:
-            logging.fatal(exc.message)
+            log.fatal(exc.message)
             lines = ["The process died before a solution could be found. 💀‍️"]
         else:
             duration_total = duration_init + duration_solution
@@ -139,12 +135,12 @@ class Problem(ABC, Generic[T]):
             #         f'solution: {duration_solution_str}',
             #     ]
         width = max(strlen(line) for line in lines)
-        logging.info(" " * (width + 4))
-        logging.info(" %s ", chalk.bg_hex("332")(" " * (width + 2)))
+        log.info(" " * (width + 4))
+        log.info(" %s ", chalk.bg_hex("332")(" " * (width + 2)))
         for line in lines:
-            logging.info(" %s ", chalk.bg_hex("332")(f" {line} {' ' * (width - strlen(line))}"))
-        logging.info(" %s ", chalk.bg_hex("332")(" " * (width + 2)))
-        logging.info(" " * (width + 4))
+            log.info(" %s ", chalk.bg_hex("332")(f" {line} {' ' * (width - strlen(line))}"))
+        log.info(" %s ", chalk.bg_hex("332")(" " * (width + 2)))
+        log.info(" " * (width + 4))
 
     @abstractmethod
     def process_input(self) -> None:
@@ -155,31 +151,31 @@ class Problem(ABC, Generic[T]):
         pass
 
 
-class OneLineProblem(Problem[T], ABC, Generic[T]):
+class OneLineProblem[T](Problem[T], ABC):
     line: str
 
     def process_input(self) -> None:
         self.line = self.input.strip()
 
 
-class MultiLineProblem(Problem[T], ABC, Generic[T]):
+class MultiLineProblem[T](Problem[T], ABC):
     lines: list[str]
 
     def process_input(self) -> None:
         self.lines = list(strip(self.corrected_input.splitlines(), lambda line: line == ""))
 
 
-class _GridProblem(MultiLineProblem[T], ABC, Generic[E, T]):
+class _GridProblem[E, T](MultiLineProblem[T], ABC):
     grid: Grid2[E]
 
 
-class GridProblem(_GridProblem[str, T], ABC, Generic[T]):
+class GridProblem[T](_GridProblem[str, T], ABC):
     def process_input(self) -> None:
         super().process_input()
         self.grid = Grid2.from_lines(self.lines)
 
 
-class NumberGridProblem(_GridProblem[int, T], ABC, Generic[T]):
+class NumberGridProblem[T](_GridProblem[int, T], ABC):
     def process_input(self) -> None:
         super().process_input()
         self.grid = Grid2.from_lines(self.lines).converted(self.convert_element)
@@ -188,10 +184,7 @@ class NumberGridProblem(_GridProblem[int, T], ABC, Generic[T]):
         return int(element)
 
 
-R = TypeVar("R")
-
-
-class ParsedProblem(Problem[T], ABC, Generic[R, T]):
+class ParsedProblem[R, T](Problem[T], ABC):
     line_pattern: str = ""
     multi_line_pattern: str = ""
     # _regex_pattern: str | None

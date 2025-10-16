@@ -1,20 +1,24 @@
-import logging
 from abc import ABC
-from collections.abc import Iterator
 from itertools import cycle, takewhile
 from math import lcm
+from typing import TYPE_CHECKING
 
 from more_itertools import ilen
 
+from aoc import log
 from aoc.problems import MultiLineProblem
-from aoc.utils import Predicate
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from aoc.utils import Predicate
 
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
         self.directions = self.lines[0]
         self.network = {line[:3]: (line[7:10], line[12:15]) for line in self.lines[2:]}
-        logging.debug(self.network)
+        log.debug(self.network)
 
     def steps_from(self, start: str, while_condition: Predicate) -> int:
         def path_from(node: str) -> Iterator[str]:

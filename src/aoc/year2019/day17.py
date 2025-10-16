@@ -1,7 +1,6 @@
-import logging
-
 from more_itertools import last
 
+from aoc import log
 from aoc.geo2d import Grid2
 from aoc.year2019.intcode import IntcodeProblem
 
@@ -109,11 +108,11 @@ class Problem2(Problem1):
                     start_pos = (x, y)
                 x += 1
         assert start_pos is not None
-        logging.debug(grid)
-        # for a, b in batched(to_path(grid, start_pos), 2):
+        log.debug(grid)
+        # for a, b in batched(to_path(grid, start_pos), 2, strict=True):
         #     print(a, b)
 
-        # it: Iterator[tuple[str, int]] = batched(to_path(grid, start_pos), 2)
+        # it: Iterator[tuple[str, int]] = batched(to_path(grid, start_pos), 2, strict=True)
         # logging.debug(f'path: {[
         #     f'{d}{str(n) if n < 10 else f"{n // 2}{n // 2}"}'
         #     for d, n in it

@@ -1,13 +1,16 @@
 from abc import ABC
 from collections import deque
-from collections.abc import Iterator
 from itertools import count, cycle
+from typing import TYPE_CHECKING
 
 from more_itertools import nth_or_last, unzip
 
 from aoc.cycle_detection import brent
 from aoc.problems import OneLineProblem
 from aoc.utils import pixel
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 MAX_HEIGHT = 65
 

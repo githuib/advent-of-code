@@ -1,15 +1,15 @@
-import logging
 from abc import ABC
 
 from yachalk import chalk
 
+from aoc import log
 from aoc.geo2d import P2, Dir2
 from aoc.problems import NumberGridProblem
 
 
 class _Problem(NumberGridProblem[int], ABC):
     def __init__(self) -> None:
-        logging.debug(self.grid.to_str(lambda _, v: (
+        log.debug(self.grid.to_str(lambda _, v: (
             chalk.hex("332").bg_hex("111")(".") if (
                 v == 10 or v is None
             ) else chalk.hex("111").bg_hex("0af")(chr(v)) if (

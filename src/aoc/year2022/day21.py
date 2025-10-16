@@ -1,9 +1,7 @@
-from __future__ import annotations
-
-import logging
 from abc import ABC
 from dataclasses import dataclass
 
+from aoc import log
 from aoc.problems import MultiLineProblem
 
 SYMBOLS = {"humn": "😎"}
@@ -117,7 +115,7 @@ class Operation(Node):
                 raise ValueError
 
     def solve_equation(self, result: int = 0) -> int:
-        logging.debug("%s = %d", self, result)
+        log.debug("%s = %d", self, result)
         if isinstance(self.right, Number):
             return self.left.solve_equation(self._op_right(result))
         if isinstance(self.left, Number):
@@ -146,7 +144,7 @@ class Problem2(_Problem):
         left, _, right = Node.jobs["root"]
         Node.variable = "humn"
         result = Operation.from_monkeys(left, "-", right).solve_equation()
-        logging.debug("%s = %d", SYMBOLS[Node.variable], result)
+        log.debug("%s = %d", SYMBOLS[Node.variable], result)
         return result
 
 

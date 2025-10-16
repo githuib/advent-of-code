@@ -22,7 +22,7 @@ class Image:
         #     for x in range(self._size)
         #     for y in range(self._size)
         # })
-        # logging.debug(self.grid)
+        # log.debug(self.grid)
 
     def _is_in_image(self, x, y) -> bool:  # , padding: int
         min_v, max_v = self._padding, self._size - self._padding
@@ -42,7 +42,7 @@ class Image:
             # self.grid = Mat2({(x, y): self._enhancement[bits_to_int([
             #     self.grid[x + kx, y + ky] for ky in (-1, 0, 1) for kx in (-1, 0, 1)
             # ])] if self._is_in_image(x, y) else edge_bit for x, y in self.grid})
-        # logging.debug(self.grid)
+        # log.debug(self.grid)
         return self
 
     def num_light_pixels(self) -> int:

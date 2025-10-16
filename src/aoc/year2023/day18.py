@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
-from collections.abc import Iterator
+from typing import TYPE_CHECKING
 
 from aoc.geo2d import P2, Dir2, grid_area
 from aoc.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 DIRS = [Dir2.right, Dir2.down, Dir2.left, Dir2.up]
 

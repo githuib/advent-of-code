@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from collections.abc import Iterable, Iterator, Mapping
 from functools import cached_property
 from typing import NamedTuple
@@ -150,6 +148,9 @@ class Span3D:
         else:
             self.p_min, self.p_max = p1, p2
 
+    def __hash__(self) -> int:
+        return hash((self.p_min, self.p_max))
+
     def __contains__(self, other: object) -> bool:
         if isinstance(other, P3D):
             x_min, y_min, z_min = self.p_min
@@ -197,7 +198,7 @@ class Grid3D(dict[P3D, int]):
         if isinstance(d, Mapping):
             super().__init__(d)
         elif isinstance(d, Iterable):
-            super().__init__({p: default for p in d})
+            super().__init__(dict.fromkeys(d, default))
         else:
             super().__init__({})
 
@@ -326,9 +327,6 @@ ROTATIONS_3D = [
 #     for a in (1, -1)
 #     for b in (1, -1)
 # ]
-
-
-# N = TypeVar('N', int, float)
 
 
 # @dataclass(frozen=True)

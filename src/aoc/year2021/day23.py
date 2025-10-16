@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-import logging
 from abc import ABC
 from copy import copy
 from dataclasses import dataclass
@@ -8,6 +5,7 @@ from typing import NamedTuple
 
 from yachalk import chalk
 
+from aoc import log
 from aoc.problems import MultiLineProblem
 from aoc.search import DijkstraState
 
@@ -80,8 +78,8 @@ class AmphipodState(DijkstraState[Constants, Variables]):
     def _can_move(self, room: int, hall: int) -> bool:
         # Trust me, I'm an engineer
         return not (
-            hall < room + 1 and any(self.v.hallway[hall + 1:room + 2]) or
-            hall > room + 2 and any(self.v.hallway[room + 2:hall])
+            (hall < room + 1 and any(self.v.hallway[hall + 1:room + 2])) or
+            (hall > room + 2 and any(self.v.hallway[room + 2:hall]))
         )
 
     def _move(self, amphipod: int, r: int, h: int, into_room: bool) -> AmphipodState:
@@ -154,10 +152,10 @@ class _Problem(MultiLineProblem[int], ABC):
 
         for i, state in enumerate(path.states):
             if i:
-                logging.debug("Step %d, cost so far: %d", i, state.cost)
-                logging.debug(" ")
-            logging.debug(state)
-            logging.debug(" ")
+                log.debug("Step %d, cost so far: %d", i, state.cost)
+                log.debug(" ")
+            log.debug(state)
+            log.debug(" ")
 
         return path.length
 

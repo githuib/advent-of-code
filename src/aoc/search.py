@@ -1,18 +1,16 @@
-from __future__ import annotations
-
-import logging
 from abc import ABC, abstractmethod
 from collections import deque
+from functools import cached_property
 from queue import PriorityQueue, Queue
-from typing import TYPE_CHECKING, Generic, Self, TypeVar
+from typing import TYPE_CHECKING, Self
+
+from aoc import log
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
-S = TypeVar("S", bound="State")
 
-
-class ShortestPath(ABC, Generic[S]):
+class ShortestPath[S: State](ABC):
     def __init__(self, initial_state: S):
         self.end_state = self._initial_state = initial_state
         self.visited = set[S]()
@@ -36,10 +34,11 @@ class ShortestPath(ABC, Generic[S]):
                     self.to_queue(next_state)
             self._on_state_processed(state)
         else:
-            logging.warning("Queue empty before reaching the end criteria at state:\n%s", state)
+            log.warning("Queue empty before reaching the end criteria at state:\n%s", state)
         self.end_state = state
         return self
 
+    @abstractmethod
     def _on_state_processed(self, state: S) -> None:
         pass
 
@@ -57,10 +56,7 @@ class ShortestPath(ABC, Generic[S]):
         return self.end_state.cost
 
 
-B = TypeVar("B", bound="BFSState")
-
-
-class ShortestPathBFS(ShortestPath[B], Generic[B]):
+class ShortestPathBFS[B: BFSState](ShortestPath[B]):
     def __init__(self, initial_state: B) -> None:
         super().__init__(initial_state)
         self._queue: deque[B] = deque()
@@ -72,15 +68,15 @@ class ShortestPathBFS(ShortestPath[B], Generic[B]):
     def to_queue(self, state: B) -> None:
         self._queue.append(state)
 
+    def _on_state_processed(self, state: B) -> None:
+        pass
+
     def _handle_state(self, state: B) -> bool:
         self.visited.add(state)
         return True
 
 
-D = TypeVar("D", bound="DijkstraState")
-
-
-class ShortestPathDijkstra(ShortestPath[D], Generic[D]):
+class ShortestPathDijkstra[D: DijkstraState](ShortestPath[D]):
     def __init__(self, initial_state: D) -> None:
         super().__init__(initial_state)
         self._queue: Queue[D] = PriorityQueue()
@@ -105,11 +101,7 @@ class ShortestPathDijkstra(ShortestPath[D], Generic[D]):
         return True
 
 
-C = TypeVar("C")
-V = TypeVar("V")
-
-
-class State(ABC, Generic[C, V]):
+class State[C, V](ABC):
     path_finder_cls: type[ShortestPath]
     c: C
 
@@ -160,11 +152,11 @@ class State(ABC, Generic[C, V]):
         return NotImplemented
 
 
-class BFSState(State[C, V], ABC, Generic[C, V]):
+class BFSState[C, V](State[C, V], ABC):
     path_finder_cls = ShortestPathBFS
 
 
-class DijkstraState(State[C, V], ABC, Generic[C, V]):
+class DijkstraState[C, V](State[C, V], ABC):
     path_finder_cls = ShortestPathDijkstra
 
     def __lt__(self, other: object) -> bool:
@@ -174,16 +166,19 @@ class DijkstraState(State[C, V], ABC, Generic[C, V]):
         return NotImplemented
 
 
-class AStarState(DijkstraState[C, V], ABC, Generic[C, V]):
+class AStarState[C, V](DijkstraState[C, V], ABC):
     def __init__(self: Self, variables: V, prev: Self | None = None, cost: int = 0):
         super().__init__(variables, prev, cost)
-        self.score = self.cost + self.heuristic
 
     def __lt__(self, other: object) -> bool:
         """By defining this, states with a lower score (cost + heuristic) will have priority in the queue."""
         if isinstance(other, AStarState):
             return self.score < other.score
         return NotImplemented
+
+    @cached_property
+    def score(self) -> int:
+        return self.cost + self.heuristic
 
     @property
     @abstractmethod

@@ -1,7 +1,7 @@
-import logging
 from abc import ABC
 from collections import deque
 
+from aoc import log
 from aoc.problems import MultiLineProblem
 
 
@@ -45,7 +45,7 @@ class _Problem(MultiLineProblem[int], ABC):
         n = self.my_solution
         alu = ALU()
         alu.run_program(self.lines, [int(d) for d in str(n)])
-        logging.debug(alu.vars)
+        log.debug(alu.vars)
         return n or 0
 
 

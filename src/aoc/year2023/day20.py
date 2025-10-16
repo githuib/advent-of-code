@@ -1,9 +1,12 @@
 from abc import ABC, abstractmethod
 from collections import Counter, deque
-from collections.abc import Iterable, Iterator
 from math import lcm
+from typing import TYPE_CHECKING
 
 from aoc.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Iterator
 
 
 class Module(ABC):

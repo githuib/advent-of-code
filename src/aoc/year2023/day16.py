@@ -1,10 +1,9 @@
-import logging
 from abc import ABC
 from collections import deque
 
 from yachalk import chalk
 
-from aoc import AOC
+from aoc import AOC, log
 from aoc.geo2d import P2, Dir2
 from aoc.problems import GridProblem
 
@@ -48,7 +47,7 @@ class _Problem(GridProblem[int], ABC):
             visited |= new_beams
         points = {p for p, _ in visited}
         if AOC.debugging:
-            logging.debug(self.grid.to_str(
+            log.debug(self.grid.to_str(
                 lambda q, c: chalk.hex("034").bg_hex("bdf")(c) if q in points else chalk.hex("222").bg_hex("888")(c),
             ))
         return len(points)

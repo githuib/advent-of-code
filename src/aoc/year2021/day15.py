@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import NamedTuple
 
 from aoc.geo2d import P2, Grid2

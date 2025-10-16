@@ -1,8 +1,8 @@
-import logging
 from abc import ABC
 
 from parse import parse  # type: ignore[import-untyped]
 
+from aoc import log
 from aoc.geo3d import P3D, ROTATIONS_3D
 from aoc.problems import MultiLineProblem
 from aoc.utils import grouped
@@ -24,7 +24,7 @@ class _Problem(MultiLineProblem[int], ABC):
     def find_beacons(self) -> None:
         unmatched = self._scanners[:]
         while unmatched:
-            logging.debug("Scanners left: %d", len(unmatched))
+            log.debug("Scanners left: %d", len(unmatched))
             unmatched = [scanner for scanner in unmatched if not self._match_beacons(scanner)]
 
     def _match_beacons(self, scanner: set[P3D]) -> bool:
@@ -42,7 +42,7 @@ class _Problem(MultiLineProblem[int], ABC):
                     inverse_rotation = ~rotation
                     self.offsets.append(offset.transform(inverse_rotation))
                     self.beacons |= {p.transform(inverse_rotation) for p in moved}
-                    logging.debug("%d %s %s", len(self.beacons), rotation, offset)
+                    log.debug("%d %s %s", len(self.beacons), rotation, offset)
                     return True
         return False
 

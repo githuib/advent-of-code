@@ -1,10 +1,13 @@
 import re
 from abc import ABC
-from collections.abc import Iterator
 from math import prod
+from typing import TYPE_CHECKING
 
 from aoc.problems import MultiLineProblem
 from aoc.utils import group_tuples
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class _Problem(MultiLineProblem[int], ABC):

@@ -1,11 +1,10 @@
-import logging
 from abc import ABC
 from dataclasses import dataclass
 
-from aoc import AOC
+from aoc import AOC, log
 from aoc.problems import MultiLineProblem
 
-octopi: dict[tuple[int, int], "Octopus"] = {}
+octopi: dict[tuple[int, int], Octopus] = {}
 
 
 @dataclass
@@ -51,11 +50,11 @@ class _Problem(MultiLineProblem[int], ABC):
             size = len(self.lines[0])
             if AOC.debugging:
                 for y in range(size):
-                    logging.debug(" ".join(
+                    log.debug(" ".join(
                         f"{octopi[x, y].energy} " if octopi[x, y].energy else "💩"
                         for x in range(size)
                     ))
-                logging.debug("")
+                log.debug("")
 
             for octopus in octopi.values():
                 octopus.energy += 1

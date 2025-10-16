@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-import logging
 from abc import ABC
 from dataclasses import dataclass, field
 from math import lcm
@@ -8,7 +5,7 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from yachalk import chalk
 
-from aoc import AOC
+from aoc import AOC, log
 from aoc.geo2d import P2, Dir2, manhattan_dist_2
 from aoc.problems import GridProblem
 from aoc.search import AStarState
@@ -71,7 +68,7 @@ class _Problem(GridProblem[int], ABC):
         self.constants = Constants((1, 0), (w, h + 1), list(self.blizzard_states(w, h)))
         self.path = ValleyState.find_path(Variables(), self.constants)
         if AOC.debugging:
-            logging.debug(self.grid.to_str(lambda p, _: (
+            log.debug(self.grid.to_str(lambda p, _: (
                 chalk.hex("034").bg_hex("bdf")(self.grid[p]) if (
                     p in [s.v.pos for s in self.path.states]
                 ) else chalk.hex("222").bg_hex("888")(self.grid[p])

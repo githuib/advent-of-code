@@ -1,16 +1,14 @@
 from abc import ABC
 from collections import deque
-from typing import TYPE_CHECKING, Generic, TypeVar
+from typing import TYPE_CHECKING
 
 from aoc.problems import MultiLineProblem
 
 if TYPE_CHECKING:
     from aoc.geo2d import P2
 
-T = TypeVar("T")
 
-
-class _Problem(MultiLineProblem[T], ABC, Generic[T]):
+class _Problem[T](MultiLineProblem[T], ABC):
     def __init__(self) -> None:
         self.points: set[P2] = set()
         self._folds: deque[tuple[str, int]] = deque([])

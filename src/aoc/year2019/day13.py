@@ -28,7 +28,7 @@ class Problem2(Problem1):
     def solution(self) -> int:
         self.computer.program[0] = 2
         score, paddle_x = 0, None
-        for x, y, value in batched(self.computer.run_to_next_output(), 3):
+        for x, y, value in batched(self.computer.run_to_next_output(), 3, strict=True):
             if (x, y) == (-1, 0):
                 score = value
             elif value == Tile.PADDLE:

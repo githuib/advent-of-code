@@ -1,8 +1,10 @@
 from abc import ABC
-from collections.abc import Iterator
-from typing import Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from aoc.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 brackets = {"(": ")", "[": "]", "{": "}", "<": ">"}
 broken_scores = {None: 0, ")": 3, "]": 57, "}": 1197, ">": 25137}
@@ -25,7 +27,7 @@ def parse_char(
     c, *line = line
     if c in brackets:
         # opening bracket, add to stack
-        return parse_char(line, [cast(OpeningBracket, c), *stack])
+        return parse_char(line, [cast("OpeningBracket", c), *stack])
 
     s, *stack = stack
     if c == brackets[s]:
@@ -34,7 +36,7 @@ def parse_char(
 
     # closing bracket bracket not matching:
     # return stack and broken closing bracket
-    return stack, cast(ClosingBracket, c)
+    return stack, cast("ClosingBracket", c)
 
 
 def calc_missing_score(stack, score):
@@ -47,7 +49,7 @@ def calc_missing_score(stack, score):
 class _Problem(MultiLineProblem[int], ABC):
     def parsed_lines(self) -> Iterator[tuple[list[OpeningBracket], ClosingBracket | None]]:
         for line in self.lines:
-            yield parse_char(cast(list[Bracket], list(line)))
+            yield parse_char(cast("list[Bracket]", list(line)))
 
 
 class Problem1(_Problem):

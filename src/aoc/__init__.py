@@ -6,6 +6,8 @@ from typing import ClassVar
 
 from yachalk import chalk
 
+log = logging.getLogger("aoc")
+
 
 class InputMode(Enum):
     PUZZLE = "puzzle"

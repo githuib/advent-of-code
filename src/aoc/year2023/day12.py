@@ -1,8 +1,11 @@
 from abc import ABC
-from collections.abc import Iterator
 from functools import cache
+from typing import TYPE_CHECKING
 
 from aoc.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 @cache

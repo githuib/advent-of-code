@@ -1,9 +1,12 @@
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from parse import parse  # type: ignore[import-untyped]
 
-from aoc.geo2d import P2
 from aoc.problems import OneLineProblem
+
+if TYPE_CHECKING:
+    from aoc.geo2d import P2
 
 
 def shoot(

@@ -1,9 +1,9 @@
-import logging
 from abc import ABC
 from itertools import batched
 
 from more_itertools import split_when
 
+from aoc import log
 from aoc.geo2d import P2, Dir2
 from aoc.geo3d import P3D, Dir3D, Rotation90deg3D, Trans3
 from aoc.problems import MultiLineProblem, NoSolutionFoundError, var
@@ -21,11 +21,11 @@ class _Problem(MultiLineProblem[int], ABC):
         self.route = [(d[0], int("".join(n))) for d, n in batched(split_when(
             "R" + self.lines[-1],
             lambda x, y: (x in "LR" and y not in "LR") or (x not in "LR" and y in "LR"),
-        ), 2)]
+        ), 2, strict=True)]
         for y_ in range(12):
-            logging.debug("".join(self.map_2d.get((x, y_), " ") for x in range(16)))
-        logging.debug(" ")
-        logging.debug(self.route)
+            log.debug("".join(self.map_2d.get((x, y_), " ") for x in range(16)))
+        log.debug(" ")
+        log.debug(self.route)
 
 
 class Problem1(_Problem):

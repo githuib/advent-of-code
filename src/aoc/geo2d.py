@@ -1,11 +1,9 @@
-from __future__ import annotations
-
 from collections.abc import Callable, Iterable, Iterator, Mapping
 from dataclasses import dataclass
 from functools import cached_property
 from math import hypot
 from os import get_terminal_size
-from typing import ClassVar, Generic, Literal, TypeVar, overload
+from typing import ClassVar, Literal, overload
 
 from aoc.utils import pairwise_circular, pixel, triplewise_circular
 
@@ -114,11 +112,7 @@ def intersect_segments_2(line_1: Line2, line_2: Line2) -> tuple[float, float] | 
     return intersect_2(line_1, line_2, segments=True)
 
 
-E = TypeVar("E")
-C = TypeVar("C")
-
-
-class Grid2(dict[P2, E], Generic[E]):
+class Grid2[E](dict[P2, E]):
     def __init__(
         self,
         d: Mapping[P2, E] | Iterable[P2] | None = None,
@@ -128,7 +122,7 @@ class Grid2(dict[P2, E], Generic[E]):
         if isinstance(d, Mapping):
             super().__init__(d)
         elif isinstance(d, Iterable) and default is not None:
-            super().__init__({p: default for p in d})
+            super().__init__(dict.fromkeys(d, default))
         else:
             super().__init__({})
         self.infinite = infinite
@@ -144,7 +138,7 @@ class Grid2(dict[P2, E], Generic[E]):
             for x, element in enumerate(line)
         })
 
-    def converted(self: Grid2[E], converter: Callable[[E], C]) -> Grid2[C]:
+    def converted[C](self: Grid2[E], converter: Callable[[E], C]) -> Grid2[C]:
         return Grid2({p: converter(v) for p, v in self.items()})
 
     def __getitem__(self, key: P2) -> E:
@@ -199,7 +193,7 @@ class Grid2(dict[P2, E], Generic[E]):
         directions: Iterable[P2] | None = None,
     ) -> Iterator[P2 | tuple[P2, E]]:
         for n in neighbors_2(pos, None if self.infinite else self, directions):
-            yield n if include_values else n, self[n]
+            yield n if include_values else (n, self[n])
 
     def point_with_value(self, value: E) -> P2:
         points = self.points_with_value(value)

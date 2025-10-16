@@ -1,10 +1,10 @@
-import logging
 from abc import ABC
 from collections.abc import Iterable
 from itertools import groupby
 
 from more_itertools import last
 
+from aoc import log
 from aoc.cycle_detection import brent
 from aoc.problems import GridProblem
 from aoc.utils import repeat_transform
@@ -34,7 +34,7 @@ class Problem1(_Problem):
     my_solution = 109596
 
     def solution(self) -> int:
-        logging.debug(self.grid)
+        log.debug(self.grid)
         return load(tilt(self.cols()))
 
 
@@ -51,7 +51,7 @@ class Problem2(_Problem):
             self.cols(),
             transform=lambda c: list(tilt_cycle(c)),
         ))
-        logging.debug(cycle)
+        log.debug(cycle)
         return load(reversed(list(zip(*last(repeat_transform(
             self.cols(),
             transform=tilt_cycle,

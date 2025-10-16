@@ -1,15 +1,17 @@
-import logging
 from abc import ABC
-from collections.abc import Iterable
-from typing import NamedTuple, Self
+from typing import TYPE_CHECKING, NamedTuple, Self
 
 from more_itertools import last
 
-from aoc import AOC
-from aoc.geo2d import P2, Grid2
+from aoc import AOC, log
 from aoc.problems import FatalError, GridProblem, InputMode, var
 from aoc.search import BFSState
 from aoc.utils import repeat_transform
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from aoc.geo2d import P2, Grid2
 
 
 class Constants(NamedTuple):
@@ -76,7 +78,7 @@ class Problem2(_Problem):
         if AOC.input_mode == InputMode.TEST:
             for i, s in [(6, 16), (10, 50), (50, 1594), (100, 6536), (500, 167004), (1000, 668697)]:  # (5000, 16733044)
                 ans = self.num_garden_plots(i)
-                logging.info("Checking input %d: %s == %s -> %s", i, s, ans, "👌" if ans == s else "Nope")
+                log.info("Checking input %d: %s == %s -> %s", i, s, ans, "👌" if ans == s else "Nope")
             return 0
         return self.infinite_plots(26501365)
 
