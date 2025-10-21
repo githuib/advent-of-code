@@ -1,11 +1,14 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 CWD=$PWD
-cd ~/Code/AdventOfCode
+script_dir=$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")
+cd "$script_dir/.." || exit
+
 if [[ $# -ge 3 && $1 =~ ^[0-9]{4}$ ]]; then
-    poetry run solve --year $1 --day $2 --part $3 ${4:0}
+    uv run aoc_solve --year "$1" --day "$2" --part "$3" "${4:0}"
 elif [[ $# -ge 2 && $1 =~ ^[0-9]{2}$ ]]; then
-    poetry run solve --day $1 --part $2 ${3:0}
+    uv run aoc_solve --day "$1" --part "$2" "${3:0}"
 else
-    poetry run solve --part $1 ${2:0}
+    uv run aoc_solve --part "$1" "${2:0}"
 fi
-cd $CWD
+
+cd "$CWD" || exit

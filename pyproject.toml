@@ -1,41 +1,32 @@
 [project]
 name = "advent-of-code"
-version = "1.33.7"
+version = "808.303"
 description = "Advent of Code"
+authors = [{ name = "Huib Piguillet", email = "huib@proton.me" }]
 requires-python = ">=3.14"
-authors = [
-    { name = "Huib Piguillet", email = "huib@proton.me" },
-]
 dependencies = [
     "cairocffi",
     "igraph",
     "matplotlib",
-    "more_itertools",
+    "more-itertools",
     "parse",
     "yachalk",
 ]
 
 [dependency-groups]
-typing = [
+dev = [
     "matplotlib-stubs",
-]
-qa = [
     "mypy",
     "pytest",
     "ruff",
 ]
-dev = [
-    { include-group = "typing" },
-    { include-group = "qa" },
-]
 
 [project.scripts]
-solve = "aoc.cli:main"
+aoc_solve = "advent_of_code.cli:main"
 
-[tool.poetry]
-packages = [
-    { include = "aoc", from = "src" },
-]
+[build-system]
+requires = ["uv_build>=0.9.3,<0.10.0"]
+build-backend = "uv_build"
 
 [tool.mypy]
 files = ["src", "tests"]
