@@ -36,6 +36,7 @@ class Problem1(_Problem):
                 if start <= item < end:
                     return item + offset
             return item
+
         return min(reduce(get_next_value, self.maps, seed) for seed in self.seeds)
 
 
@@ -44,7 +45,9 @@ class Problem2(_Problem):
     my_solution = 50716416
 
     def solution(self) -> int:
-        def get_next_ranges(ranges: Iterable[Range], m: list[MapEntry]) -> Iterator[Range]:
+        def get_next_ranges(
+            ranges: Iterable[Range], m: list[MapEntry]
+        ) -> Iterator[Range]:
             for r in ranges:
                 s, e = r
                 for start, end, offset in m:
@@ -59,7 +62,10 @@ class Problem2(_Problem):
                 else:
                     if s < e:
                         yield s, e
-        seed_ranges: Iterable[Range] = ((s, s + o) for s, o in batched(self.seeds, 2, strict=True))
+
+        seed_ranges: Iterable[Range] = (
+            (s, s + o) for s, o in batched(self.seeds, 2, strict=True)
+        )
         return min(s for s, _ in reduce(get_next_ranges, self.maps, seed_ranges))
 
 

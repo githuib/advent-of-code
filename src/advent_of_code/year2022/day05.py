@@ -10,9 +10,13 @@ class _Problem(MultiLineProblem[str]):
     def __init__(self) -> None:
         input_blocks = grouped(self.lines)
         *rows, nums = (line[1::4] for line in next(input_blocks))
-        self._stacks: dict[str, str] = dict(zip(nums, (
-            s.strip() for s in transposed(padded(reversed(rows), len(nums)))
-        ), strict=False))
+        self._stacks: dict[str, str] = dict(
+            zip(
+                nums,
+                (s.strip() for s in transposed(padded(reversed(rows), len(nums)))),
+                strict=False,
+            )
+        )
         self._moves_input = next(input_blocks)
 
     def solution(self) -> str:

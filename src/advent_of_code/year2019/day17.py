@@ -20,11 +20,11 @@ class Problem1(IntcodeProblem[int]):
             for row in range(2, len(grid) - 2, 2)
             for col in range(2, len(grid[0]) - 2, 2)
             if (
-                grid[row][col] == "#" and
-                grid[row - 1][col] == "#" and
-                grid[row + 1][col] == "#" and
-                grid[row][col - 1] == "#" and
-                grid[row][col + 1] == "#"
+                grid[row][col] == "#"
+                and grid[row - 1][col] == "#"
+                and grid[row + 1][col] == "#"
+                and grid[row][col - 1] == "#"
+                and grid[row][col + 1] == "#"
             )
         )
 

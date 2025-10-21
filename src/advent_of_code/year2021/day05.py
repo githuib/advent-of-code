@@ -11,9 +11,7 @@ class _Problem(MultiLineProblem[int], ABC):
         points = []
         for line in self.lines:
             x1, y1, x2, y2 = (
-                int(val)
-                for p in line.split(" -> ")
-                for val in p.split(",")
+                int(val) for p in line.split(" -> ") for val in p.split(",")
             )
             dir_x = 1 if x2 > x1 else -1
             dir_y = 1 if y2 > y1 else -1
@@ -28,10 +26,13 @@ class _Problem(MultiLineProblem[int], ABC):
 
             elif self.include_diagonal_lines and abs(x2 - x1) == abs(y2 - y1):
                 # diagonal line
-                points += list(zip(
-                    range(x1, x2 + dir_x, dir_x),
-                    range(y1, y2 + dir_y, dir_y), strict=False,
-                ))
+                points += list(
+                    zip(
+                        range(x1, x2 + dir_x, dir_x),
+                        range(y1, y2 + dir_y, dir_y),
+                        strict=False,
+                    )
+                )
 
         return len([p for p, c in Counter(points).items() if c >= 2])
         # return len([p for p, c in Counter(

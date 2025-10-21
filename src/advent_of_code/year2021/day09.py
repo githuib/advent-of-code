@@ -7,11 +7,14 @@ from advent_of_code.problems import MultiLineProblem
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self):
-        self.height_map = defaultdict(lambda: 9, [
-            ((x, y), int(val))
-            for y, line in enumerate(self.lines)
-            for x, val in enumerate(line)
-        ])
+        self.height_map = defaultdict(
+            lambda: 9,
+            [
+                ((x, y), int(val))
+                for y, line in enumerate(self.lines)
+                for x, val in enumerate(line)
+            ],
+        )
 
 
 class Problem1(_Problem):
@@ -20,10 +23,10 @@ class Problem1(_Problem):
             val + 1
             for (x, y), val in self.height_map.copy().items()
             if (
-                val < self.height_map[x - 1, y] and
-                val < self.height_map[x + 1, y] and
-                val < self.height_map[x, y - 1] and
-                val < self.height_map[x, y + 1]
+                val < self.height_map[x - 1, y]
+                and val < self.height_map[x + 1, y]
+                and val < self.height_map[x, y - 1]
+                and val < self.height_map[x, y + 1]
             )
         )
 

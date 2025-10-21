@@ -30,10 +30,19 @@ def occludes_with(shape: list[int], pattern: deque[int], y: int) -> bool:
 
 def print_board(shape: list[int], pattern: deque[int], y: int) -> None:
     for i, row in enumerate(pattern):
-        print("".join(pixel(2 if (
-            0 <= (s := y - min(0, y - len(shape) + 1) - i) < len(shape)
-            and shape[s] >> j & 1
-        ) else row >> j & 1) for j in range(6, -1, -1)))
+        print(
+            "".join(
+                pixel(
+                    2
+                    if (
+                        0 <= (s := y - min(0, y - len(shape) + 1) - i) < len(shape)
+                        and shape[s] >> j & 1
+                    )
+                    else row >> j & 1
+                )
+                for j in range(6, -1, -1)
+            )
+        )
     print()
 
 
@@ -52,12 +61,18 @@ class _Problem(OneLineProblem[int], ABC):
                 if next(directions) == "<":
                     if not (
                         any(row & 0b1000000 for row in curr_shape)
-                        or occludes_with(moved_to_left := [row << 1 for row in curr_shape], pattern, y)
+                        or occludes_with(
+                            moved_to_left := [row << 1 for row in curr_shape],
+                            pattern,
+                            y,
+                        )
                     ):
                         curr_shape = moved_to_left
                 elif not (
                     any(row & 0b0000001 for row in curr_shape)
-                    or occludes_with(moved_to_right := [row >> 1 for row in curr_shape], pattern, y)
+                    or occludes_with(
+                        moved_to_right := [row >> 1 for row in curr_shape], pattern, y
+                    )
                 ):
                     curr_shape = moved_to_right
                 if y >= -1 and occludes_with(curr_shape, pattern, y + 1):
@@ -93,12 +108,9 @@ class Problem2(_Problem):
         cycle_ = brent(patterns)
         n = 1_000_000_000_000 - cycle_.start
         return (
-            (
-                self.height_at_t(cycle_.start + cycle_.length)
-                - self.height_at_t(cycle_.start)
-            ) * (n // cycle_.length)
-            + self.height_at_t(cycle_.start + n % cycle_.length)
-        )
+            self.height_at_t(cycle_.start + cycle_.length)
+            - self.height_at_t(cycle_.start)
+        ) * (n // cycle_.length) + self.height_at_t(cycle_.start + n % cycle_.length)
 
 
 TEST_INPUT = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"

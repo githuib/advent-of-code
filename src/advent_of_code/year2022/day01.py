@@ -9,9 +9,10 @@ from advent_of_code.utils import try_convert
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self):
-        self.calorie_totals = [sum(
-            try_convert(int, c) for c in elf_calories
-        ) for elf_calories in split_at(self.lines, not_)]
+        self.calorie_totals = [
+            sum(try_convert(int, c) for c in elf_calories)
+            for elf_calories in split_at(self.lines, not_)
+        ]
 
 
 class Problem1(_Problem):

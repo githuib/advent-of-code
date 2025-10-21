@@ -19,11 +19,15 @@ class _Problem(MultiLineProblem[int], ABC):
             amount_str, chemical = chemical_str.split()
             return chemical, int(amount_str)
 
-        def parse_line(output: str, inputs: list[str]) -> tuple[str, tuple[int, list[tuple[str, int]]]]:
+        def parse_line(
+            output: str, inputs: list[str]
+        ) -> tuple[str, tuple[int, list[tuple[str, int]]]]:
             chemical, amount = parse_chemical(output)
             return chemical, (amount, [parse_chemical(i) for i in inputs])
 
-        self.reactions = dict(parse_line(output, inputs.split(", ")) for inputs, output in parsed())
+        self.reactions = dict(
+            parse_line(output, inputs.split(", ")) for inputs, output in parsed()
+        )
         self.scores = self.score_chemicals(["FUEL"])
 
     def score_chemicals(self, required: list[str], score: int = 0) -> dict[str, int]:
@@ -43,7 +47,9 @@ class _Problem(MultiLineProblem[int], ABC):
     def required_ore(self, fuel: int = 1) -> int:
         required = Counter({"FUEL": fuel})
         while True:
-            yield_chemical, desired_amount = sorted(required.items(), key=lambda x: self.scores[x[0]])[0]
+            yield_chemical, desired_amount = sorted(
+                required.items(), key=lambda x: self.scores[x[0]]
+            )[0]
             if yield_chemical in self.reactions:
                 yield_amount, required_chemicals = self.reactions[yield_chemical]
 
@@ -60,7 +66,9 @@ class _Problem(MultiLineProblem[int], ABC):
                 else:
                     del required[yield_chemical]
 
-            if list(required.keys()) == ["ORE"]:  # [k for k, v in required.items() if v]
+            if list(required.keys()) == [
+                "ORE"
+            ]:  # [k for k, v in required.items() if v]
                 break
 
         return required["ORE"]

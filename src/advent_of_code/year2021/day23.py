@@ -78,8 +78,8 @@ class AmphipodState(DijkstraState[Constants, Variables]):
     def _can_move(self, room: int, hall: int) -> bool:
         # Trust me, I'm an engineer
         return not (
-            (hall < room + 1 and any(self.v.hallway[hall + 1:room + 2])) or
-            (hall > room + 2 and any(self.v.hallway[room + 2:hall]))
+            (hall < room + 1 and any(self.v.hallway[hall + 1 : room + 2]))
+            or (hall > room + 2 and any(self.v.hallway[room + 2 : hall]))
         )
 
     def _move(self, amphipod: int, r: int, h: int, into_room: bool) -> AmphipodState:
@@ -91,7 +91,13 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         else:
             hallway[h] = rooms[r].remove()
         # Trust me, I'm an engineer
-        steps = abs(h * 2 - r * 2 - 3) + 1 - int(h in (0, 6)) + rooms[r].spots_left - int(into_room)
+        steps = (
+            abs(h * 2 - r * 2 - 3)
+            + 1
+            - int(h in (0, 6))
+            + rooms[r].spots_left
+            - int(into_room)
+        )
         return self.move(steps * 10 ** (amphipod - 1), rooms=rooms, hallway=hallway)
 
     @property
@@ -99,13 +105,17 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         return [
             # all states that move an amphipod out of a room
             self._move(room.first, r, h, into_room=False)
-            for r, room in enumerate(self.v.rooms) if not room.is_clean and not room.is_empty
-            for h, amphipod in enumerate(self.v.hallway) if not amphipod and self._can_move(r, h)
+            for r, room in enumerate(self.v.rooms)
+            if not room.is_clean and not room.is_empty
+            for h, amphipod in enumerate(self.v.hallway)
+            if not amphipod and self._can_move(r, h)
         ] + [
             # all states that move an amphipod into a room
             self._move(amphipod, r, h, into_room=True)
-            for h, amphipod in enumerate(self.v.hallway) if amphipod
-            for r, room in enumerate(self.v.rooms) if room.can_add(amphipod) and self._can_move(r, h)
+            for h, amphipod in enumerate(self.v.hallway)
+            if amphipod
+            for r, room in enumerate(self.v.rooms)
+            if room.can_add(amphipod) and self._can_move(r, h)
         ]
 
     def __repr__(self) -> str:
@@ -124,17 +134,34 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         e: str = chalk.hex("332").bg_hex("111")(".")
 
         def q(cs: str) -> str:
-            return "".join(e if c == "." else chalk.hex("111").bg_hex("0af")(c) for c in cs)
+            return "".join(
+                e if c == "." else chalk.hex("111").bg_hex("0af")(c) for c in cs
+            )
 
         def p(i):  # ik zat in tram 5 en m'n lul stond stijf
             return "  " if i else w * 2
+
         s = ".ABCD"
         h = ".".join(s[a] for a in self.v.hallway)
         rs = self.c.room_size
         return (
-            w * 13 + "\n" + w + q(h[0] + h[2:-2] + h[-1]) + w + "\n" + "\n".join(p(i) + w + w.join(
-                q(s[r.get(rs - i - 1)]) for r in self.v.rooms
-            ) + w + p(i) for i in range(rs)) + "\n  " + w * 9 + "  "
+            w * 13
+            + "\n"
+            + w
+            + q(h[0] + h[2:-2] + h[-1])
+            + w
+            + "\n"
+            + "\n".join(
+                p(i)
+                + w
+                + w.join(q(s[r.get(rs - i - 1)]) for r in self.v.rooms)
+                + w
+                + p(i)
+                for i in range(rs)
+            )
+            + "\n  "
+            + w * 9
+            + "  "
         )
 
 
@@ -143,10 +170,19 @@ class _Problem(MultiLineProblem[int], ABC):
         lines = self.lines[5:1:-3] if is_part_1 else self.lines[5:1:-1]
         room_size = len(lines)
         path = AmphipodState.find_path(
-            Variables(rooms=[
-                Room(name, room_size, [{"A": 1, "B": 2, "C": 3, "D": 4}[c] for c in content])
-                for name, content in enumerate(zip(*[line[3:10:2] for line in lines], strict=False), 1)
-            ], hallway=[0] * 7),
+            Variables(
+                rooms=[
+                    Room(
+                        name,
+                        room_size,
+                        [{"A": 1, "B": 2, "C": 3, "D": 4}[c] for c in content],
+                    )
+                    for name, content in enumerate(
+                        zip(*[line[3:10:2] for line in lines], strict=False), 1
+                    )
+                ],
+                hallway=[0] * 7,
+            ),
             Constants(room_size),
         )
 

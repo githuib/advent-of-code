@@ -27,12 +27,23 @@ class Dir2:
 
     diagonal_neighbors: ClassVar[list[P2]] = [left_down, right_up, left_up, right_down]
 
-    all_neighbors: ClassVar[list[P2]] = [up, down, left, right, left_up, left_down, right_up, right_down]
+    all_neighbors: ClassVar[list[P2]] = [
+        up,
+        down,
+        left,
+        right,
+        left_up,
+        left_down,
+        right_up,
+        right_down,
+    ]
 
 
-def neighbors_2(pos: P2, points: Iterable[P2] | None = None, directions: Iterable[P2] | None = None) -> Iterator[P2]:
+def neighbors_2(
+    pos: P2, points: Iterable[P2] | None = None, directions: Iterable[P2] | None = None
+) -> Iterator[P2]:
     x, y = pos
-    for dx, dy in (directions or Dir2.direct_neighbors):
+    for dx, dy in directions or Dir2.direct_neighbors:
         new_pos = x + dx, y + dy
         if points is None or new_pos in points:
             yield new_pos
@@ -56,7 +67,15 @@ def area(points: Iterable[P2]) -> int:
     >>> area([(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)])
     28
     """
-    return abs(sum(x2 * (y3 - y1) for (_, y1), (x2, _), (_, y3) in triplewise_circular(points))) // 2
+    return (
+        abs(
+            sum(
+                x2 * (y3 - y1)
+                for (_, y1), (x2, _), (_, y3) in triplewise_circular(points)
+            )
+        )
+        // 2
+    )
 
 
 def grid_area(points: Iterable[P2], include_loop: bool = True) -> int:
@@ -75,7 +94,9 @@ def cross_2(p1: P2, p2: P2) -> int:
     return x1 * y2 - x2 * y1
 
 
-def intersect_2(line_1: Line2, line_2: Line2, segments: bool) -> tuple[float, float] | None:
+def intersect_2(
+    line_1: Line2, line_2: Line2, segments: bool
+) -> tuple[float, float] | None:
     """
     https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
     https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
@@ -92,7 +113,9 @@ def intersect_2(line_1: Line2, line_2: Line2, segments: bool) -> tuple[float, fl
     if segments:
         de = xe1 - xe2, ye1 - ye2
         t = cross_2(de, d2) / d_cross
-        return (xs1 * t + xe1 * (1 - t), ys1 * t + ye1 * (1 - t)) if 0 <= t <= 1 else None
+        return (
+            (xs1 * t + xe1 * (1 - t), ys1 * t + ye1 * (1 - t)) if 0 <= t <= 1 else None
+        )
 
     c = cross_2(e1, s1), cross_2(e2, s2)
     return cross_2(c, (dx1, dx2)) / d_cross, cross_2(c, (dy1, dy2)) / d_cross
@@ -132,11 +155,13 @@ class Grid2[E](dict[P2, E]):
 
     @classmethod
     def from_lines(cls: type[Grid2], lines: list[str]) -> Grid2[str]:
-        return Grid2({
-            (x, y): element
-            for y, line in enumerate(lines)
-            for x, element in enumerate(line)
-        })
+        return Grid2(
+            {
+                (x, y): element
+                for y, line in enumerate(lines)
+                for x, element in enumerate(line)
+            }
+        )
 
     def converted[C](self: Grid2[E], converter: Callable[[E], C]) -> Grid2[C]:
         return Grid2({p: converter(v) for p, v in self.items()})
@@ -218,10 +243,18 @@ class Grid2[E](dict[P2, E]):
         xl, yl = min_x or x_min, min_y or y_min
         xh, yh = max_x or x_max, max_y or y_max
         max_width = get_terminal_size()[0]
-        return "\n".join("".join(
-            value_func((x, y), self.get((x, y))) if value_func else pixel(self.get((x, y)))
-            for x in range(xl, min(xl + max_width, xh + 1))
-        ) for y in range(yl, yh + 1)) + "\n"
+        return (
+            "\n".join(
+                "".join(
+                    value_func((x, y), self.get((x, y)))
+                    if value_func
+                    else pixel(self.get((x, y)))
+                    for x in range(xl, min(xl + max_width, xh + 1))
+                )
+                for y in range(yl, yh + 1)
+            )
+            + "\n"
+        )
 
     def __repr__(self) -> str:
         return self.to_str()

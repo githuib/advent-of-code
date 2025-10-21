@@ -9,7 +9,7 @@ from advent_of_code.utils import compare
 
 
 class Moon:
-    def __init__(self, position:  P3D):
+    def __init__(self, position: P3D):
         self.position = position
         self.velocity = P3D()
 
@@ -17,7 +17,9 @@ class Moon:
         x, y, z = self.position
         ox, oy, oz = other.position
         vx, vy, vz = self.velocity
-        self.velocity = P3D(compare(x, ox) + vx, compare(y, oy) + vy, compare(z, oz) + vz)
+        self.velocity = P3D(
+            compare(x, ox) + vx, compare(y, oy) + vy, compare(z, oz) + vz
+        )
         # self.velocity = self.velocity + P3D(compare(x, ox), compare(y, oy), compare(z, oz))
 
     def apply_gravity(self) -> None:
@@ -29,8 +31,8 @@ class Moon:
 
     def is_equal_on_axis(self, other: Moon, axis: int) -> bool:
         return (
-            self.position[axis] == other.position[axis] and
-            self.velocity[axis] == other.velocity[axis]
+            self.position[axis] == other.position[axis]
+            and self.velocity[axis] == other.velocity[axis]
         )
 
 
@@ -75,7 +77,9 @@ class Problem2(_Problem):
             for axis in range(3):
                 if all(
                     moon.is_equal_on_axis(original_moon, axis)
-                    for moon, original_moon in zip(self.moons, original_moons, strict=False)
+                    for moon, original_moon in zip(
+                        self.moons, original_moons, strict=False
+                    )
                 ):
                     steps_list[axis] = steps
             steps_vector = P3D(*steps_list)

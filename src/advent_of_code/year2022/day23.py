@@ -24,9 +24,7 @@ DIRECTIONS = [
 def next_pos(x: int, y: int, step: int, occupied: set[P2]) -> P2 | None:
     for i in range(step, 4 + step):
         (dx, dy), dirs = DIRECTIONS[i % 4]
-        if all(
-            (x + nx, y + ny) not in occupied for nx, ny in dirs
-        ) and any(
+        if all((x + nx, y + ny) not in occupied for nx, ny in dirs) and any(
             (x + nx, y + ny) in occupied for nx, ny in Dir2.all_neighbors
         ):
             return x + dx, y + dy

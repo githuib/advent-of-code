@@ -35,12 +35,15 @@ def shoot(
 
 class _Problem(OneLineProblem[int], ABC):
     def shoot_that_mofo(self) -> dict[P2, int]:
-        min_x, max_x, min_y, max_y = parse("target area: x={:d}..{:d}, y={:d}..{:d}", self.line)
+        min_x, max_x, min_y, max_y = parse(
+            "target area: x={:d}..{:d}, y={:d}..{:d}", self.line
+        )
         return {
             (vx, vy): highest_y
             for vx in range(max_x + 1)
             for vy in range(min_y, 1000)
-            if (highest_y := shoot((min_x, max_x), (min_y, max_y), (vx, vy))) is not None
+            if (highest_y := shoot((min_x, max_x), (min_y, max_y), (vx, vy)))
+            is not None
         }
 
 

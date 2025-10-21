@@ -5,7 +5,7 @@ SNAFU = [("0", 0), ("1", 0), ("2", 0), ("=", 1), ("-", 1), ("0", 1)]
 
 
 def situation_normal(all_fucked_up: str) -> int:
-    return sum(FUBAR[c] * 5 ** i for i, c in enumerate(all_fucked_up[::-1]))
+    return sum(FUBAR[c] * 5**i for i, c in enumerate(all_fucked_up[::-1]))
 
 
 def fuck_all_up_beyond_repair(normal_situation: int) -> str:

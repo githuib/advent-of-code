@@ -11,11 +11,13 @@ SeaCucumbers = list[set[P2]]
 def board_str(sea_cucumbers: SeaCucumbers) -> str:
     east, south = sea_cucumbers
     board = Grid2[str](dict.fromkeys(east, ">") | dict.fromkeys(south, "v"))
-    return board.to_str(lambda _, v: {
-        None: chalk.hex("0af").bg_hex("0af")("."),
-        ">": chalk.hex("888").bg_hex("888")(">"),
-        "v": chalk.hex("666").bg_hex("666")("v"),
-    }[v])
+    return board.to_str(
+        lambda _, v: {
+            None: chalk.hex("0af").bg_hex("0af")("."),
+            ">": chalk.hex("888").bg_hex("888")(">"),
+            "v": chalk.hex("666").bg_hex("666")("v"),
+        }[v]
+    )
 
 
 class Problem1(GridProblem[int]):
@@ -32,12 +34,21 @@ class Problem1(GridProblem[int]):
 
     def __next__(self):
         old = east, south = self.sea_cucumbers
-        east = {((x, y) if (
-            (p := ((x + 1) % self.width, y)) in east or p in south
-        ) else p) for (x, y) in east}
-        self.sea_cucumbers = east, {((x, y) if (
-            (p := (x, (y + 1) % self.height)) in east or p in south
-        ) else p) for (x, y) in south}
+        east = {
+            ((x, y) if ((p := ((x + 1) % self.width, y)) in east or p in south) else p)
+            for (x, y) in east
+        }
+        self.sea_cucumbers = (
+            east,
+            {
+                (
+                    (x, y)
+                    if ((p := (x, (y + 1) % self.height)) in east or p in south)
+                    else p
+                )
+                for (x, y) in south
+            },
+        )
         return old
 
     def solution(self) -> int:

@@ -70,10 +70,10 @@ class Problem2(_Problem[str]):
             self.fold_next()
         width = max(x for x, _ in self.points) + 1
         height = max(y for _, y in self.points) + 1
-        return "\n".join("".join(
-            "█" if (x, y) in self.points else "░"
-            for x in range(width)
-        ) for y in range(height))
+        return "\n".join(
+            "".join("█" if (x, y) in self.points else "░" for x in range(width))
+            for y in range(height)
+        )
 
 
 TEST_INPUT = """

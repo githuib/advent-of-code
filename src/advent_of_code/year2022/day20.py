@@ -1,4 +1,3 @@
-
 from abc import ABC
 from dataclasses import dataclass, field
 from itertools import dropwhile, islice
@@ -75,7 +74,9 @@ class _Problem(MultiLineProblem[int], ABC):
         for _ in range(self.mixing_amount):
             for node in pointers:
                 node.move(size)
-        return sum(n.val for n in islice(dropwhile(lambda n: n.val != 0, it), 1000, 3001, 1000))
+        return sum(
+            n.val for n in islice(dropwhile(lambda n: n.val != 0, it), 1000, 3001, 1000)
+        )
 
 
 class Problem1(_Problem):

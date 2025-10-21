@@ -35,7 +35,9 @@ def turn(
     if s1 >= 1000 or s2 >= 1000:
         return s1, s2, total_rolls
     p, s, t = move_pawn(
-        pawns, sums, is_turn1,
+        pawns,
+        sums,
+        is_turn1,
         roll=sum(mods(total_rolls + die, 100, 1) for die in range(1, 4)),
     )
     return turn(p, s, t, total_rolls + 3)
@@ -52,10 +54,16 @@ def quantum_turn(
         return [1, 0]
     if s2 >= 21:
         return [0, 1]
-    return [sum(games_won) for games_won in zip(*[
-        quantum_turn(*move_pawn(pawns, sums, is_turn1, sum(rolls)))
-        for rolls in product(range(1, 4), repeat=3)
-    ], strict=False)]
+    return [
+        sum(games_won)
+        for games_won in zip(
+            *[
+                quantum_turn(*move_pawn(pawns, sums, is_turn1, sum(rolls)))
+                for rolls in product(range(1, 4), repeat=3)
+            ],
+            strict=False,
+        )
+    ]
 
 
 class _Problem(ParsedProblem[tuple[int], int], ABC):

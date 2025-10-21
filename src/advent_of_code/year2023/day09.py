@@ -21,6 +21,7 @@ class Problem1(MultiLineProblem[int]):
             while any(seq):
                 yield seq[-1]
                 seq = [b - a for a, b in pairwise(seq)]
+
         log.debug({Unique(sum(diffs(seq))): list(diffs(seq)) for seq in self.sequences})
         return sum(sum(diffs(seq)) for seq in self.sequences)
 

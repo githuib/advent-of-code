@@ -12,9 +12,9 @@ class Dir:
 
     @property
     def size(self) -> int:
-        return sum(
-            subdir.size for subdir in self._subdirs.values()
-        ) + self._size_of_files
+        return (
+            sum(subdir.size for subdir in self._subdirs.values()) + self._size_of_files
+        )
 
     def add_dir(self, name: str) -> None:
         self._subdirs[name] = SubDir(self)
@@ -36,11 +36,14 @@ class Dir:
     def total_size_2(self, min_size: int) -> int | None:
         if self.size < min_size:
             return None
-        return min([self.size] + [
-            min_subdir_size
-            for subdir in self._subdirs.values()
-            if (min_subdir_size := subdir.total_size_2(min_size)) is not None
-        ])
+        return min(
+            [self.size]
+            + [
+                min_subdir_size
+                for subdir in self._subdirs.values()
+                if (min_subdir_size := subdir.total_size_2(min_size)) is not None
+            ]
+        )
 
 
 class SubDir(Dir):

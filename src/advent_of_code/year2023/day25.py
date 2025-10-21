@@ -19,9 +19,14 @@ class Problem1(MultiLineProblem[int]):
         #     vertex_size=6,
         #     layout=graph.layout_fruchterman_reingold(),
         # )
-        return prod(len(c) for c in Graph.ListDict(
-            {line[:3]: line[5:].split() for line in self.lines},
-        ).mincut().partition)
+        return prod(
+            len(c)
+            for c in Graph.ListDict(
+                {line[:3]: line[5:].split() for line in self.lines},
+            )
+            .mincut()
+            .partition
+        )
 
 
 TEST_INPUT = """

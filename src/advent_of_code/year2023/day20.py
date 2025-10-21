@@ -75,7 +75,10 @@ class _Problem(MultiLineProblem[int], ABC):
                     m_dest = self.modules[destination]
                     resp = m_dest.on_pulse(value, source)
                     if resp is not None:
-                        pulse_queue.extend((destination, d, resp) for d in m_dest.destinations)
+                        pulse_queue.extend(
+                            (destination, d, resp) for d in m_dest.destinations
+                        )
+
         return list(pulses())
 
 
@@ -94,7 +97,9 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         def cycle_lengths() -> Iterator[int]:
-            flip_flops = {m for m in self.modules.values() if isinstance(m, FlipFlopModule)}
+            flip_flops = {
+                m for m in self.modules.values() if isinstance(m, FlipFlopModule)
+            }
             for dest in self.modules["broadcaster"].destinations:
                 n, all_flip_flops_off = 0, False
                 while not all_flip_flops_off:
@@ -102,6 +107,7 @@ class Problem2(_Problem):
                     self.press_button("broadcaster", dest)
                     all_flip_flops_off = not any(f.state for f in flip_flops)
                 yield n
+
         return lcm(*cycle_lengths())
 
 

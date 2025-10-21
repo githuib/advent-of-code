@@ -11,10 +11,13 @@ class _Problem(ParsedProblem[tuple[int, int, int, int], int]):
         pass
 
     def solution(self) -> int:
-        return sum(self.has_overlaps(
-            set(range(l1, h1 + 1)),
-            set(range(l2, h2 + 1)),
-        ) for l1, h1, l2, h2 in self.parsed_input)
+        return sum(
+            self.has_overlaps(
+                set(range(l1, h1 + 1)),
+                set(range(l2, h2 + 1)),
+            )
+            for l1, h1, l2, h2 in self.parsed_input
+        )
 
 
 class Problem1(_Problem):

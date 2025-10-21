@@ -21,6 +21,7 @@ def longest_path(graph: Graph, weighted_edges: bool) -> tuple[EdgeSeq, int]:
         for ids in graph.get_all_simple_paths(start, end):
             es = graph.es[graph.get_eids(pairwise(ids))]
             yield es, sum(es["weight"]) if weighted_edges else len(es)
+
     return max(gen_paths(), key=lambda p: p[1])
 
 
@@ -41,7 +42,8 @@ class _Problem(GridProblem[int], ABC):
         self.start, *_, self.end = self.road.keys()
         self.graph_values = [
             (ids[p], ids[q], v == "." and p != self.start and q != self.end)
-            for p in ids for q, v in self.road.neighbors(p, directions=[Dir2.right, Dir2.down])
+            for p in ids
+            for q, v in self.road.neighbors(p, directions=[Dir2.right, Dir2.down])
         ]
 
 
@@ -60,10 +62,14 @@ class Problem1(_Problem):
         )
 
     def solution(self) -> int:
-        graph = Graph(edges=[
-            e for i, j, bidirectional in self.graph_values
-            for e in [(i, j)] + ([(j, i)] if bidirectional else [])
-        ], directed=True)
+        graph = Graph(
+            edges=[
+                e
+                for i, j, bidirectional in self.graph_values
+                for e in [(i, j)] + ([(j, i)] if bidirectional else [])
+            ],
+            directed=True,
+        )
         lp_edges, lp_length = longest_path(graph, weighted_edges=False)
         if AOC.debugging:
             plot_graph(lambda ax: self.plot_callback(ax, graph, lp_edges))
@@ -74,14 +80,18 @@ class Problem2(_Problem):
     test_solution = 154
     my_solution = 6574
 
-    def plot_callback(self, ax, graph: Graph, lp_edges: EdgeSeq, g_weigths: Graph) -> None:
-        longest_es = [e for pe in lp_edges for e in graph.es.select(_within=pe["chain"])]
+    def plot_callback(
+        self, ax, graph: Graph, lp_edges: EdgeSeq, g_weigths: Graph
+    ) -> None:
+        longest_es = [
+            e for pe in lp_edges for e in graph.es.select(_within=pe["chain"])
+        ]
         plot(
             graph,
             target=ax,
             vertex_size=0,
             edge_color="tomato",  # ['tomato' if e in longest_es else 'grey' for e in graph.es],
-            edge_width=[2 if e in longest_es else .5 for e in graph.es],
+            edge_width=[2 if e in longest_es else 0.5 for e in graph.es],
             layout=Layout(self.ps),
         )
         plot(
@@ -97,18 +107,27 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         ids = list(range(len(self.road)))
-        graph = Graph(edges=[(i, j) for i, j, _ in self.graph_values], vertex_attrs={"idx": ids})
+        graph = Graph(
+            edges=[(i, j) for i, j, _ in self.graph_values], vertex_attrs={"idx": ids}
+        )
         chain_ids = graph.vs.select(_degree=2)["idx"]
         g_chains = graph.subgraph_edges(graph.es.select(_within=chain_ids))
         w_ids = {o: n for n, o in enumerate(set(ids) - set(chain_ids))}
         chain_vs = [g_chains.vs[c] for c in g_chains.connected_components("weak")]
         g_weigths = Graph(
-            edges=[[
-                w_ids[i]
-                for v in graph.vs.select(vs.select(_degree=1)["idx"])
-                for n in v.neighbors() if (i := n.index) in w_ids
-            ] for vs in chain_vs],
-            edge_attrs={"weight": [len(c) + 1 for c in chain_vs], "chain": [c["idx"] for c in chain_vs]},
+            edges=[
+                [
+                    w_ids[i]
+                    for v in graph.vs.select(vs.select(_degree=1)["idx"])
+                    for n in v.neighbors()
+                    if (i := n.index) in w_ids
+                ]
+                for vs in chain_vs
+            ],
+            edge_attrs={
+                "weight": [len(c) + 1 for c in chain_vs],
+                "chain": [c["idx"] for c in chain_vs],
+            },
             vertex_attrs={"pos": [self.ps[i] for i in w_ids]},
         )
         lp_edges, lp_length = longest_path(g_weigths, weighted_edges=True)

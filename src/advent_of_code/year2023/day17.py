@@ -34,7 +34,9 @@ DIRS: dict[P2 | None, list[P2]] = {
 class LavaState(DijkstraState[Constants, Variables]):
     @property
     def is_finished(self) -> bool:
-        return self.v.pos == self.c.end and not 0 < self.v.seg_length < self.c.min_segment
+        return (
+            self.v.pos == self.c.end and not 0 < self.v.seg_length < self.c.min_segment
+        )
 
     @property
     def next_states(self: Self) -> Iterator[Self]:
@@ -44,20 +46,25 @@ class LavaState(DijkstraState[Constants, Variables]):
             same_dir = (dx, dy) == self.v.from_dir
             new_seg_length = self.v.seg_length + 1 if same_dir else 1
             if (
-                p in self.c.map
-            ) and (
-                new_seg_length <= self.c.max_segment
-            ) and (
-                same_dir or not 0 < self.v.seg_length < self.c.min_segment
+                (p in self.c.map)
+                and (new_seg_length <= self.c.max_segment)
+                and (same_dir or not 0 < self.v.seg_length < self.c.min_segment)
             ):
-                yield self.move(pos=p, from_dir=(dx, dy), seg_length=new_seg_length, distance=self.c.map[p])
+                yield self.move(
+                    pos=p,
+                    from_dir=(dx, dy),
+                    seg_length=new_seg_length,
+                    distance=self.c.map[p],
+                )
 
 
 class _Problem(NumberGridProblem[int], ABC):
     segment_range: Range
 
     def solution(self) -> int:
-        return LavaState.find_path(Variables(), Constants(self.grid, self.segment_range)).length
+        return LavaState.find_path(
+            Variables(), Constants(self.grid, self.segment_range)
+        ).length
 
 
 class Problem1(_Problem):

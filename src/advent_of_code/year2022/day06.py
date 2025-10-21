@@ -9,10 +9,17 @@ class _Problem(OneLineProblem[int]):
     _window_size: int
 
     def solution(self) -> int:
-        return len(list(takewhile(
-            lambda s: not all_unique(s),
-            windowed(self.input, self._window_size),
-        ))) + self._window_size
+        return (
+            len(
+                list(
+                    takewhile(
+                        lambda s: not all_unique(s),
+                        windowed(self.input, self._window_size),
+                    )
+                )
+            )
+            + self._window_size
+        )
 
 
 class Problem1(_Problem):

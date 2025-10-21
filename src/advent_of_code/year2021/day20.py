@@ -13,10 +13,13 @@ class Image:
         self._padding = padding + 1
         self._size = len(image_lines) + self._padding * 2
         mat = Grid2.from_lines(image_lines).converted(lambda c: c == "#")
-        self._image = [[
-            mat.get((x - self._padding, y - self._padding), False)
-            for x in range(self._size)
-        ] for y in range(self._size)]
+        self._image = [
+            [
+                mat.get((x - self._padding, y - self._padding), False)
+                for x in range(self._size)
+            ]
+            for y in range(self._size)
+        ]
         # self.grid = Mat2({
         #     (x, y): mat.get((x - self._padding, y - self._padding), False)
         #     for x in range(self._size)
@@ -33,12 +36,23 @@ class Image:
         while self._padding > 1:
             self._padding -= 1
             edge_bit = self._enhancement[edge_bit]
-            self._image = [[
-                self._enhancement[bits_to_int([
-                    self._image[y + ky][x + kx] for ky in (-1, 0, 1) for kx in (-1, 0, 1)
-                ])] if self._is_in_image(x, y) else edge_bit
-                for x in range(self._size)
-            ] for y in range(self._size)]
+            self._image = [
+                [
+                    self._enhancement[
+                        bits_to_int(
+                            [
+                                self._image[y + ky][x + kx]
+                                for ky in (-1, 0, 1)
+                                for kx in (-1, 0, 1)
+                            ]
+                        )
+                    ]
+                    if self._is_in_image(x, y)
+                    else edge_bit
+                    for x in range(self._size)
+                ]
+                for y in range(self._size)
+            ]
             # self.grid = Mat2({(x, y): self._enhancement[bits_to_int([
             #     self.grid[x + kx, y + ky] for ky in (-1, 0, 1) for kx in (-1, 0, 1)
             # ])] if self._is_in_image(x, y) else edge_bit for x, y in self.grid})

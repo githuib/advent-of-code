@@ -68,7 +68,11 @@ def pixel(
     if value is None:
         value = -1
     if pixels is None:
-        pixels = {0: off, 1: on, 2: special} if isinstance(value, int) else {".": off, "#": on, "^": special}
+        pixels = (
+            {0: off, 1: on, 2: special}
+            if isinstance(value, int)
+            else {".": off, "#": on, "^": special}
+        )
     return pixels.get(min(value, max(pixels.keys())), " ")
 
 
@@ -85,17 +89,26 @@ def pixel(
 #         logging.debug(''.join(pixel(v, on, off, special, pixels) for v in row))
 
 
-def debug_table(table: Iterable[Iterable[object]], widths: Iterable[int] | None = None) -> None:
+def debug_table(
+    table: Iterable[Iterable[object]], widths: Iterable[int] | None = None
+) -> None:
     if not AOC.debugging:
         return
-    rows = [[(v if isinstance(v, tuple) else (str(v), len(str(v)))) for v in row] for row in table]
+    rows = [
+        [(v if isinstance(v, tuple) else (str(v), len(str(v)))) for v in row]
+        for row in table
+    ]
     widths_ = [max(length for _, length in col) for col in zip(*rows, strict=False)]
     for i, w in enumerate(widths or []):
         widths_[i] = w
     for i, row in enumerate(rows):
-        log.debug(" %s", "   ".join(
-            (chalk.underline(s) if i == 0 else s) + " " * (w - length) for (s, length), w in zip(row, widths_, strict=False)
-        ))
+        log.debug(
+            " %s",
+            "   ".join(
+                (chalk.underline(s) if i == 0 else s) + " " * (w - length)
+                for (s, length), w in zip(row, widths_, strict=False)
+            ),
+        )
 
 
 def compose_number(numbers: Iterable[int]) -> int:

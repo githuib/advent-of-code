@@ -32,14 +32,20 @@ def __parse_items(s: str) -> deque[int]:
 
 
 def __parse_operation(op_str: str) -> Callable[[int], int]:
-    operation, operand = parse("{:op} {:int?}", op_str, extra_types={
-        "op": lambda s: {"+": add, "*": mul}[s],
-        "int?": lambda s: try_convert(int, s, default=0),
-    })
+    operation, operand = parse(
+        "{:op} {:int?}",
+        op_str,
+        extra_types={
+            "op": lambda s: {"+": add, "*": mul}[s],
+            "int?": lambda s: try_convert(int, s, default=0),
+        },
+    )
     return lambda w: operation(w, operand or w)
 
 
-class _Problem(ParsedProblem[tuple[deque[int], Callable[[int], int], int, int, int], int], ABC):
+class _Problem(
+    ParsedProblem[tuple[deque[int], Callable[[int], int], int, int, int], int], ABC
+):
     num_rounds: int
 
     multi_line_pattern = """Monkey {:d}:

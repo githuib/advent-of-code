@@ -32,7 +32,9 @@ class _Problem(MultiLineProblem[int], ABC):
                 yield path
 
         path1, path2 = parsed_lines()
-        self.intersection = {p: path1[p] + path2[p] for p in path1.keys() & path2.keys()}
+        self.intersection = {
+            p: path1[p] + path2[p] for p in path1.keys() & path2.keys()
+        }
 
 
 class Problem1(_Problem):

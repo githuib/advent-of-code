@@ -43,12 +43,19 @@ class Problem2(Problem1):
 
     def solution(self) -> int:
         w, h = self.grid.size
-        path = ChitonState.find_path(Variables(), Constants(Grid2[int]({
-            (x + w * i, y + h * j): mods(risk + i + j, 9, 1)
-            for i in range(5)
-            for j in range(5)
-            for (x, y), risk in self.grid.items()
-        })))
+        path = ChitonState.find_path(
+            Variables(),
+            Constants(
+                Grid2[int](
+                    {
+                        (x + w * i, y + h * j): mods(risk + i + j, 9, 1)
+                        for i in range(5)
+                        for j in range(5)
+                        for (x, y), risk in self.grid.items()
+                    }
+                )
+            ),
+        )
         # path_points: set[P2] = {s.position for s in path.states}
         # print(cave.to_str(lambda p: pixel(p in path_points)))
         return path.length

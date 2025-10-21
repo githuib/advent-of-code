@@ -19,10 +19,20 @@ class _Problem(GridProblem[int], ABC):
 
 
 def tilt(cols: Lines) -> Lines:
-    return zip(*([p for part in (
-        g if k else sorted(g)
-        for k, g in groupby(reversed(col), lambda v: v == "#")
-    ) for p in part] for col in cols), strict=False)
+    return zip(
+        *(
+            [
+                p
+                for part in (
+                    g if k else sorted(g)
+                    for k, g in groupby(reversed(col), lambda v: v == "#")
+                )
+                for p in part
+            ]
+            for col in cols
+        ),
+        strict=False,
+    )
 
 
 def load(rows: Lines) -> int:
@@ -47,16 +57,30 @@ class Problem2(_Problem):
     my_solution = 96105
 
     def solution(self) -> int:
-        cycle = brent(repeat_transform(
-            self.cols(),
-            transform=lambda c: list(tilt_cycle(c)),
-        ))
+        cycle = brent(
+            repeat_transform(
+                self.cols(),
+                transform=lambda c: list(tilt_cycle(c)),
+            )
+        )
         log.debug(cycle)
-        return load(reversed(list(zip(*last(repeat_transform(
-            self.cols(),
-            transform=tilt_cycle,
-            times=cycle.start + (1_000_000_000 - cycle.start) % cycle.length,
-        )), strict=False))))
+        return load(
+            reversed(
+                list(
+                    zip(
+                        *last(
+                            repeat_transform(
+                                self.cols(),
+                                transform=tilt_cycle,
+                                times=cycle.start
+                                + (1_000_000_000 - cycle.start) % cycle.length,
+                            )
+                        ),
+                        strict=False,
+                    )
+                )
+            )
+        )
 
 
 TEST_INPUT = """

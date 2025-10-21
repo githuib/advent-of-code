@@ -15,7 +15,7 @@ class Problem1(OneLineProblem[int]):
         lowest_zero_count = None
         lowest_zeros_layer = None
         for i in range(0, len(first_line), SIZE):
-            layer = first_line[i:i + SIZE]
+            layer = first_line[i : i + SIZE]
             zero_count = layer.count("0")
             if lowest_zero_count and lowest_zero_count < zero_count:
                 continue
@@ -39,5 +39,8 @@ class Problem2(OneLineProblem[str]):
 
     def solution(self) -> str:
         chars = {"0": "░", "1": "█", None: "?"}
-        pixels = [chars[first_true(self.line[i::SIZE], pred=lambda s: s != "2")] for i in range(SIZE)]
-        return "\n".join("".join(pixels[i:i + WIDTH]) for i in range(0, SIZE, WIDTH))
+        pixels = [
+            chars[first_true(self.line[i::SIZE], pred=lambda s: s != "2")]
+            for i in range(SIZE)
+        ]
+        return "\n".join("".join(pixels[i : i + WIDTH]) for i in range(0, SIZE, WIDTH))

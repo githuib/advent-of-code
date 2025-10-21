@@ -14,7 +14,9 @@ class _Problem(MultiLineProblem[int], ABC):
         self.codes = [[c == "1" for c in line] for line in self.lines]
 
     @abstractmethod
-    def process_codes_tail_rec(self, codes: list[list[bool]], result: list[bool], inverse: bool = False):
+    def process_codes_tail_rec(
+        self, codes: list[list[bool]], result: list[bool], inverse: bool = False
+    ):
         pass
 
     def solution(self) -> int:
@@ -27,7 +29,9 @@ class Problem1(_Problem):
     test_solution = 198
     my_solution = 1071734
 
-    def process_codes_tail_rec(self, codes: list[list[bool]], result: list[bool], inverse: bool = False):
+    def process_codes_tail_rec(
+        self, codes: list[list[bool]], result: list[bool], inverse: bool = False
+    ):
         if not codes[0]:
             return result
 
@@ -42,7 +46,9 @@ class Problem2(_Problem):
     test_solution = 230
     my_solution = 6124992
 
-    def process_codes_tail_rec(self, codes: list[list[bool]], result: list[bool], inverse: bool = False):
+    def process_codes_tail_rec(
+        self, codes: list[list[bool]], result: list[bool], inverse: bool = False
+    ):
         if len(codes) == 0:
             return result
 

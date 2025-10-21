@@ -19,10 +19,13 @@ class Problem1(_Problem):
         input_length = len(input_str)
         for _ in range(100):
             input_str = [
-                abs(sum(
-                    c * BASE_PATTERN[(i // n) % 4]
-                    for i, c in enumerate(input_str, 1)
-                )) % 10
+                abs(
+                    sum(
+                        c * BASE_PATTERN[(i // n) % 4]
+                        for i, c in enumerate(input_str, 1)
+                    )
+                )
+                % 10
                 for n in range(1, input_length + 1)
             ]
         return compose_number(input_str[:8])

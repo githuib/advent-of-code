@@ -6,10 +6,7 @@ from advent_of_code.problems import MultiLineProblem
 class Board:
     def __init__(self, input_lines: list[str]):
         # parse 5 x 5 bingo board from input
-        self.data = [
-            [int(x) for x in line.split()]
-            for line in input_lines
-        ]
+        self.data = [[int(x) for x in line.split()] for line in input_lines]
         # data with rows and columns swapped
         self.inverted_data = [list(col) for col in zip(*self.data, strict=False)]
         self.has_bingo = False
@@ -37,7 +34,7 @@ class _Problem(MultiLineProblem[int], ABC):
     def solution(self) -> int:
         numbers = [int(x) for x in self.lines[0].split(",")]
         boards = [
-            Board(self.lines[b:b + 5])
+            Board(self.lines[b : b + 5])
             # every board takes up 5 lines + 1 newline = 6
             for b in range(2, len(self.lines), 6)
         ]
@@ -49,9 +46,8 @@ class _Problem(MultiLineProblem[int], ABC):
                     continue
 
                 board.draw_number(n)
-                if (
-                    board.has_bingo
-                    and (not self.squid_mode or all(b.has_bingo for b in boards))
+                if board.has_bingo and (
+                    not self.squid_mode or all(b.has_bingo for b in boards)
                 ):
                     return sum(x for row in board.data for x in row) * n
 

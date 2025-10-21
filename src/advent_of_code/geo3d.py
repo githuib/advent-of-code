@@ -119,13 +119,19 @@ class P3D(NamedTuple):
     #     return f'({self.x}, {self.y}, {self.z})'
 
     def rotated_90_x(self, clockwise: bool = True) -> P3D:
-        return self.transform(Rotation90deg3D.x_cw if clockwise else Rotation90deg3D.x_ccw)
+        return self.transform(
+            Rotation90deg3D.x_cw if clockwise else Rotation90deg3D.x_ccw
+        )
 
     def rotated_90_y(self, clockwise: bool = True) -> P3D:
-        return self.transform(Rotation90deg3D.y_cw if clockwise else Rotation90deg3D.y_ccw)
+        return self.transform(
+            Rotation90deg3D.y_cw if clockwise else Rotation90deg3D.y_ccw
+        )
 
     def rotated_90_z(self, clockwise: bool = True) -> P3D:
-        return self.transform(Rotation90deg3D.z_cw if clockwise else Rotation90deg3D.z_ccw)
+        return self.transform(
+            Rotation90deg3D.z_cw if clockwise else Rotation90deg3D.z_ccw
+        )
 
 
 class Dir3D:
@@ -156,11 +162,7 @@ class Span3D:
             x_min, y_min, z_min = self.p_min
             x_max, y_max, z_max = self.p_max
             x, y, z = other
-            return (
-                x_min <= x <= x_max and
-                y_min <= y <= y_max and
-                z_min <= z <= z_max
-            )
+            return x_min <= x <= x_max and y_min <= y <= y_max and z_min <= z <= z_max
         if isinstance(other, Span3D):
             return other == self & other
         return NotImplemented
@@ -194,7 +196,9 @@ class Span3D:
 
 
 class Grid3D(dict[P3D, int]):
-    def __init__(self, d: Mapping[P3D, int] | Iterable[P3D] | None = None, default: int = 1):
+    def __init__(
+        self, d: Mapping[P3D, int] | Iterable[P3D] | None = None, default: int = 1
+    ):
         if isinstance(d, Mapping):
             super().__init__(d)
         elif isinstance(d, Iterable):
@@ -255,6 +259,7 @@ class Trans3(NamedTuple):
                            z       x       y
     (x, y, z) transform (2, a), (0, b), (1, c) =  (z * a, x * b, y * c)
     """
+
     a: tuple[int, int]
     b: tuple[int, int]
     c: tuple[int, int]
@@ -285,28 +290,21 @@ class Rotation90deg3D:
 # (imagine a cube: keep of its 6 sides pointing in a fixed direction, it can be rotated 4 times)
 ROTATIONS_3D = [
     Trans3((0, 1), (1, 1), (2, 1)),  # no rotation
-
     Trans3((0, 1), (2, 1), (1, -1)),  # x cw
     Trans3((0, 1), (1, -1), (2, -1)),  # x 180
     Trans3((0, 1), (2, -1), (1, 1)),  # x ccw
-
     Trans3((2, 1), (1, 1), (0, -1)),  # y cw
     Trans3((0, -1), (1, 1), (2, -1)),  # y 180
     Trans3((2, -1), (1, 1), (0, 1)),  # y ccw
-
     Trans3((1, -1), (0, 1), (2, 1)),  # z cw
     Trans3((0, -1), (1, -1), (2, 1)),  # z 180
     Trans3((1, 1), (0, -1), (2, 1)),  # z ccw
-
     Trans3((0, -1), (2, 1), (1, 1)),  # -yz 180
     Trans3((0, -1), (2, -1), (1, -1)),  # yz 180
-
     Trans3((2, 1), (1, -1), (0, 1)),  # xz 180
     Trans3((2, -1), (1, -1), (0, -1)),  # -xz 180
-
     Trans3((1, 1), (0, 1), (2, -1)),  # xy 180
     Trans3((1, -1), (0, -1), (2, -1)),  # -xy 180
-
     Trans3((1, 1), (2, 1), (0, 1)),  # xyz cw
     Trans3((1, 1), (2, -1), (0, -1)),
     Trans3((1, -1), (2, 1), (0, -1)),

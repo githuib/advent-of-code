@@ -26,7 +26,8 @@ class Brick:
 
     def supporting(self: Self, foundation: set[Brick] | None = None) -> set[Brick]:
         return {
-            bt for bt in self.connected_top
+            bt
+            for bt in self.connected_top
             if bt.connected_bottom.issubset(foundation or {self})
         }
 
@@ -36,6 +37,7 @@ class Brick:
             if supported:
                 return total_supporting_rec(supported, foundation | supported)
             return len(foundation) - 1
+
         return total_supporting_rec({self}, {self})
 
     def __repr__(self) -> str:
@@ -46,7 +48,9 @@ class _Problem(ParsedProblem[tuple[P3D, P3D], int], ABC):
     line_pattern = "{:p3}~{:p3}"
 
     def __init__(self) -> None:
-        self.bricks = sorted([Brick(p_min, p_max + P3D.unity()) for p_min, p_max in self.parsed_input])
+        self.bricks = sorted(
+            [Brick(p_min, p_max + P3D.unity()) for p_min, p_max in self.parsed_input]
+        )
         log.debug(self.bricks)
         tops: dict[P2, Brick] = {}
         for brick in self.bricks:

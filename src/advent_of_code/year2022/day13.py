@@ -44,7 +44,9 @@ class Problem1(_Problem):
     my_solution = 4821
 
     def solution(self) -> int:
-        return sum(i for i, (p1, p2) in enumerate(chunked(self.packets, 2), 1) if p1 < p2)
+        return sum(
+            i for i, (p1, p2) in enumerate(chunked(self.packets, 2), 1) if p1 < p2
+        )
 
 
 class Problem2(_Problem):

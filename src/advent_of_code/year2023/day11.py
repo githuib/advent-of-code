@@ -24,7 +24,10 @@ class _Problem(GridProblem[int], ABC):
                 else:
                     offset += self.empty_factor - 1
             return big_grid
-        galaxies = last(repeat_transform(self.grid, expand, times=2)).points_with_value("#")
+
+        galaxies = last(repeat_transform(self.grid, expand, times=2)).points_with_value(
+            "#"
+        )
         return sum(manhattan_dist_2(p, q) for p in galaxies for q in galaxies if p < q)
 
 

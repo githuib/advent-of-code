@@ -23,10 +23,10 @@ class Problem1(_Problem):
     my_solution = 1543
 
     def solution(self) -> int:
-        return sum(any(
-            all(t > n for n in trees)
-            for trees in self.neighbors(x, y)
-        ) for (x, y), t in self.grid.items())
+        return sum(
+            any(all(t > n for n in trees) for trees in self.neighbors(x, y))
+            for (x, y), t in self.grid.items()
+        )
 
 
 def visible_trees(t: int, trees: Iterator[int]) -> int:

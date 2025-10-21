@@ -15,16 +15,22 @@ class _Problem(MultiLineProblem[int], ABC):
         for lines in split_at(self.lines, lambda line: line == ""):
             grid = Grid2.from_lines(lines).converted(lambda c: str(".#".index(c)))
             yield (
-                ["".join(v for (x, _), v in grid.items() if x == c) for c in range(grid.width)],
-                ["".join(v for (_, y), v in grid.items() if y == r) for r in range(grid.height)],
+                [
+                    "".join(v for (x, _), v in grid.items() if x == c)
+                    for c in range(grid.width)
+                ],
+                [
+                    "".join(v for (_, y), v in grid.items() if y == r)
+                    for r in range(grid.height)
+                ],
             )
 
 
 def find_reflection(lines: list[str], fix_smudge: bool) -> int | None:
     for r in range(1, len(lines)):
         n = min(r, len(lines) - r)
-        a = int("".join(reversed(lines[r-n:r])), 2)
-        b = int("".join(lines[r:r+n]), 2)
+        a = int("".join(reversed(lines[r - n : r])), 2)
+        b = int("".join(lines[r : r + n]), 2)
         if (a ^ b).bit_count() == int(fix_smudge):
             return r
     return None
@@ -45,7 +51,10 @@ class Problem1(_Problem):
     my_solution = 35232
 
     def solution(self) -> int:
-        return sum(mirror_value(cols, rows, fix_smudge=False) for cols, rows in self.cols_rows())
+        return sum(
+            mirror_value(cols, rows, fix_smudge=False)
+            for cols, rows in self.cols_rows()
+        )
 
 
 class Problem2(_Problem):
@@ -53,7 +62,9 @@ class Problem2(_Problem):
     my_solution = 37982
 
     def solution(self) -> int:
-        return sum(mirror_value(cols, rows, fix_smudge=True) for cols, rows in self.cols_rows())
+        return sum(
+            mirror_value(cols, rows, fix_smudge=True) for cols, rows in self.cols_rows()
+        )
 
 
 TEST_INPUT = """

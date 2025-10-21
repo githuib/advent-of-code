@@ -27,25 +27,30 @@ class LogFormatter(logging.Formatter):
         msg = logging.Formatter(prefix + "%(levelname)s: %(message)s").format(record)
         prefix, *_ = msg.split(record.message)
         msg = msg.replace("\n", "\n" + prefix)
-        return chalk.hex({
-            logging.DEBUG: "888",
-            logging.INFO: "ccc",
-            logging.WARNING: "f80",
-            logging.ERROR: "f30",
-            logging.CRITICAL: "f30",
-        }[record.levelno])(msg)
+        return chalk.hex(
+            {
+                logging.DEBUG: "888",
+                logging.INFO: "ccc",
+                logging.WARNING: "f80",
+                logging.ERROR: "f30",
+                logging.CRITICAL: "f30",
+            }[record.levelno]
+        )(msg)
 
 
 class AOC:
     input_mode: ClassVar[InputMode]
     debugging: ClassVar[bool] = False
+    pycharm: ClassVar[bool] = False
 
     @classmethod
-    def setup(cls, input_mode: InputMode, debugging: bool):
-        cls.input_mode, cls.debugging = input_mode, debugging
+    def setup(cls, input_mode: InputMode, debugging: bool, pycharm: bool):
+        cls.input_mode, cls.debugging, cls.pycharm = input_mode, debugging, pycharm
         log.setLevel(logging.DEBUG)
         debug_handler = logging.StreamHandler()
-        debug_handler.addFilter(lambda record: record.name == __name__ or record.levelno > logging.DEBUG)
+        debug_handler.addFilter(
+            lambda record: record.name == __name__ or record.levelno > logging.DEBUG
+        )
         debug_handler.setLevel(logging.DEBUG if debugging else logging.INFO)
         debug_handler.setFormatter(LogFormatter())
         log.addHandler(debug_handler)

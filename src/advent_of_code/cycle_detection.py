@@ -26,7 +26,9 @@ def floyd[T](it: Iterator[T]) -> Cycle:
         # this means 🐇 has walked a full cycle more and 🐢 has walked exactly one cycle length from the start.
         if tortoise == hare:
             break
-    for cycle_start, (tortoise, cousin) in enumerate(zip(it_tortoise, it_cousin, strict=False)):
+    for cycle_start, (tortoise, cousin) in enumerate(
+        zip(it_tortoise, it_cousin, strict=False)
+    ):
         # 🐢's cousin leaves from the beginning as well, while the other 🐢 keeps on going.
         # They should meet as soon as the cycle starts, since the part of the cycle 🐢 didn't
         # walk yet is what he wasted while walking towards the cycle start.
@@ -57,7 +59,9 @@ def brent[T](it: Iterator[T]) -> Cycle:
         cycle_length += 1
     # 🐢's cousin leaves from the beginning as well, walking exactly the length of one cycle.
     # After that, they both move at same speed until they meet exactly at the start of the cycle.
-    for cycle_start, (tortoise, cousin) in enumerate(zip(it_tortoise, islice(it_cousin, cycle_length, None), strict=False)):
+    for cycle_start, (tortoise, cousin) in enumerate(
+        zip(it_tortoise, islice(it_cousin, cycle_length, None), strict=False)
+    ):
         if tortoise == cousin:
             return Cycle(cycle_start, cycle_length)
     raise CycleNotFoundError

@@ -23,12 +23,14 @@ class Problem1(_Problem):
     my_solution = 514
 
     def solution(self) -> int:
-        return len([
-            code
-            for _, output in self.parsed_input
-            for code in output
-            if len(code) in (2, 3, 4, 7)
-        ])
+        return len(
+            [
+                code
+                for _, output in self.parsed_input
+                for code in output
+                if len(code) in (2, 3, 4, 7)
+            ]
+        )
 
 
 def decode_output(signal: Iterable[str], output: Iterable[str]) -> int:
@@ -62,7 +64,9 @@ class Problem2(_Problem):
     my_solution = 1012272
 
     def solution(self) -> int:
-        return sum(decode_output(signal, output) for signal, output in self.parsed_input)
+        return sum(
+            decode_output(signal, output) for signal, output in self.parsed_input
+        )
 
 
 TEST_INPUT = """

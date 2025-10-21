@@ -47,7 +47,9 @@ def calc_missing_score(stack, score):
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def parsed_lines(self) -> Iterator[tuple[list[OpeningBracket], ClosingBracket | None]]:
+    def parsed_lines(
+        self,
+    ) -> Iterator[tuple[list[OpeningBracket], ClosingBracket | None]]:
         for line in self.lines:
             yield parse_char(cast("list[Bracket]", list(line)))
 

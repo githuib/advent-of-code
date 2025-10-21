@@ -41,7 +41,7 @@ class Problem2(_Problem):
 
     def rucksacks(self) -> Iterator[list[set[int]]]:
         for n in range(0, self.line_count, 3):
-            yield [set(line) for line in self.converted_lines[n:n + 3]]
+            yield [set(line) for line in self.converted_lines[n : n + 3]]
 
 
 TEST_INPUT = """

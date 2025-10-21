@@ -7,17 +7,31 @@ class Problem1(MultiLineProblem[int]):
     test_solution = 6440
     my_solution = 251121738
 
-    cards = {str(i): i for i in range(2, 10)} | {"T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
+    cards = {str(i): i for i in range(2, 10)} | {
+        "T": 10,
+        "J": 11,
+        "Q": 12,
+        "K": 13,
+        "A": 14,
+    }
 
     def hand_type(self, hand: Counter[int]) -> list[int]:
         return sorted(hand.values(), reverse=True) + [0] * (5 - len(hand))
         # return [v for _, v in hand.most_common()] + [0] * (5 - len(hand))
 
     def solution(self) -> int:
-        hands = [([self.cards[c] for c in line[:5]], int(line[6:])) for line in self.lines]
-        return sum(i * bid for i, (_, _, bid) in enumerate(sorted(
-            (self.hand_type(Counter(hand)), hand, bid) for hand, bid in hands
-        ), 1))
+        hands = [
+            ([self.cards[c] for c in line[:5]], int(line[6:])) for line in self.lines
+        ]
+        return sum(
+            i * bid
+            for i, (_, _, bid) in enumerate(
+                sorted(
+                    (self.hand_type(Counter(hand)), hand, bid) for hand, bid in hands
+                ),
+                1,
+            )
+        )
 
 
 class Problem2(Problem1):

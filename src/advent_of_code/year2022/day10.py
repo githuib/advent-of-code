@@ -50,10 +50,13 @@ class Problem2(_Problem[str]):
 """
 
     def solution(self) -> str:
-        return "\n".join("".join(
-            "█" if p - 1 <= i <= p + 1 else "░"
-            for i, p in enumerate(sprite_positions)
-        ) for sprite_positions in batched(self.moves(), 40, strict=True))
+        return "\n".join(
+            "".join(
+                "█" if p - 1 <= i <= p + 1 else "░"
+                for i, p in enumerate(sprite_positions)
+            )
+            for sprite_positions in batched(self.moves(), 40, strict=True)
+        )
 
 
 TEST_INPUT = """

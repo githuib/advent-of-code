@@ -104,7 +104,7 @@ class IntcodeComputer:
 
         num_params = instruction_lengths[op_code]
         pointer = ptr + 1
-        params = self.memory[pointer:pointer + num_params]
+        params = self.memory[pointer : pointer + num_params]
 
         if num_params == 1:
             param, *_ = params
@@ -125,10 +125,7 @@ class IntcodeComputer:
             param = self._read(param, param_mode1)
             new_pointer = self._read(new_ip, param_mode2)
 
-            if (
-                (op_code == OpCode.JT and param) or
-                (op_code == OpCode.JF and not param)
-            ):
+            if (op_code == OpCode.JT and param) or (op_code == OpCode.JF and not param):
                 return new_pointer, output
 
         else:  # num_params == 3:

@@ -48,9 +48,7 @@ class Problem1(_Problem):
 
     def solution(self) -> int:
         merged = merge(c for s, b in self.locations if (c := coverage(s, b, self.size)))
-        return sum(
-            high - low + 1 for low, high in merged
-        ) - sum(
+        return sum(high - low + 1 for low, high in merged) - sum(
             y == self.size and any(low <= x <= high for low, high in merged)
             for x, y in {p for pair in self.locations for p in pair}
         )
@@ -73,10 +71,19 @@ class Problem2(_Problem):
         # size = 20 if self.input_mode == InputMode.TEST else tuning_frequency
 
         sensor_coverage = [(s, manhattan_dist_2(s, b)) for s, b in self.locations]
-        edges = [[(
-            (sx + dx * (c + 1), sy),  # just outside left or right coverage border
-            (sx, sy + dy * (c + 1)),  # just outside up or down coverage border
-        ) for (sx, sy), c in sensor_coverage] for dx, dy in Dir2.diagonal_neighbors]
+        edges = [
+            [
+                (
+                    (
+                        sx + dx * (c + 1),
+                        sy,
+                    ),  # just outside left or right coverage border
+                    (sx, sy + dy * (c + 1)),  # just outside up or down coverage border
+                )
+                for (sx, sy), c in sensor_coverage
+            ]
+            for dx, dy in Dir2.diagonal_neighbors
+        ]
 
         uncovered_gaps = {
             intersection
@@ -94,9 +101,8 @@ class Problem2(_Problem):
                 for (ox1, oy1), (ox2, oy2) in edges[3]
                 if x1 + y1 == ox1 + oy1 and x1 <= ox1 and ox2 <= x2
             }
-            if (intersection := intersect(line_1, line_2)) and all(
-                manhattan_dist_2(intersection, s) > d for s, d in sensor_coverage
-            )
+            if (intersection := intersect(line_1, line_2))
+            and all(manhattan_dist_2(intersection, s) > d for s, d in sensor_coverage)
             # It's a trap!
             # Narrowing it down to boundaries as described in the assignment actually seems pretty
             # useless (using this approach), but could be done by adding this to the condition:

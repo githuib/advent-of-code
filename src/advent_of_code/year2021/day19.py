@@ -14,10 +14,10 @@ class _Problem(MultiLineProblem[int], ABC):
     offsets: list[P3D]
 
     def __init__(self) -> None:
-        scanners = [{
-            P3D(*parse("{:d},{:d},{:d}", p))
-            for p in points[1:]
-        } for points in grouped(self.lines)]
+        scanners = [
+            {P3D(*parse("{:d},{:d},{:d}", p)) for p in points[1:]}
+            for points in grouped(self.lines)
+        ]
         self.beacons, *self._scanners = scanners
         self.offsets = []
 
@@ -25,7 +25,9 @@ class _Problem(MultiLineProblem[int], ABC):
         unmatched = self._scanners[:]
         while unmatched:
             log.debug("Scanners left: %d", len(unmatched))
-            unmatched = [scanner for scanner in unmatched if not self._match_beacons(scanner)]
+            unmatched = [
+                scanner for scanner in unmatched if not self._match_beacons(scanner)
+            ]
 
     def _match_beacons(self, scanner: set[P3D]) -> bool:
         for rotation in ROTATIONS_3D:

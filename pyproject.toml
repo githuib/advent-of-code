@@ -34,10 +34,14 @@ implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
 
-[tool.ruff]
-indent-width = 4
-line-length = 120
-target-version = "py314"
+[tool.pytest.ini_options]
+addopts = "-ra --doctest-modules"  # -q
+#asyncio_mode = "auto"
+#asyncio_default_fixture_loop_scope = "function"
+testpaths = [
+    "src/advent_of_code",
+#    "tests",
+]
 
 [tool.ruff.lint]
 select = [
@@ -102,6 +106,7 @@ select = [
     "RUF", # Ruff-specific rules
 ]
 ignore = [
+    "COM812", # warning: The following rule may cause conflicts when used with the formatter: `COM812`
     "T201", # `print` found
     "E501", # Line too long
     "G004", # Logging statement uses f-string

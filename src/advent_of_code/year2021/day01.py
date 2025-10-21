@@ -9,7 +9,8 @@ class _Problem(MultiLineProblem[int], ABC):
     def solution(self) -> int:
         depths = [int(line) for line in self.lines]
         return sum(
-            sum(depths[i + 1:i + self.window_size + 1]) > sum(depths[i:i + self.window_size])
+            sum(depths[i + 1 : i + self.window_size + 1])
+            > sum(depths[i : i + self.window_size])
             for i in range(len(depths) - 1)
         )
 

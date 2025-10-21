@@ -50,10 +50,12 @@ class _Problem(MultiLineProblem[int], ABC):
             size = len(self.lines[0])
             if AOC.debugging:
                 for y in range(size):
-                    log.debug(" ".join(
-                        f"{octopi[x, y].energy} " if octopi[x, y].energy else "💩"
-                        for x in range(size)
-                    ))
+                    log.debug(
+                        " ".join(
+                            f"{octopi[x, y].energy} " if octopi[x, y].energy else "💩"
+                            for x in range(size)
+                        )
+                    )
                 log.debug("")
 
             for octopus in octopi.values():

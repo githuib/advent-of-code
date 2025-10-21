@@ -1,4 +1,3 @@
-
 from typing import TYPE_CHECKING
 
 from parse import with_pattern  # type: ignore[import-untyped]
@@ -53,11 +52,13 @@ class _Problem(ParsedProblem[tuple[P2, int], int]):
 
     def solution(self) -> int:
         head = Head(self.tail_size)
-        return len({
-            position
-            for (dx, dy), distance in self.parsed_input
-            for position in head.move(dx, dy, distance)
-        })
+        return len(
+            {
+                position
+                for (dx, dy), distance in self.parsed_input
+                for position in head.move(dx, dy, distance)
+            }
+        )
 
 
 class Problem1(_Problem):

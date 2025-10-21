@@ -13,6 +13,7 @@ from advent_of_code.search import AStarState
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
+
 @dataclass
 class Constants:
     start: P2
@@ -23,7 +24,11 @@ class Constants:
 
     def __post_init__(self) -> None:
         ex, ey = self.end
-        self.ground = {self.start} | {(x, y) for x in range(1, ex + 1) for y in range(1, ey)} | {self.end}
+        self.ground = (
+            {self.start}
+            | {(x, y) for x in range(1, ex + 1) for y in range(1, ey)}
+            | {self.end}
+        )
         self.num_valleys = len(self.blizzards)
 
     def reverse_direction(self) -> None:
@@ -47,6 +52,7 @@ class ValleyState(AStarState[Constants, Variables]):
             for dx, dy in Dir2.direct_neighbors:
                 yield x + dx, y + dy
             yield x, y
+
         blizzards = self.c.blizzards[self.v.cycle % self.c.num_valleys]
         return [
             self.move(pos=p, cycle=self.v.cycle + 1)
@@ -68,20 +74,24 @@ class _Problem(GridProblem[int], ABC):
         self.constants = Constants((1, 0), (w, h + 1), list(self.blizzard_states(w, h)))
         self.path = ValleyState.find_path(Variables(), self.constants)
         if AOC.debugging:
-            log.debug(self.grid.to_str(lambda p, _: (
-                chalk.hex("034").bg_hex("bdf")(self.grid[p]) if (
-                    p in [s.v.pos for s in self.path.states]
-                ) else chalk.hex("222").bg_hex("888")(self.grid[p])
-            )))
+            log.debug(
+                self.grid.to_str(
+                    lambda p, _: (
+                        chalk.hex("034").bg_hex("bdf")(self.grid[p])
+                        if (p in [s.v.pos for s in self.path.states])
+                        else chalk.hex("222").bg_hex("888")(self.grid[p])
+                    )
+                )
+            )
 
     def blizzard_states(self, w: int, h: int) -> Iterator[set[P2]]:
         blizzards = [self.grid.points_with_value(c) for c in "^v<>"]
         for _ in range(lcm(w, h)):
             yield {p for pts in blizzards for p in pts}
-            blizzards = [{
-                ((x + dx - 1) % w + 1, (y + dy - 1) % h + 1)
-                for (x, y) in pts
-            } for pts, (dx, dy) in zip(blizzards, Dir2.direct_neighbors, strict=False)]
+            blizzards = [
+                {((x + dx - 1) % w + 1, (y + dy - 1) % h + 1) for (x, y) in pts}
+                for pts, (dx, dy) in zip(blizzards, Dir2.direct_neighbors, strict=False)
+            ]
 
 
 class Problem1(_Problem):

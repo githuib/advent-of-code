@@ -32,7 +32,9 @@ class _Problem(MultiLineProblem[int], ABC):
 
     def points(self) -> Iterator[P2]:
         for line in self.lines:
-            for (x1, y1), (x2, y2) in pairwise(parse("{:d},{:d}", x) for x in line.split(" -> ")):
+            for (x1, y1), (x2, y2) in pairwise(
+                parse("{:d},{:d}", x) for x in line.split(" -> ")
+            ):
                 for x in smart_range(x1, x2, True):
                     for y in smart_range(y1, y2, True):
                         yield x, y
@@ -53,13 +55,19 @@ class _Problem(MultiLineProblem[int], ABC):
     def debug(self):
         if AOC.debugging:
             sx, _ = START
-            log.debug(self.map.to_str(lambda _, v: {
-                Material.AIR: chalk.hex("111").bg_hex("111")("."),
-                Material.ROCK: chalk.hex("654").bg_hex("654")("#"),
-                Material.SAND: chalk.hex("fdb").bg_hex("fdb")("o"),
-                Material.SOURCE: chalk.hex("0af").bg_hex("0af")("+"),
-                None: chalk.hex("0af").bg_hex("faf")("+"),
-            }[v], min_x=sx - 18, max_x=sx + 81))
+            log.debug(
+                self.map.to_str(
+                    lambda _, v: {
+                        Material.AIR: chalk.hex("111").bg_hex("111")("."),
+                        Material.ROCK: chalk.hex("654").bg_hex("654")("#"),
+                        Material.SAND: chalk.hex("fdb").bg_hex("fdb")("o"),
+                        Material.SOURCE: chalk.hex("0af").bg_hex("0af")("+"),
+                        None: chalk.hex("0af").bg_hex("faf")("+"),
+                    }[v],
+                    min_x=sx - 18,
+                    max_x=sx + 81,
+                )
+            )
 
 
 class Problem1(_Problem):

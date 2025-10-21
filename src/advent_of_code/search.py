@@ -34,7 +34,9 @@ class ShortestPath[S: State](ABC):
                     self.to_queue(next_state)
             self._on_state_processed(state)
         else:
-            log.warning("Queue empty before reaching the end criteria at state:\n%s", state)
+            log.warning(
+                "Queue empty before reaching the end criteria at state:\n%s", state
+            )
         self.end_state = state
         return self
 

@@ -19,8 +19,8 @@ def find(springs: str, criteria: tuple[int, ...]) -> int:
         if "#" in springs[:i]:
             break
         nxt = i + c
-        if "." not in springs[i: nxt] and springs[nxt: nxt + 1] != "#":
-            result += find(springs[nxt + 1:], c_rest)
+        if "." not in springs[i:nxt] and springs[nxt : nxt + 1] != "#":
+            result += find(springs[nxt + 1 :], c_rest)
     return result
 
 

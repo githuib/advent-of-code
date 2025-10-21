@@ -13,9 +13,12 @@ if TYPE_CHECKING:
 class _Problem(MultiLineProblem[int], ABC):
     def parsed(self) -> Iterator[dict[str, int]]:
         for line in self.lines:
-            yield {k: max(v) for k, v in group_tuples(
-                (c, int(a)) for a, c in re.findall(r"(\d+) (\w)", line)
-            ).items()}
+            yield {
+                k: max(v)
+                for k, v in group_tuples(
+                    (c, int(a)) for a, c in re.findall(r"(\d+) (\w)", line)
+                ).items()
+            }
 
 
 class Problem1(_Problem):
@@ -23,9 +26,11 @@ class Problem1(_Problem):
     my_solution = 2600
 
     def solution(self) -> int:
-        return sum(i for i, d in enumerate(self.parsed(), 1) if (
-            d["r"] <= 12 and d["g"] <= 13 and d["b"] <= 14
-        ))
+        return sum(
+            i
+            for i, d in enumerate(self.parsed(), 1)
+            if (d["r"] <= 12 and d["g"] <= 13 and d["b"] <= 14)
+        )
 
 
 class Problem2(_Problem):

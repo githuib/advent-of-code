@@ -32,7 +32,9 @@ class Problem2(_Problem):
     def solution(self) -> int:
         boxes: dict[int, dict[str, int]] = {}
         for op in self.operations:
-            label, focal_length = (op[:-1], 0) if op[-1] == "-" else (op[:-2], int(op[-1]))
+            label, focal_length = (
+                (op[:-1], 0) if op[-1] == "-" else (op[:-2], int(op[-1]))
+            )
             lenses = boxes.setdefault(hash_(label) + 1, {})
             if focal_length:
                 lenses[label] = focal_length

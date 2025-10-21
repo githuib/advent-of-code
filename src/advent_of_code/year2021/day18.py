@@ -104,7 +104,11 @@ class Branch(Node):
     def add_child(self, data: int | list, go_left: bool) -> None:
         # kwargs = {"data": data, "level": self.level + 1, "parent": self}
         node: Dummy | Leaf | Branch
-        node = Leaf(data, self.level + 1, self) if isinstance(data, int) else Branch(data, self.level + 1, self)
+        node = (
+            Leaf(data, self.level + 1, self)
+            if isinstance(data, int)
+            else Branch(data, self.level + 1, self)
+        )
         if go_left:
             self.left = node
         else:

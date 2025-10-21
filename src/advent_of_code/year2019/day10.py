@@ -17,16 +17,18 @@ def asteroids_grouped_by_angle(laser: P2, objects: set[P2]) -> dict[float, list[
     grouped_by_angle: dict[float, list[P2]] = {}
     for ax, ay in objects:
         if (ax, ay) != laser:
-            grouped_by_angle.setdefault((atan2(ax - lx, ly - ay) + pi * 2) % (pi * 2), []).append((ax, ay))
+            grouped_by_angle.setdefault(
+                (atan2(ax - lx, ly - ay) + pi * 2) % (pi * 2), []
+            ).append((ax, ay))
     return grouped_by_angle
 
 
 class _Problem(GridProblem[int], ABC):
     def __init__(self) -> None:
         objects = self.grid.points_with_value("#")
-        self.grouped_by_angle = max((
-            asteroids_grouped_by_angle(laser, objects) for laser in objects
-        ), key=len)
+        self.grouped_by_angle = max(
+            (asteroids_grouped_by_angle(laser, objects) for laser in objects), key=len
+        )
 
 
 class Problem1(_Problem):

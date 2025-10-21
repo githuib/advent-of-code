@@ -16,12 +16,21 @@ class _Problem(MultiLineProblem[int], ABC):
         self.map_2d: dict[P2, str] = {
             (u, v): c
             for v, line in enumerate(self.lines[:-2])
-            for u, c in enumerate(line) if c != " "
+            for u, c in enumerate(line)
+            if c != " "
         }
-        self.route = [(d[0], int("".join(n))) for d, n in batched(split_when(
-            "R" + self.lines[-1],
-            lambda x, y: (x in "LR" and y not in "LR") or (x not in "LR" and y in "LR"),
-        ), 2, strict=True)]
+        self.route = [
+            (d[0], int("".join(n)))
+            for d, n in batched(
+                split_when(
+                    "R" + self.lines[-1],
+                    lambda x, y: (x in "LR" and y not in "LR")
+                    or (x not in "LR" and y in "LR"),
+                ),
+                2,
+                strict=True,
+            )
+        ]
         for y_ in range(12):
             log.debug("".join(self.map_2d.get((x, y_), " ") for x in range(16)))
         log.debug(" ")
@@ -74,12 +83,12 @@ class Problem2(_Problem):
                 #       B  Rf
                 #
                 #          right vec   up vec       outwards
-                ((2, 0), (Dir3D.right, Dir3D.up)),     # front
-                ((0, 1), (Dir3D.left, Dir3D.front)),   # up
-                ((1, 1), (Dir3D.down, Dir3D.front)),   # left
+                ((2, 0), (Dir3D.right, Dir3D.up)),  # front
+                ((0, 1), (Dir3D.left, Dir3D.front)),  # up
+                ((1, 1), (Dir3D.down, Dir3D.front)),  # left
                 ((2, 1), (Dir3D.right, Dir3D.front)),  # down
-                ((2, 2), (Dir3D.right, Dir3D.down)),   # back
-                ((3, 2), (Dir3D.front, Dir3D.down)),   # right
+                ((2, 2), (Dir3D.right, Dir3D.down)),  # back
+                ((3, 2), (Dir3D.front, Dir3D.down)),  # right
             ],
             puzzle=[
                 #   u u
@@ -88,27 +97,33 @@ class Problem2(_Problem):
                 # L Br
                 # Ub
                 #          right vec   up vec       outwards
-                ((1, 0), (Dir3D.right, Dir3D.up)),     # front
-                ((2, 0), (Dir3D.back, Dir3D.up)),      # right
+                ((1, 0), (Dir3D.right, Dir3D.up)),  # front
+                ((2, 0), (Dir3D.back, Dir3D.up)),  # right
                 ((1, 1), (Dir3D.right, Dir3D.front)),  # down
-                ((0, 2), (Dir3D.back, Dir3D.down)),    # left
-                ((1, 2), (Dir3D.right, Dir3D.down)),   # back
-                ((0, 3), (Dir3D.back, Dir3D.left)),    # up
+                ((0, 2), (Dir3D.back, Dir3D.down)),  # left
+                ((1, 2), (Dir3D.right, Dir3D.down)),  # back
+                ((0, 3), (Dir3D.back, Dir3D.left)),  # up
             ],
         )
         f_dict = dict(self.folding)
-        self.mapping_3d_to_2d: dict[P3D, P2] = {self.map_uv(f_dict, u, v): (u, v) for u, v in self.map_2d}
+        self.mapping_3d_to_2d: dict[P3D, P2] = {
+            self.map_uv(f_dict, u, v): (u, v) for u, v in self.map_2d
+        }
 
     def map_uv(self, folding: dict[P2, tuple[P3D, P3D]], u: int, v: int) -> P3D:
         right, up = folding[u // self.size, v // self.size]
-        return P3D(*(
-            right * (((u % self.size) + 1) * 2 - (self.size + 1))
-            - up * (((v % self.size) + 1) * 2 - (self.size + 1))
-            + (right ^ up) * self.size
-        ))
+        return P3D(
+            *(
+                right * (((u % self.size) + 1) * 2 - (self.size + 1))
+                - up * (((v % self.size) + 1) * 2 - (self.size + 1))
+                + (right ^ up) * self.size
+            )
+        )
 
     def walk_route(self) -> tuple[P3D, list[Trans3]]:
-        walls_3d: set[P3D] = {p3 for p3, p2 in self.mapping_3d_to_2d.items() if self.map_2d[p2] == "#"}
+        walls_3d: set[P3D] = {
+            p3 for p3, p2 in self.mapping_3d_to_2d.items() if self.map_2d[p2] == "#"
+        }
         pos = P3D(1 - self.size, 1 - self.size, -self.size)
         transforms = []
         for direction, steps in self.route:
@@ -124,7 +139,9 @@ class Problem2(_Problem):
                         break
                     new_y = self.size - 1
                     rotation_to_next_face = Rotation90deg3D.x_ccw
-                    walls_3d = {wall.transform(rotation_to_next_face) for wall in walls_3d}
+                    walls_3d = {
+                        wall.transform(rotation_to_next_face) for wall in walls_3d
+                    }
                     transforms.append(rotation_to_next_face)
                 elif P3D(x, new_y, z) in walls_3d:
                     break

@@ -26,6 +26,7 @@ class _Problem(MultiLineProblem[int], ABC):
                 yield node
                 left, right = self.network[node]
                 node = left if d == "L" else right
+
         return ilen(takewhile(while_condition, path_from(start)))
 
 
@@ -42,10 +43,13 @@ class Problem2(_Problem):
     my_solution = 15299095336639
 
     def solution(self) -> int:
-        return lcm(*[
-            self.steps_from(start, lambda n: n[-1] != "Z")
-            for start in self.network if start[-1] == "A"
-        ])
+        return lcm(
+            *[
+                self.steps_from(start, lambda n: n[-1] != "Z")
+                for start in self.network
+                if start[-1] == "A"
+            ]
+        )
 
 
 TEST_INPUT_1 = """

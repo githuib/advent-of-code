@@ -41,7 +41,9 @@ class _Problem(MultiLineProblem[int], ABC):
         self.ratings = [parse_rating(line) for line in ratings]
 
     def next_state(self, state: str) -> bool | Workflow:
-        return True if state == "A" else False if state == "R" else self.workflows[state]
+        return (
+            True if state == "A" else False if state == "R" else self.workflows[state]
+        )
 
 
 class Problem1(_Problem):
@@ -59,7 +61,9 @@ class Problem1(_Problem):
         return self.process_ratings(ratings, final_step)
 
     def solution(self) -> int:
-        return sum(sum(rat.values()) for rat in self.ratings if self.process_ratings(rat, "in"))
+        return sum(
+            sum(rat.values()) for rat in self.ratings if self.process_ratings(rat, "in")
+        )
 
 
 def inverse_check(check: Check) -> Check:
@@ -86,16 +90,18 @@ class Problem2(_Problem):
                     traverse((rest, final_step), [*checks, inverse_check(check)])
                 else:
                     traverse(self.next_state(final_step), checks)
+
         traverse(self.workflows["in"], [])
 
         def combinations(checks: list[Check]) -> int:
             d = {c: [1, 4000] for c in "xmas"}
-            for (r, op, v) in checks:
+            for r, op, v in checks:
                 if op == "<":
                     d[r][1] = min(d[r][1], v - 1)
                 else:
                     d[r][0] = max(d[r][0], v + 1)
             return prod(v_max - v_min + 1 for v_min, v_max in d.values())
+
         return sum(combinations(acc) for acc in accepted_paths)
 
 

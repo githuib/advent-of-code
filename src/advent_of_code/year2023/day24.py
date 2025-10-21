@@ -20,14 +20,20 @@ def check(h1: Trajectory, h2: Trajectory) -> bool:
     check_range = var(test=(7, 27), puzzle=(200_000_000_000_000, 400_000_000_000_000))
     (x1, y1, _), (vx1, vy1, _) = h1
     (x2, y2, _), (vx2, vy2, _) = h2
-    i = intersect_lines_2(((x1, y1), (x1 + vx1, y1 + vy1)), ((x2, y2), (x2 + vx2, y2 + vy2)))
+    i = intersect_lines_2(
+        ((x1, y1), (x1 + vx1, y1 + vy1)), ((x2, y2), (x2 + vx2, y2 + vy2))
+    )
     if i is None:
         return False
     x, y = i
     r_min, r_max = check_range
     return (
-        r_min <= x <= r_max and r_min <= y <= r_max
-        and (x - x1) * vx1 >= 0 and (y - y1) * vy1 >= 0 and (x - x2) * vx2 >= 0 and (y - y2) * vy2 >= 0
+        r_min <= x <= r_max
+        and r_min <= y <= r_max
+        and (x - x1) * vx1 >= 0
+        and (y - y1) * vy1 >= 0
+        and (x - x2) * vx2 >= 0
+        and (y - y2) * vy2 >= 0
     )
 
 
@@ -49,10 +55,15 @@ class Problem2(_Problem):
         for (p1, v1), (p2, v2) in self.hailstone_pairs:
             for i in range(3):
                 p_diff = p2[i] - p1[i]
-                pot_v = {
-                    v for v in range(-velo_range[i], velo_range[i])
-                    if v not in (0, v1[i]) and p_diff % (v - v1[i]) == 0
-                } if v1[i] == v2[i] else set()
+                pot_v = (
+                    {
+                        v
+                        for v in range(-velo_range[i], velo_range[i])
+                        if v not in (0, v1[i]) and p_diff % (v - v1[i]) == 0
+                    }
+                    if v1[i] == v2[i]
+                    else set()
+                )
                 if pot_v:
                     potential_v[i] = potential_v[i] & pot_v or pot_v
             if all(len(v) == 1 for v in potential_v):
@@ -62,18 +73,27 @@ class Problem2(_Problem):
         if not all(len(v) == 1 for v in potential_v):
             # For the test case, several possible velocities are found, although the first
             # values actually (coincidentally?) result in the correct answer.
-            log.warning(f"Multiple possible velocity matches found:\n{
-                '\n'.join(f'{c}: {v}' for c, v in zip('xyz', potential_v, strict=False))
-            }")
+            log.warning(
+                f"Multiple possible velocity matches found:\n{
+                    '\n'.join(
+                        f'{c}: {v}' for c, v in zip('xyz', potential_v, strict=False)
+                    )
+                }"
+            )
 
         # While other stations' listeners are at school... we're shoplifting!
         #  V-Rock - the home of the vulture.
         v_rock = P3D(*(v.pop() for v in potential_v))
         (p1, v1), (p2, v2) = self.hailstone_pairs.pop()
-        m1, m2 = (v1.y - v_rock.y) / (v1.x - v_rock.x), (v2.y - v_rock.y) / (v2.x - v_rock.x)
+        m1, m2 = (
+            (v1.y - v_rock.y) / (v1.x - v_rock.x),
+            (v2.y - v_rock.y) / (v2.x - v_rock.x),
+        )
         px = round(((p2.y - (m2 * p2.x)) - (p1.y - (m1 * p1.x))) / (m1 - m2))
         t = (px - p1.x) / (v1.x - v_rock.x)
-        p_rock = P3D(px, round(p1.y + (v1.y - v_rock.y) * t), round(p1.z + (v1.z - v_rock.z) * t))
+        p_rock = P3D(
+            px, round(p1.y + (v1.y - v_rock.y) * t), round(p1.z + (v1.z - v_rock.z) * t)
+        )
         log.debug("Position: %s\nVelocity: %s\nTime: %d", p_rock, v_rock, t)
         return p_rock.manhattan_length
 

@@ -14,12 +14,14 @@ def ways_to_win(time: int, dist: int) -> int:
     # x_min, x_max = solve_quadratic(-1, time, -dist)
     # return ceil(x_max) - floor(x_min) - 1
     o = time % 2
-    return ceil((sqrt(time ** 2 - dist * 4) - o) / 2) * 2 + o - 1
+    return ceil((sqrt(time**2 - dist * 4) - o) / 2) * 2 + o - 1
 
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self):
-        self.parsed = [[int(s) for s in re.findall(r"\d+", line)] for line in self.lines]
+        self.parsed = [
+            [int(s) for s in re.findall(r"\d+", line)] for line in self.lines
+        ]
         log.debug(self.parsed)
 
 

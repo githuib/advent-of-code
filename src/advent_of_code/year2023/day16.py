@@ -21,19 +21,23 @@ class _Problem(GridProblem[int], ABC):
             v = self.grid[p]
             new_dirs = []
             if v == "/":
-                new_dirs.append({
-                    Dir2.left: Dir2.down,
-                    Dir2.down: Dir2.left,
-                    Dir2.right: Dir2.up,
-                    Dir2.up: Dir2.right,
-                }[d])
+                new_dirs.append(
+                    {
+                        Dir2.left: Dir2.down,
+                        Dir2.down: Dir2.left,
+                        Dir2.right: Dir2.up,
+                        Dir2.up: Dir2.right,
+                    }[d]
+                )
             elif v == "\\":
-                new_dirs.append({
-                    Dir2.left: Dir2.up,
-                    Dir2.up: Dir2.left,
-                    Dir2.right: Dir2.down,
-                    Dir2.down: Dir2.right,
-                }[d])
+                new_dirs.append(
+                    {
+                        Dir2.left: Dir2.up,
+                        Dir2.up: Dir2.left,
+                        Dir2.right: Dir2.down,
+                        Dir2.down: Dir2.right,
+                    }[d]
+                )
             elif v == "|" and d in (Dir2.left, Dir2.right):
                 new_dirs.append(Dir2.up)
                 new_dirs.append(Dir2.down)
@@ -47,9 +51,13 @@ class _Problem(GridProblem[int], ABC):
             visited |= new_beams
         points = {p for p, _ in visited}
         if AOC.debugging:
-            log.debug(self.grid.to_str(
-                lambda q, c: chalk.hex("034").bg_hex("bdf")(c) if q in points else chalk.hex("222").bg_hex("888")(c),
-            ))
+            log.debug(
+                self.grid.to_str(
+                    lambda q, c: chalk.hex("034").bg_hex("bdf")(c)
+                    if q in points
+                    else chalk.hex("222").bg_hex("888")(c),
+                )
+            )
         return len(points)
 
 
@@ -66,15 +74,19 @@ class Problem2(_Problem):
     my_solution = 7697
 
     def solution(self) -> int:
-        return max(self.energized((p, d)) for p, d in [
-            ((x, y), d)
-            for x in range(self.grid.width)
-            for y, d in ((-1, Dir2.down), (self.grid.height, Dir2.up))
-        ] + [
-            ((x, y), d)
-            for x, d in ((-1, Dir2.right), (self.grid.width, Dir2.left))
-            for y in range(self.grid.height)
-        ])
+        return max(
+            self.energized((p, d))
+            for p, d in [
+                ((x, y), d)
+                for x in range(self.grid.width)
+                for y, d in ((-1, Dir2.down), (self.grid.height, Dir2.up))
+            ]
+            + [
+                ((x, y), d)
+                for x, d in ((-1, Dir2.right), (self.grid.width, Dir2.left))
+                for y in range(self.grid.height)
+            ]
+        )
 
 
 TEST_INPUT = r"""
