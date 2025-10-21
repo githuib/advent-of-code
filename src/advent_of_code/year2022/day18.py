@@ -45,14 +45,10 @@ class Problem2(_Problem):
         while stack:
             cube = stack.pop()
             self.lava_and_outside[cube] = Mat.AIR
-            stack += [
-                neighbor
-                for d in Dir3D.all
-                if (
-                    (neighbor := cube + d) in self.span
-                    and neighbor not in self.lava_and_outside
-                )
-            ]
+            for d in Dir3D.all:
+                neighbor = cube + d
+                if neighbor in self.span and neighbor not in self.lava_and_outside:
+                    stack.append(neighbor)
 
     def solution_a(self) -> int:
         """
@@ -70,7 +66,7 @@ class Problem2(_Problem):
         return sum(
             self.lava_and_outside.get(neighbor) or 0
             for cube in self.lava
-            for neighbor in [cube + d for d in Dir3D.all]
+            for neighbor in (cube + d for d in Dir3D.all)
         )
 
     def solution(self) -> int:
