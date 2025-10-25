@@ -56,7 +56,9 @@ def manhattan_dist_2(p1: P2, p2: P2) -> int:
 
 def loop_length(points: Iterable[P2]) -> int:
     """
-    >>> loop_length([(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)])
+    >>> loop_length(
+    ...     [(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)]
+    ... )
     30
     """
     return sum(manhattan_dist_2(p, q) for p, q in pairwise_circular(points))
@@ -80,9 +82,14 @@ def area(points: Iterable[P2]) -> int:
 
 def grid_area(points: Iterable[P2], include_loop: bool = True) -> int:
     """
-    >>> grid_area([(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)])
+    >>> grid_area(
+    ...     [(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)]
+    ... )
     44
-    >>> grid_area([(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)], include_loop=False)
+    >>> grid_area(
+    ...     [(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)],
+    ...     include_loop=False,
+    ... )
     14
     """
     ps = list(points)

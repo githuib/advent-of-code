@@ -223,7 +223,15 @@ def grouped[T](input_values: Iterable[T], delimeter: T = None) -> Iterator[list[
 def group_tuples[K, V](items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
     """
     Group items in a dict by key(item).
-    >>> group_tuples([('m', 'Arnold'), ('f', 'Billie'), ('m', 'Charles'), ('m', 'Dirk'), ('f', 'Emma')])
+    >>> group_tuples(
+    ...     [
+    ...         ("m", "Arnold"),
+    ...         ("f", "Billie"),
+    ...         ("m", "Charles"),
+    ...         ("m", "Dirk"),
+    ...         ("f", "Emma"),
+    ...     ]
+    ... )
     {'m': ['Arnold', 'Charles', 'Dirk'], 'f': ['Billie', 'Emma']}
     """
     result: dict[K, list[V]] = {}
@@ -235,7 +243,9 @@ def group_tuples[K, V](items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
 def group_by[K, V](items: Iterable[V], key: Callable[[V], K]) -> dict[K, list[V]]:
     """
     Group items in a dict by key(item).
-    >>> group_by(['Alice', 'Bill', 'Bob', 'Charles', 'Arnold', 'Chuck'], key=lambda s: s[0])
+    >>> group_by(
+    ...     ["Alice", "Bill", "Bob", "Charles", "Arnold", "Chuck"], key=lambda s: s[0]
+    ... )
     {'A': ['Alice', 'Arnold'], 'B': ['Bill', 'Bob'], 'C': ['Charles', 'Chuck']}
     """
     result: dict[K, list[V]] = {}

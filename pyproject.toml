@@ -5,20 +5,21 @@ description = "Advent of Code"
 authors = [{ name = "Huib Piguillet", email = "huib@proton.me" }]
 requires-python = ">=3.14"
 dependencies = [
-    "cairocffi",
-    "igraph",
-    "matplotlib",
-    "more-itertools",
-    "parse",
-    "yachalk",
+  "cairocffi",
+  "igraph",
+  "matplotlib",
+  "more-itertools",
+  "parse",
+  "yachalk",
 ]
 
 [dependency-groups]
 dev = [
-    "matplotlib-stubs",
-    "mypy",
-    "pytest",
-    "ruff",
+  "matplotlib-stubs",
+  "mypy",
+  "pre-commit",
+  "pytest",
+  "ruff",
 ]
 
 [project.scripts]
@@ -39,88 +40,91 @@ addopts = "-ra --doctest-modules"  # -q
 #asyncio_mode = "auto"
 #asyncio_default_fixture_loop_scope = "function"
 testpaths = [
-    "src/advent_of_code",
-#    "tests",
+  "src/advent_of_code",
+  #    "tests",
 ]
+
+[tool.ruff.format]
+docstring-code-format = true
 
 [tool.ruff.lint]
 select = [
-    "F", # Pyflakes
-    "E", # pycodestyle
-    "E", # pycodestyle
-    "C90", # mccabe
-    "I", # isort
-    "N", # pep8-naming
-#    "D", # pydocstyle
-    "UP", # pyupgrade
-    "YTT", # flake8-2020
-#    "ANN", # flake8-annotations
-    "ASYNC", # flake8-async
-#    "TRIO", # flake8-trio
-    "S", # flake8-bandit
-    "BLE", # flake8-blind-except
-#    "FBT", # flake8-boolean-trap
-    "B", # flake8-bugbear
-    "A", # flake8-builtins
-    "COM", # flake8-commas
-#    "CPY", # flake8-copyright
-    "C4", # flake8-comprehensions
-    "DTZ", # flake8-datetimez
-    "T10", # flake8-debugger
-    "DJ", # flake8-django
-    "EM", # flake8-errmsg
-    "EXE", # flake8-executable
-    "FA", # flake8-future-annotations
-    "ISC", # flake8-implicit-str-concat
-    "ICN", # flake8-import-conventions
-    "G", # flake8-logging-format
-    "INP", # flake8-no-pep420
-    "PIE", # flake8-pie
-    "T20", # flake8-print
-    "PYI", # flake8-pyi
-    "PT", # flake8-pytest-style
-    "Q", # flake8-quotes
-    "RSE", # flake8-raise
-    "RET", # flake8-return
-    "SLF", # flake8-self
-    "SLOT", # flake8-slots
-    "SIM", # flake8-simplify
-    "TID", # flake8-tidy-imports
-    "TCH", # flake8-type-checking
-    "INT", # flake8-gettext
-    "ARG", # flake8-unused-arguments
-    "PTH", # flake8-use-pathlib
-#    "TD", # flake8-todos
-#    "FIX", # flake8-fixme
-#    "ERA", # eradicate
-    "PD", # pandas-vet
-    "PGH", # pygrep-hooks
-    "PL", # Pylint
-    "TRY", # tryceratops
-    "FLY", # flynt
-    "NPY", # NumPy-specific rules
-    "AIR", # Airflow
-    "PERF", # Perflint
-#    "FURB", # refurb
-    "LOG", # flake8-logging
-    "RUF", # Ruff-specific rules
+  "F", # Pyflakes
+  "E", # pycodestyle
+  "E", # pycodestyle
+  "C90", # mccabe
+  "I", # isort
+  "N", # pep8-naming
+  #    "D", # pydocstyle
+  "UP", # pyupgrade
+  "YTT", # flake8-2020
+  #    "ANN", # flake8-annotations
+  "ASYNC", # flake8-async
+  #    "TRIO", # flake8-trio
+  "S", # flake8-bandit
+  "BLE", # flake8-blind-except
+  #    "FBT", # flake8-boolean-trap
+  "B", # flake8-bugbear
+  "A", # flake8-builtins
+  "COM", # flake8-commas
+  #    "CPY", # flake8-copyright
+  "C4", # flake8-comprehensions
+  "DTZ", # flake8-datetimez
+  "T10", # flake8-debugger
+  "DJ", # flake8-django
+  "EM", # flake8-errmsg
+  "EXE", # flake8-executable
+  "FA", # flake8-future-annotations
+  "ISC", # flake8-implicit-str-concat
+  "ICN", # flake8-import-conventions
+  "G", # flake8-logging-format
+  "INP", # flake8-no-pep420
+  "PIE", # flake8-pie
+  "T20", # flake8-print
+  "PYI", # flake8-pyi
+  "PT", # flake8-pytest-style
+  "Q", # flake8-quotes
+  "RSE", # flake8-raise
+  "RET", # flake8-return
+  "SLF", # flake8-self
+  "SLOT", # flake8-slots
+  "SIM", # flake8-simplify
+  "TID", # flake8-tidy-imports
+  "TCH", # flake8-type-checking
+  "INT", # flake8-gettext
+  "ARG", # flake8-unused-arguments
+  "PTH", # flake8-use-pathlib
+  #    "TD", # flake8-todos
+  #    "FIX", # flake8-fixme
+  #    "ERA", # eradicate
+  "PD", # pandas-vet
+  "PGH", # pygrep-hooks
+  "PL", # Pylint
+  "TRY", # tryceratops
+  "FLY", # flynt
+  "NPY", # NumPy-specific rules
+  "AIR", # Airflow
+  "PERF", # Perflint
+  #    "FURB", # refurb
+  "LOG", # flake8-logging
+  "RUF", # Ruff-specific rules
 ]
 ignore = [
-    "COM812", # warning: The following rule may cause conflicts when used with the formatter: `COM812`
-    "T201", # `print` found
-    "E501", # Line too long
-    "G004", # Logging statement uses f-string
-    "S101", # Use of `assert` detected
-    "PLR2004", # Magic value used in comparison
-    "RUF013", # PEP 484 prohibits implicit `Optional`
-#    "TRY", # tryceratops
-#    "EM", # flake8-errmsg
-#    "S101",
-#    "ARG001",
-#    "ARG002",
+  "COM812", # warning: The following rule may cause conflicts when used with the formatter: `COM812`
+  "T201", # `print` found
+  "E501", # Line too long
+  "G004", # Logging statement uses f-string
+  "S101", # Use of `assert` detected
+  "PLR2004", # Magic value used in comparison
+  "RUF013", # PEP 484 prohibits implicit `Optional`
+  #    "TRY", # tryceratops
+  #    "EM", # flake8-errmsg
+  #    "S101",
+  #    "ARG001",
+  #    "ARG002",
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*" = [
-    "C901", #too complex
+  "C901", #too complex
 ]

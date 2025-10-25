@@ -6,7 +6,7 @@ from advent_of_code.problems import OneLineProblem
 
 def hash_(s: str) -> int:
     """
-    >>> hash_('HASH')
+    >>> hash_("HASH")
     52
     """
     return reduce(lambda i, c: ((i + ord(c)) * 17) % 256, s, 0)

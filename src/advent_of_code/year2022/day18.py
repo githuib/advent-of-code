@@ -64,7 +64,7 @@ class Problem2(_Problem):
         Approach B: Count the sides of each cube that border an outside cube.
         """
         return sum(
-            self.lava_and_outside.get(neighbor) or 0
+            self.lava_and_outside.get(neighbor, 0)
             for cube in self.lava
             for neighbor in (cube + d for d in Dir3D.all)
         )
