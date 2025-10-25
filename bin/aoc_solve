@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 CWD=$PWD
 script_dir=$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")
 cd "$script_dir/.." || exit

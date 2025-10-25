@@ -1,11 +1,7 @@
 from abc import ABC
-from typing import TYPE_CHECKING
 
 from advent_of_code.geo2d import P2, Dir2, Line2, intersect_segments_2, manhattan_dist_2
 from advent_of_code.problems import ParsedProblem, var
-
-if TYPE_CHECKING:
-    from collections.abc import Iterable
 
 
 def coverage(sensor: P2, beacon: P2, y: int) -> P2 | None:
@@ -17,10 +13,10 @@ def coverage(sensor: P2, beacon: P2, y: int) -> P2 | None:
     return sx - dist + dy, sx + dist - dy
 
 
-def merge(cov: Iterable[P2]) -> list[P2]:
-    (min1, max1), *rest = cov
+def merge(first: P2, *rest: P2) -> list[P2]:
+    min1, max1 = first
     if not rest:
-        return [(min1, max1)]
+        return [first]
     merged = []
     not_merged = []
     for min2, max2 in rest:
@@ -28,10 +24,9 @@ def merge(cov: Iterable[P2]) -> list[P2]:
             merged.append((min(min1, min2), max(max1, max2)))
         else:
             not_merged.append((min2, max2))
-    result = merge(not_merged + merged)
-    if not merged:
-        result.append((min1, max1))
-    return result
+    if merged:
+        return merge(*not_merged, *merged)
+    return [*merge(*not_merged), first]
 
 
 class _Problem(ParsedProblem[tuple[int, int, int, int], int], ABC):
@@ -47,7 +42,9 @@ class Problem1(_Problem):
     my_solution = 5144286
 
     def solution(self) -> int:
-        merged = merge(c for s, b in self.locations if (c := coverage(s, b, self.size)))
+        merged = merge(
+            *(c for s, b in self.locations if (c := coverage(s, b, self.size)))
+        )
         return sum(high - low + 1 for low, high in merged) - sum(
             y == self.size and any(low <= x <= high for low, high in merged)
             for x, y in {p for pair in self.locations for p in pair}
@@ -74,11 +71,10 @@ class Problem2(_Problem):
         edges = [
             [
                 (
-                    (
-                        sx + dx * (c + 1),
-                        sy,
-                    ),  # just outside left or right coverage border
-                    (sx, sy + dy * (c + 1)),  # just outside up or down coverage border
+                    # just outside left/right coverage border
+                    (sx + dx * (c + 1), sy),
+                    # just outside up/down coverage border
+                    (sx, sy + dy * (c + 1)),
                 )
                 for (sx, sy), c in sensor_coverage
             ]
