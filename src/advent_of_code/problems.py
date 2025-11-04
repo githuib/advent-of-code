@@ -1,19 +1,16 @@
 import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar, Self
+from typing import ClassVar, Self
 
 from more_itertools import strip
-from parse import Result, findall  # type: ignore[import-untyped]
+from parse import findall  # type: ignore[import-untyped]
 from yachalk import chalk
 
 from advent_of_code import InputMode, PuzzleData, RunnerState, log
 from advent_of_code.geo2d import Grid2
 from advent_of_code.geo3d import P3D
 from advent_of_code.utils import human_readable_duration, strlen, timed
-
-if TYPE_CHECKING:
-    from collections.abc import Iterator
 
 
 def solution_lines[T](my_solution: T, actual_solution: T) -> list[str]:
@@ -33,17 +30,19 @@ def solution_lines[T](my_solution: T, actual_solution: T) -> list[str]:
         mine = ["", *mine]
     if len(actual) > 1:
         actual = ["", *actual]
-    if actual == [""]:
+
+    if not actual_solution:
         return ["Attempted solution... 👾 ", "", *mine]
-    if mine == actual:
+
+    if my_solution == actual_solution:
         return ["Correct solution! 🍻 ", "", *mine]
+
+    my_answer = f"{chalk.red_bright('✘')} Your answer:"
+    actual_answer = f"{chalk.green_bright('✔')} Correct answer:"
     return ["Wrong solution! 💀"] + (
-        [
-            f"{mine[0]} {chalk.red_bright('✘')} your answer",
-            f"{actual[0]} {chalk.green_bright('✔')} correct answer",
-        ]
+        [f"{my_answer}    {mine[0]}", f"{actual_answer} {actual[0]}"]
         if (len(mine) == 1 and len(actual) == 1)
-        else ["", "Your answer:", *mine, "", "Right answer:", *actual]
+        else ["", my_answer, *mine, "", actual_answer, *actual]
     )
 
 
@@ -121,11 +120,11 @@ class Problem[T](ABC):
         return self.test_solution if self.is_test_run else self.my_solution
 
     @classmethod
-    def solve(cls) -> T | None:
+    def solve(cls) -> tuple[T | None, bool]:
         solution: T | None = None
 
+        instance, duration_init, _dur_init_str = timed(cls)
         try:
-            instance, duration_init, _dur_init_str = timed(cls)
             solution, duration_solution, _dur_solution_str = timed(instance.solution)
 
         except NoSolutionFoundError:
@@ -137,9 +136,9 @@ class Problem[T](ABC):
 
         else:
             if solution is None:
-                return None
-            lines = solution_lines(solution, instance.given_solution)
+                return None, cls.runner_state.input_mode == InputMode.NONE
 
+            lines = solution_lines(solution, instance.given_solution)
             duration_total = duration_init + duration_solution
             duration_str = human_readable_duration(duration_total)
             # TODO: Might be interesting to show input loading time.
@@ -155,7 +154,7 @@ class Problem[T](ABC):
         log.info(f" {chalk.bg_hex('332')(' ' * (width + 2))} ")
         log.info(" " * (width + 4))
 
-        return solution
+        return solution, solution and solution == instance.given_solution
 
     @abstractmethod
     def process_input(self) -> None:
@@ -221,12 +220,15 @@ class ParsedProblem[R, T](Problem[T], ABC):
             for f in dir(module)
             if f.startswith(prefix)
         } | {"p3": P3D.from_str}
-        rs: Iterator[Result] = findall(
-            self.multi_line_pattern or self.line_pattern + "\n",
-            self.corrected_input,
-            extra_types=extra_types,
-        )
-        self.parsed_input = [r.fixed for r in rs]
+
+        self.parsed_input = [
+            r.fixed
+            for r in findall(
+                self.multi_line_pattern or self.line_pattern + "\n",
+                self.corrected_input,
+                extra_types=extra_types,
+            )
+        ]
         # elif self._regex_pattern:
         #     rc = self._regex_converters or []
         #     self.parsed_regex = [

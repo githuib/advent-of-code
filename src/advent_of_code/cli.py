@@ -1,4 +1,5 @@
 import argparse
+import sys
 from datetime import UTC, datetime
 
 from advent_of_code import solve
@@ -35,10 +36,11 @@ def main() -> None:
         if args.test
         else InputMode.PUZZLE
     )
-    solve(
+    _solution, success = solve(
         RunnerState(input_mode, args.debugging),  # , args.pycharm),
         PuzzleData(args.year, args.day, args.part),
     )
+    sys.exit(not success)
 
 
 if __name__ == "__main__":
