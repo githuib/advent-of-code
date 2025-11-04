@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area, loop_length
 from advent_of_code.problems import GridProblem, NoSolutionFoundError
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area, loop_length
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

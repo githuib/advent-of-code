@@ -2,9 +2,9 @@ from abc import ABC
 from itertools import combinations
 
 from advent_of_code import log
-from advent_of_code.geo2d import intersect_lines_2
-from advent_of_code.geo3d import P3D, Grid3D
 from advent_of_code.problems import NoSolutionFoundError, ParsedProblem
+from advent_of_code.utils.geo2d import intersect_lines_2
+from advent_of_code.utils.geo3d import P3D, Grid3D
 
 Trajectory = tuple[P3D, P3D]
 

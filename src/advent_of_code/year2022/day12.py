@@ -5,10 +5,11 @@ from typing import TYPE_CHECKING, NamedTuple
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.geo2d import P2, Grid2
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.search import AStarState, BFSState, DijkstraState, State
-from advent_of_code.utils import PRE_a, table_lines, timed
+from advent_of_code.utils.cli import table_lines, timed
+from advent_of_code.utils.geo2d import P2, Grid2
+from advent_of_code.utils.search import AStarState, BFSState, DijkstraState, State
+from advent_of_code.utils.strings import PRE_a
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

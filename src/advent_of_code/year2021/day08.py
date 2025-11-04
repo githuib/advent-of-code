@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 from more_itertools import partition
 
 from advent_of_code.problems import ParsedProblem
-from advent_of_code.utils import compose_number, contains, invert_dict
+from advent_of_code.utils.conversion import compose_number
+from advent_of_code.utils.data import contains, invert_dict
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

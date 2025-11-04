@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from parse import with_pattern  # type: ignore[import-untyped]
 
-from advent_of_code.geo2d import P2
 from advent_of_code.problems import ParsedProblem
+from advent_of_code.utils.geo2d import P2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

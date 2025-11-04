@@ -1,10 +1,14 @@
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from advent_of_code.problems import MultiLineProblem
 
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
 
 class Board:
-    def __init__(self, input_lines: list[str]) -> None:
+    def __init__(self, input_lines: Iterable[str]) -> None:
         # parse 5 x 5 bingo board from input
         self.data = [[int(x) for x in line.split()] for line in input_lines]
         # data with rows and columns swapped

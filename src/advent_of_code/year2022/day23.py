@@ -6,7 +6,9 @@ from typing import TYPE_CHECKING
 from more_itertools import nth_or_last
 
 from advent_of_code import log
-from advent_of_code.geo2d import (
+from advent_of_code.problems import GridProblem
+from advent_of_code.utils.data import first_duplicate
+from advent_of_code.utils.geo2d import (
     DOWN,
     LEFT,
     LEFT_DOWN,
@@ -19,11 +21,9 @@ from advent_of_code.geo2d import (
     Grid2,
     all_directions,
 )
-from advent_of_code.problems import GridProblem
-from advent_of_code.utils import first_duplicate
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Set
 
 DIRECTIONS = [
     (UP, {UP, LEFT_UP, RIGHT_UP}),
@@ -33,7 +33,7 @@ DIRECTIONS = [
 ]
 
 
-def next_pos(x: int, y: int, step: int, occupied: set[P2]) -> P2 | None:
+def next_pos(x: int, y: int, step: int, occupied: Set[P2]) -> P2 | None:
     for i in range(step, 4 + step):
         (dx, dy), dirs = DIRECTIONS[i % 4]
         if all((x + nx, y + ny) not in occupied for nx, ny in dirs) and any(
@@ -47,8 +47,8 @@ class _Problem(GridProblem[int], ABC):
     def __init__(self) -> None:
         log.lazy_debug(lambda: self.grid)
 
-    def dance(self) -> Iterator[set[P2]]:
-        occupied = {p for p, v in self.grid.items() if v == "#"}
+    def dance(self) -> Iterator[frozenset[P2]]:
+        occupied = frozenset(p for p, v in self.grid.items() if v == "#")
         elfs: dict[int, P2] = dict(enumerate(occupied, 1))
         for step in count():
             yield occupied
@@ -59,7 +59,7 @@ class _Problem(GridProblem[int], ABC):
             for p, proposing_elfs in proposal.items():
                 if len(proposing_elfs) == 1:
                     elfs[proposing_elfs[0]] = p
-            occupied = set(elfs.values())
+            occupied = frozenset(elfs.values())
 
 
 class Problem1(_Problem):

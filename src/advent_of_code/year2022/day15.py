@@ -1,13 +1,13 @@
 from abc import ABC
 
-from advent_of_code.geo2d import (
+from advent_of_code.problems import ParsedProblem
+from advent_of_code.utils.geo2d import (
     P2,
     Line2,
     intersect_segments_2,
     manhattan_dist_2,
     ordinal_directions,
 )
-from advent_of_code.problems import ParsedProblem
 
 
 def coverage(sensor: P2, beacon: P2, y: int) -> P2 | None:

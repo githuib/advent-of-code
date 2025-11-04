@@ -93,6 +93,9 @@ ignore = [
   "FIX003", # https://docs.astral.sh/ruff/rules/line-contains-xxx/	Line contains XXX, consider resolving the issue
   "FIX004", # https://docs.astral.sh/ruff/rules/line-contains-hack/	Line contains HACK, consider resolving the issue
 
+  # flake8-pyi (PYI)
+  "PYI025", # https://docs.astral.sh/ruff/rules/unaliased-collections-abc-set-import/	Use from collections.abc import Set as AbstractSet to avoid confusion with the set builtin
+
   # Pylint (PL)
   # Refactor (PLR)
   "PLR2004", # https://docs.astral.sh/ruff/rules/magic-value-comparison/	Magic value used in comparison, consider replacing {value} with a constant variable

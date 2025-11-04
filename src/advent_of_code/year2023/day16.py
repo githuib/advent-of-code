@@ -4,8 +4,8 @@ from collections import deque
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP
 from advent_of_code.problems import GridProblem
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP
 
 
 class _Problem(GridProblem[int], ABC):

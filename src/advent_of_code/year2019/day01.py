@@ -1,5 +1,5 @@
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import repeat_transform
+from advent_of_code.utils.data import repeat_transform
 
 
 def total_fuel(mass: int) -> int:

@@ -1,16 +1,17 @@
+from collections.abc import Set
 from typing import TYPE_CHECKING, Self
 
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.geo2d import P2, Grid2
 from advent_of_code.problems import GridProblem, MultiLineProblem
-from advent_of_code.utils import first_duplicate
+from advent_of_code.utils.data import first_duplicate
+from advent_of_code.utils.geo2d import P2, Grid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-SeaCucumbers = tuple[frozenset[P2], frozenset[P2]]
+SeaCucumbers = tuple[Set[P2], Set[P2]]
 
 
 def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:

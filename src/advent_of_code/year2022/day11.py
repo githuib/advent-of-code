@@ -8,7 +8,7 @@ from operator import add, mul
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code.problems import ParsedProblem
-from advent_of_code.utils import try_convert
+from advent_of_code.utils.conversion import try_convert
 
 
 @dataclass

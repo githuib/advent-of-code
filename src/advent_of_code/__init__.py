@@ -32,7 +32,7 @@ class PuzzleData:
     part: int
 
 
-def solve[T](runner_state: RunnerState, data: PuzzleData) -> T | None:
+def solve[T](runner_state: RunnerState, data: PuzzleData) -> tuple[T | None, bool]:
     log.setup(logging.DEBUG if runner_state.debugging else logging.INFO)
     problem_module = import_module(f"{__name__}.year{data.year}.day{data.day:02d}")
     problem_cls: type[Problem[T]] = getattr(problem_module, f"Problem{data.part}")

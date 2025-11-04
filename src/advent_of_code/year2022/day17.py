@@ -7,12 +7,12 @@ from typing import TYPE_CHECKING
 from more_itertools import nth_or_last, unzip
 
 from advent_of_code import log
-from advent_of_code.cycle_detection import detect_cycle
 from advent_of_code.problems import OneLineProblem
-from advent_of_code.utils import pixel
+from advent_of_code.utils.cli import pixel
+from advent_of_code.utils.cycle_detection import detect_cycle
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Sequence
 
 MAX_HEIGHT = 65
 
@@ -26,11 +26,11 @@ SHAPES = [
 ]
 
 
-def occludes_with(shape: list[int], pattern: deque[int], y: int) -> bool:
+def occludes_with(shape: Sequence[int], pattern: Sequence[int], y: int) -> bool:
     return any(i <= y and pattern[y - i] & row for i, row in enumerate(shape))
 
 
-def board_str(shape: list[int], pattern: deque[int], y: int) -> Iterator[str]:
+def board_str(shape: Sequence[int], pattern: Sequence[int], y: int) -> Iterator[str]:
     for i, row in enumerate(pattern):
         yield "".join(
             pixel(

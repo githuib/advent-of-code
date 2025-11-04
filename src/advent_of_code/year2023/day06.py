@@ -4,7 +4,7 @@ from math import ceil, prod, sqrt
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import compose_number
+from advent_of_code.utils.conversion import compose_number
 
 
 def ways_to_win(time: int, dist: int) -> int:

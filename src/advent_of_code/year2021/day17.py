@@ -6,12 +6,10 @@ from parse import parse  # type: ignore[import-untyped]
 from advent_of_code.problems import OneLineProblem
 
 if TYPE_CHECKING:
-    from advent_of_code.geo2d import P2
+    from advent_of_code.utils.geo2d import P2
 
 
-def shoot(
-    x_range: tuple[int, int], y_range: tuple[int, int], v: tuple[int, int]
-) -> int | None:
+def shoot(x_range: P2, y_range: P2, v: P2) -> int | None:
     min_x, max_x = x_range
     min_y, max_y = y_range
     vx, vy = v

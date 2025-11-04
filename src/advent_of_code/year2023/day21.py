@@ -5,13 +5,13 @@ from more_itertools import last
 
 from advent_of_code import log
 from advent_of_code.problems import FatalError, GridProblem
-from advent_of_code.search import BFSState
-from advent_of_code.utils import repeat_transform
+from advent_of_code.utils.data import repeat_transform
+from advent_of_code.utils.search import BFSState
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from advent_of_code.geo2d import P2, Grid2
+    from advent_of_code.utils.geo2d import P2, Grid2
 
 
 class Constants(NamedTuple):

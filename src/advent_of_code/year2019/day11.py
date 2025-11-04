@@ -1,8 +1,9 @@
 from abc import ABC
 from itertools import batched
 
-from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP
-from advent_of_code.year2019.intcode import IntcodeProblem
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP
+
+from .intcode import IntcodeProblem
 
 DIRECTIONS = [UP, RIGHT, DOWN, LEFT]
 

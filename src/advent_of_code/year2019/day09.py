@@ -1,6 +1,6 @@
 from abc import ABC
 
-from advent_of_code.year2019.intcode import IntcodeProblem
+from .intcode import IntcodeProblem
 
 
 class _Problem(IntcodeProblem[int], ABC):

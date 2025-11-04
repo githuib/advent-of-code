@@ -4,7 +4,7 @@ from math import prod
 from typing import TYPE_CHECKING
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import group_tuples
+from advent_of_code.utils.data import group_tuples
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

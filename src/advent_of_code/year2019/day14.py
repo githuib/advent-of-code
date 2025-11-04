@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from advent_of_code.problems import MultiLineProblem
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterable, Iterator
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -20,7 +20,7 @@ class _Problem(MultiLineProblem[int], ABC):
             return chemical, int(amount_str)
 
         def parse_line(
-            output: str, inputs: list[str]
+            output: str, inputs: Iterable[str]
         ) -> tuple[str, tuple[int, list[tuple[str, int]]]]:
             chemical, amount = parse_chemical(output)
             return chemical, (amount, [parse_chemical(i) for i in inputs])
@@ -30,7 +30,9 @@ class _Problem(MultiLineProblem[int], ABC):
         )
         self.scores = self.score_chemicals(["FUEL"])
 
-    def score_chemicals(self, required: list[str], score: int = 0) -> dict[str, int]:
+    def score_chemicals(
+        self, required: Iterable[str], score: int = 0
+    ) -> dict[str, int]:
         scores = {}
         required_ = []
         for chemical in required:

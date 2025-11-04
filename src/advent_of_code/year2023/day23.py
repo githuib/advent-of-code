@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING
 from igraph import EdgeSeq, Graph, Layout, plot  # type: ignore[import-untyped]
 from matplotlib import pyplot as plt
 
-from advent_of_code.geo2d import DOWN, P2, RIGHT, Grid2
 from advent_of_code.problems import GridProblem
+from advent_of_code.utils.geo2d import DOWN, P2, RIGHT, Grid2
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes

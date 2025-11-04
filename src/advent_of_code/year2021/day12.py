@@ -1,7 +1,11 @@
 from abc import ABC
 from collections import defaultdict
+from typing import TYPE_CHECKING
 
 from advent_of_code.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Set
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -16,7 +20,7 @@ class _Problem(MultiLineProblem[int], ABC):
                 self._graph[node2].append(node1)
 
     def find_paths(
-        self, node: str = "start", visited: set[str] = None
+        self, node: str = "start", visited: Set[str] = None
     ) -> list[list[str]]:
         if node == "end":
             return [["end"]]
@@ -30,7 +34,7 @@ class _Problem(MultiLineProblem[int], ABC):
                     # small cave already visited: skip
                     continue
                 if "💩" in visited:
-                    # extra small cave 💩 bonus already used: skip
+                    # tiny cave 💩 bonus already used: skip
                     continue
                 # made use of bonus visit
                 new_visited.add("💩")

@@ -1,11 +1,15 @@
 from abc import ABC
+from typing import TYPE_CHECKING
 
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
-from advent_of_code.geo3d import P3D, ROTATIONS_3D
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import grouped
+from advent_of_code.utils.data import grouped
+from advent_of_code.utils.geo3d import P3D, ROTATIONS_3D
+
+if TYPE_CHECKING:
+    from collections.abc import Set
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -29,7 +33,7 @@ class _Problem(MultiLineProblem[int], ABC):
                 scanner for scanner in unmatched if not self._match_beacons(scanner)
             ]
 
-    def _match_beacons(self, scanner: set[P3D]) -> bool:
+    def _match_beacons(self, scanner: Set[P3D]) -> bool:
         for rotation in ROTATIONS_3D:
             rotated_beacons: set[P3D] = {p.transform(rotation) for p in self.beacons}
             for p_beacon in rotated_beacons:

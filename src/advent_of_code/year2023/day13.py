@@ -3,11 +3,11 @@ from typing import TYPE_CHECKING
 
 from more_itertools import split_at
 
-from advent_of_code.geo2d import Grid2
 from advent_of_code.problems import MultiLineProblem, NoSolutionFoundError
+from advent_of_code.utils.geo2d import Grid2
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Sequence
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -27,7 +27,7 @@ class _Problem(MultiLineProblem[int], ABC):
                 ],
             )
 
-    def find_reflection(self, lines: list[str]) -> int | None:
+    def find_reflection(self, lines: Sequence[str]) -> int | None:
         for r in range(1, len(lines)):
             n = min(r, len(lines) - r)
             a = int("".join(reversed(lines[r - n : r])), 2)
@@ -36,7 +36,7 @@ class _Problem(MultiLineProblem[int], ABC):
                 return r
         return None
 
-    def mirror_value(self, cols: list[str], rows: list[str]) -> int:
+    def mirror_value(self, cols: Sequence[str], rows: Sequence[str]) -> int:
         c = self.find_reflection(cols)
         if c is not None:
             return c

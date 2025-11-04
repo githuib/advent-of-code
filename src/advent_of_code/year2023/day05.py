@@ -11,7 +11,7 @@ from advent_of_code.problems import MultiLineProblem
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
-    from advent_of_code.geo2d import Range
+    from advent_of_code.utils.geo2d import Range
 
 MapEntry = tuple[int, int, int]
 
@@ -31,7 +31,7 @@ class Problem1(_Problem):
     my_solution = 309796150
 
     def solution(self) -> int:
-        def get_next_value(item: int, m: list[MapEntry]) -> int:
+        def get_next_value(item: int, m: Iterable[MapEntry]) -> int:
             for start, end, offset in m:
                 if start <= item < end:
                     return item + offset
@@ -46,7 +46,7 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         def get_next_ranges(
-            ranges: Iterable[Range], m: list[MapEntry]
+            ranges: Iterable[Range], m: Iterable[MapEntry]
         ) -> Iterator[Range]:
             for r in ranges:
                 s, e = r

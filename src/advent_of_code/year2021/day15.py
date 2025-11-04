@@ -1,9 +1,9 @@
 from typing import NamedTuple
 
-from advent_of_code.geo2d import P2, Grid2
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.search import DijkstraState
-from advent_of_code.utils import mods
+from advent_of_code.utils.geo2d import P2, Grid2
+from advent_of_code.utils.math import mods
+from advent_of_code.utils.search import DijkstraState
 
 
 class Constants:

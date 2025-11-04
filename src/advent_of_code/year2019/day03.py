@@ -1,13 +1,13 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from advent_of_code.geo2d import DOWN, LEFT, RIGHT, UP
 from advent_of_code.problems import MultiLineProblem
+from advent_of_code.utils.geo2d import DOWN, LEFT, RIGHT, UP
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from advent_of_code.geo2d import P2
+    from advent_of_code.utils.geo2d import P2
 
 DIRECTIONS = {"U": UP, "D": DOWN, "L": LEFT, "R": RIGHT}
 

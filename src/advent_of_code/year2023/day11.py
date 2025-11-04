@@ -3,9 +3,9 @@ from abc import ABC
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.geo2d import Grid2, manhattan_dist_2
 from advent_of_code.problems import GridProblem
-from advent_of_code.utils import repeat_transform
+from advent_of_code.utils.data import repeat_transform
+from advent_of_code.utils.geo2d import Grid2, manhattan_dist_2
 
 
 class _Problem(GridProblem[int], ABC):

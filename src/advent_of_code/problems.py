@@ -8,9 +8,10 @@ from parse import findall  # type: ignore[import-untyped]
 from yachalk import chalk
 
 from advent_of_code import InputMode, PuzzleData, RunnerState, log
-from advent_of_code.geo2d import Grid2
-from advent_of_code.geo3d import P3D
-from advent_of_code.utils import human_readable_duration, strlen, timed
+from advent_of_code.utils.cli import human_readable_duration, timed
+from advent_of_code.utils.geo2d import Grid2
+from advent_of_code.utils.geo3d import P3D
+from advent_of_code.utils.strings import strlen
 
 
 def solution_lines[T](my_solution: T, actual_solution: T) -> list[str]:
@@ -154,7 +155,7 @@ class Problem[T](ABC):
         log.info(f" {chalk.bg_hex('332')(' ' * (width + 2))} ")
         log.info(" " * (width + 4))
 
-        return solution, solution and solution == instance.given_solution
+        return solution, (solution is not None and solution == instance.given_solution)
 
     @abstractmethod
     def process_input(self) -> None:

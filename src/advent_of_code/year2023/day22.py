@@ -2,11 +2,11 @@ from abc import ABC
 from typing import TYPE_CHECKING, Self
 
 from advent_of_code import log
-from advent_of_code.geo3d import P3D
 from advent_of_code.problems import ParsedProblem
+from advent_of_code.utils.geo3d import P3D
 
 if TYPE_CHECKING:
-    from advent_of_code.geo2d import P2
+    from advent_of_code.utils.geo2d import P2
 
 
 class Brick:

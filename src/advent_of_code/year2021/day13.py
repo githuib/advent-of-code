@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from advent_of_code.problems import MultiLineProblem
 
 if TYPE_CHECKING:
-    from advent_of_code.geo2d import P2
+    from advent_of_code.utils.geo2d import P2
 
 
 class _Problem[T](MultiLineProblem[T], ABC):

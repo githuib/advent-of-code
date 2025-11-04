@@ -3,10 +3,12 @@ from collections import Counter, deque
 from math import lcm
 from typing import TYPE_CHECKING
 
+from more_itertools import consume
+
 from advent_of_code.problems import MultiLineProblem
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Iterator
+    from collections.abc import Iterator
 
 
 class Module(ABC):
@@ -65,21 +67,18 @@ class _Problem(MultiLineProblem[int], ABC):
                 if isinstance(m_dest, ConjunctionModule):
                     m_dest.input_pulses[source] = False
 
-    def press_button(self, src: str = "", dst: str = "broadcaster") -> Iterable[bool]:
-        def pulses() -> Iterator[bool]:
-            pulse_queue = deque([(src, dst, False)])
-            while pulse_queue:
-                source, destination, value = pulse_queue.popleft()
-                yield value
-                if destination in self.modules:
-                    m_dest = self.modules[destination]
-                    resp = m_dest.on_pulse(value, source)
-                    if resp is not None:
-                        pulse_queue.extend(
-                            (destination, d, resp) for d in m_dest.destinations
-                        )
-
-        return list(pulses())
+    def press_button(self, src: str = "", dst: str = "broadcaster") -> Iterator[bool]:
+        pulse_queue = deque([(src, dst, False)])
+        while pulse_queue:
+            source, destination, value = pulse_queue.popleft()
+            yield value
+            if destination in self.modules:
+                m_dest = self.modules[destination]
+                resp = m_dest.on_pulse(value, source)
+                if resp is not None:
+                    pulse_queue.extend(
+                        (destination, d, resp) for d in m_dest.destinations
+                    )
 
 
 class Problem1(_Problem):
@@ -104,7 +103,7 @@ class Problem2(_Problem):
                 n, all_flip_flops_off = 0, False
                 while not all_flip_flops_off:
                     n += 1
-                    self.press_button("broadcaster", dest)
+                    consume(self.press_button("broadcaster", dest))
                     all_flip_flops_off = not any(f.state for f in flip_flops)
                 yield n
 

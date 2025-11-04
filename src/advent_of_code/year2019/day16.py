@@ -1,7 +1,7 @@
 from abc import ABC
 
 from advent_of_code.problems import OneLineProblem
-from advent_of_code.utils import compose_number
+from advent_of_code.utils.conversion import compose_number
 
 BASE_PATTERN = [0, 1, 0, -1]
 

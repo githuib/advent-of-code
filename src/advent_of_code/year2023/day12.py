@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from functools import cache
 from typing import TYPE_CHECKING
 
@@ -7,13 +7,16 @@ from advent_of_code.problems import MultiLineProblem
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+Criteria = tuple[int, ...]  # tuple because @cache wants something hashable
+
 
 @cache
-def find(springs: str, criteria: tuple[int, ...]) -> int:
+def find(springs: str, criteria: Criteria) -> int:
     if not criteria:
         return "#" not in springs
 
-    c, c_rest = criteria[0], criteria[1:]
+    c = criteria[0]
+    c_rest = criteria[1:]
     result: int = 0
     for i in range(len(springs) - sum(criteria) - len(criteria) + 2):
         if "#" in springs[:i]:
@@ -30,21 +33,28 @@ class _Problem(MultiLineProblem[int], ABC):
             springs, criteria = line.split()
             yield springs, tuple(int(c) for c in criteria.split(","))
 
+    @abstractmethod
+    def _find(self, s: str, c: Criteria) -> int:
+        pass
+
+    def solution(self) -> int:
+        return sum(self._find(s, c) for s, c in self.records())
+
 
 class Problem1(_Problem):
     test_solution = 21
     my_solution = 7674
 
-    def solution(self) -> int:
-        return sum(find(s, c) for s, c in self.records())
+    def _find(self, s: str, c: Criteria) -> int:
+        return find(s, c)
 
 
 class Problem2(_Problem):
     test_solution = 525152
     my_solution = 4443895258186
 
-    def solution(self) -> int:
-        return sum(find("?".join([s] * 5), c * 5) for s, c in self.records())
+    def _find(self, s: str, c: Criteria) -> int:
+        return find("?".join([s] * 5), c * 5)
 
 
 TEST_INPUT = """

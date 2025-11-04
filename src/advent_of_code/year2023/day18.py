@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area
 from advent_of_code.problems import MultiLineProblem
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

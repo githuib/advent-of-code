@@ -7,14 +7,12 @@ from more_itertools import nth
 from advent_of_code.problems import GridProblem, NoSolutionFoundError
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Set
 
-    from advent_of_code.geo2d import P2
+    from advent_of_code.utils.geo2d import P2
 
 
-def asteroids_grouped_by_angle(
-    laser: P2, objects: frozenset[P2]
-) -> dict[float, list[P2]]:
+def asteroids_grouped_by_angle(laser: P2, objects: Set[P2]) -> dict[float, list[P2]]:
     lx, ly = laser
     grouped_by_angle: dict[float, list[P2]] = {}
     for ax, ay in objects:

@@ -7,9 +7,9 @@ from parse import parse  # type: ignore[import-untyped]
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.geo2d import P2, Grid2
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import smart_range
+from advent_of_code.utils.data import smart_range
+from advent_of_code.utils.geo2d import P2, Grid2
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator

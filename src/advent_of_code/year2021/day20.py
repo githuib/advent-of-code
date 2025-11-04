@@ -1,14 +1,17 @@
 from abc import ABC
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from advent_of_code import log
-from advent_of_code.geo2d import Grid2
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import bits_to_int
+from advent_of_code.utils.conversion import bits_to_int
+from advent_of_code.utils.geo2d import Grid2
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class Image:
-    def __init__(self, input_lines: list[str], padding: int) -> None:
+    def __init__(self, input_lines: Iterable[str], padding: int) -> None:
         enhance_line, _, *image_lines = input_lines
         self._enhancement = [c == "#" for c in enhance_line]
         self._padding = padding + 1

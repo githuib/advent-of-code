@@ -1,8 +1,12 @@
 from abc import ABC
 from collections import deque
+from typing import TYPE_CHECKING
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class ALU:
@@ -10,7 +14,7 @@ class ALU:
         self.vars: dict[str, int] = {}
         self.inputs: deque[int] = deque([])
 
-    def run_program(self, lines: list[str], inputs: list[int]) -> None:
+    def run_program(self, lines: Iterable[str], inputs: Iterable[int]) -> None:
         self.vars = {"w": 0, "x": 0, "y": 0, "z": 0}
         self.inputs += inputs
         for line in lines:

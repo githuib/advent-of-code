@@ -4,7 +4,8 @@ from math import hypot
 from os import get_terminal_size
 from typing import TYPE_CHECKING, Literal, overload
 
-from advent_of_code.utils import pairwise_circular, pixel, tripletwise_circular
+from advent_of_code.utils.cli import pixel
+from advent_of_code.utils.data import pairwise_circular, tripletwise_circular
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator, Mapping

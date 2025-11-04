@@ -1,8 +1,9 @@
 from enum import IntEnum
 from itertools import batched
 
-from advent_of_code.utils import compare
-from advent_of_code.year2019.intcode import IntcodeProblem
+from advent_of_code.utils.math import compare
+
+from .intcode import IntcodeProblem
 
 
 class Tile(IntEnum):

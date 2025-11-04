@@ -5,9 +5,9 @@ from itertools import groupby
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.cycle_detection import detect_cycle
 from advent_of_code.problems import GridProblem
-from advent_of_code.utils import repeat_transform
+from advent_of_code.utils.cycle_detection import detect_cycle
+from advent_of_code.utils.data import repeat_transform
 
 Lines = Iterable[tuple[str, ...]]
 

@@ -1,10 +1,14 @@
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import bits_to_int
+from advent_of_code.utils.conversion import bits_to_int
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
-def winning_bit(codes: list[list[bool]], inverse: bool) -> bool:  # noqa: FBT001
+def winning_bit(codes: Sequence[list[bool]], *, inverse: bool) -> bool:
     # bit occurring in half or more of all first bits
     return (sum(first for first, *_ in codes) * 2 >= len(codes)) ^ inverse
 
@@ -15,7 +19,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
     @abstractmethod
     def process_codes_tail_rec(
-        self, codes: list[list[bool]], result: list[bool], *, inverse: bool
+        self, codes: Sequence[list[bool]], result: list[bool], *, inverse: bool
     ) -> list[bool]:
         pass
 
@@ -30,14 +34,14 @@ class Problem1(_Problem):
     my_solution = 1071734
 
     def process_codes_tail_rec(
-        self, codes: list[list[bool]], result: list[bool], *, inverse: bool
+        self, codes: Sequence[list[bool]], result: list[bool], *, inverse: bool
     ) -> list[bool]:
         if not codes[0]:
             return result
 
         return self.process_codes_tail_rec(
             [rest for _, *rest in codes],
-            [*result, winning_bit(codes, inverse)],
+            [*result, winning_bit(codes, inverse=inverse)],
             inverse=inverse,
         )
 
@@ -47,7 +51,7 @@ class Problem2(_Problem):
     my_solution = 6124992
 
     def process_codes_tail_rec(
-        self, codes: list[list[bool]], result: list[bool], *, inverse: bool
+        self, codes: Sequence[list[bool]], result: list[bool], *, inverse: bool
     ) -> list[bool]:
         if len(codes) == 0:
             return result
@@ -55,7 +59,7 @@ class Problem2(_Problem):
         if len(codes) == 1:
             return result + codes[0]
 
-        winner = winning_bit(codes, inverse)
+        winner = winning_bit(codes, inverse=inverse)
 
         return self.process_codes_tail_rec(
             [rest for first, *rest in codes if first == winner],

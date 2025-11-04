@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from advent_of_code.problems import NumberGridProblem
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterable, Iterator
 
 
 class _Problem(NumberGridProblem[int], ABC):
@@ -29,7 +29,7 @@ class Problem1(_Problem):
         )
 
 
-def visible_trees(t: int, trees: Iterator[int]) -> int:
+def visible_trees(t: int, trees: Iterable[int]) -> int:
     num_visible = 1
     for n in trees:
         if t <= n:

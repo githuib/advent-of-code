@@ -2,8 +2,7 @@ import argparse
 import sys
 from datetime import UTC, datetime
 
-from advent_of_code import solve
-from advent_of_code.problems import InputMode, PuzzleData, RunnerState
+from advent_of_code import InputMode, PuzzleData, RunnerState, solve
 
 
 def main() -> None:

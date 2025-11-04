@@ -3,8 +3,8 @@ from abc import ABC
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.geo2d import P2, all_directions
 from advent_of_code.problems import NumberGridProblem
+from advent_of_code.utils.geo2d import P2, all_directions
 
 
 def cell_str(_p: P2, v: int | None) -> str:

@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.geo2d import P2, Grid2
-from advent_of_code.year2019.intcode import IntcodeProblem
+from advent_of_code.utils.geo2d import P2, Grid2
+
+from .intcode import IntcodeProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator

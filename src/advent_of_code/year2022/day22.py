@@ -1,12 +1,16 @@
 from abc import ABC
 from itertools import batched
+from typing import TYPE_CHECKING
 
 from more_itertools import split_when
 
 from advent_of_code import log
-from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP
-from advent_of_code.geo3d import P3D, Dir3D, Rotation90deg3D, Trans3
 from advent_of_code.problems import MultiLineProblem, NoSolutionFoundError
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP
+from advent_of_code.utils.geo3d import P3D, Dir3D, Rotation90deg3D, Trans3
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Mapping
 
 DIRECTIONS = [RIGHT, DOWN, LEFT, UP]
 
@@ -110,7 +114,7 @@ class Problem2(_Problem):
             self.map_uv(f_dict, u, v): (u, v) for u, v in self.map_2d
         }
 
-    def map_uv(self, folding: dict[P2, tuple[P3D, P3D]], u: int, v: int) -> P3D:
+    def map_uv(self, folding: Mapping[P2, tuple[P3D, P3D]], u: int, v: int) -> P3D:
         right, up = folding[u // self.size, v // self.size]
         return P3D(
             *(
@@ -148,7 +152,7 @@ class Problem2(_Problem):
                 pos = P3D(x, new_y, z)
         return pos, transforms
 
-    def find_facing(self, face_coords: P2, transforms: list[Trans3]) -> int:
+    def find_facing(self, face_coords: P2, transforms: Iterable[Trans3]) -> int:
         facing_map = {Dir3D.left: 0, Dir3D.down: 1, Dir3D.right: 2, Dir3D.up: 3}
         for i in range(6):
             p, (_right, up) = self.folding[i]

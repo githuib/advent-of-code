@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import PRE_A, PRE_a
+from advent_of_code.utils.strings import PRE_A, PRE_a
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

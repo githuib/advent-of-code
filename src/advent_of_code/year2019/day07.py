@@ -3,7 +3,7 @@ from copy import copy
 from itertools import permutations
 from typing import TYPE_CHECKING
 
-from advent_of_code.year2019.intcode import IntcodeProblem
+from .intcode import IntcodeProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

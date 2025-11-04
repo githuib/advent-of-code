@@ -1,10 +1,14 @@
 from abc import ABC
 from enum import IntEnum
+from typing import TYPE_CHECKING
 
 from advent_of_code import log
-from advent_of_code.geo3d import P3D, Dir3D, Grid3D, Span3D
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import timed
+from advent_of_code.utils.cli import timed
+from advent_of_code.utils.geo3d import P3D, Dir3D, Grid3D, Span3D
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 class Mat(IntEnum):
@@ -12,7 +16,7 @@ class Mat(IntEnum):
     AIR = 1
 
 
-def exposed_sides(cubes: list[P3D]) -> int:
+def exposed_sides(cubes: Sequence[P3D]) -> int:
     sides = {side for cube in cubes for side in [cube * 2 + d for d in Dir3D.all]}
     return len(sides) * 2 - len(cubes) * 6
 

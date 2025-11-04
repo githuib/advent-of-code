@@ -1,10 +1,14 @@
 from abc import ABC
 from math import prod
 from operator import gt, lt
+from typing import TYPE_CHECKING
 
 from more_itertools import split_at
 
 from advent_of_code.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 Check = tuple[str, str, int]
 Rule = tuple[Check, str]
@@ -50,7 +54,7 @@ class Problem1(_Problem):
     test_solution = 19114
     my_solution = 331208
 
-    def process_ratings(self, ratings: dict[str, int], label: str) -> bool:
+    def process_ratings(self, ratings: Mapping[str, int], label: str) -> bool:
         state = self.next_state(label)
         if isinstance(state, bool):
             return state
@@ -76,7 +80,7 @@ class Problem2(_Problem):
     my_solution = 121464316215623
 
     def solution(self) -> int:
-        accepted_paths = []
+        accepted_paths: list[list[Check]] = []
 
         def traverse(state: bool | Workflow, checks: list[Check]) -> None:  # noqa: FBT001
             if isinstance(state, bool):

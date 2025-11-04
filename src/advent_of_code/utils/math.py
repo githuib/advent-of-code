@@ -13,3 +13,11 @@ def solve_quadratic(a: float, b: float, c: float) -> tuple[float, float]:
     squirt = sqrt(b**2 - 4 * a * c)
     left, right = (-b - squirt.real) / (2 * a), (-b + squirt.real) / (2 * a)
     return (left, right) if left < right else (right, left)
+
+
+def mods(x: int, y: int, shift: int = 0) -> int:
+    return (x - shift) % y + shift
+
+
+def compare(v1: int, v2: int) -> int:
+    return (v1 < v2) - (v1 > v2)

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from advent_of_code.problems import MultiLineProblem
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Sequence
 
 
 class Node(ABC):
@@ -80,7 +80,9 @@ class Leaf(Node):
 
 
 class Branch(Node):
-    def __init__(self, data: list | None, level: int, parent: Branch | None) -> None:
+    def __init__(
+        self, data: Sequence | None, level: int, parent: Branch | None
+    ) -> None:
         super().__init__(level, parent)
         self._data = data or []
         self.left: Dummy | Leaf | Branch = Dummy()
@@ -92,10 +94,10 @@ class Branch(Node):
         self.add_child(right, go_left=False)
 
     @property
-    def data(self) -> list | None:
+    def data(self) -> Sequence | None:
         return [self.left.data, self.right.data] if self._data else None
 
-    def add_child(self, data: int | list, *, go_left: bool) -> None:
+    def add_child(self, data: int | Sequence, *, go_left: bool) -> None:
         # kwargs = {"data": data, "level": self.level + 1, "parent": self}
         node: Dummy | Leaf | Branch
         node = (
@@ -146,7 +148,7 @@ class Branch(Node):
 
 
 class Root(Branch):
-    def __init__(self, data: list) -> None:
+    def __init__(self, data: Sequence) -> None:
         super().__init__(data, level=0, parent=None)
 
     def __add__(self, other: Root) -> Root:

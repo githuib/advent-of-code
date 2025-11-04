@@ -1,7 +1,8 @@
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import grouped, padded, split_at, transposed
+from advent_of_code.utils.data import grouped, transposed
+from advent_of_code.utils.strings import padded, split_at
 
 
 class _Problem(MultiLineProblem[str]):

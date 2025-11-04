@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import Unique
+from advent_of_code.utils.data import Unique
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
+    from collections.abc import Iterator, Sequence
 
 
 class Problem1(MultiLineProblem[int]):
@@ -17,7 +17,7 @@ class Problem1(MultiLineProblem[int]):
         self.sequences = [[int(i) for i in line.split()] for line in self.lines]
 
     def solution(self) -> int:
-        def diffs(seq: list[int]) -> Iterator[int]:
+        def diffs(seq: Sequence[int]) -> Iterator[int]:
             while any(seq):
                 yield seq[-1]
                 seq = [b - a for a, b in pairwise(seq)]

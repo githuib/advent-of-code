@@ -1,8 +1,8 @@
 from abc import ABC
 from dataclasses import dataclass
 
-from advent_of_code.geo3d import P3D, Span3D
 from advent_of_code.problems import ParsedProblem
+from advent_of_code.utils.geo3d import P3D, Span3D
 
 
 @dataclass

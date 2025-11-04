@@ -8,8 +8,8 @@ from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.search import DijkstraState
-from advent_of_code.utils import PRE_A
+from advent_of_code.utils.search import DijkstraState
+from advent_of_code.utils.strings import PRE_A
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -113,22 +113,20 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         )
 
     @property
-    def next_states(self) -> list[AmphipodState]:
-        return [
-            # all states that move an amphipod out of a room
-            self._move(room.first, r, h, into_room=False)
-            for r, room in enumerate(self.v.rooms)
-            if not room.is_clean and not room.is_empty
-            for h, amphipod in enumerate(self.v.hallway)
-            if not amphipod and self._can_move(r, h)
-        ] + [
-            # all states that move an amphipod into a room
-            self._move(amphipod, r, h, into_room=True)
-            for h, amphipod in enumerate(self.v.hallway)
-            if amphipod
-            for r, room in enumerate(self.v.rooms)
-            if room.can_add(amphipod) and self._can_move(r, h)
-        ]
+    def next_states(self) -> Iterator[AmphipodState]:
+        # all states that move an amphipod out of a room
+        for r, room in enumerate(self.v.rooms):
+            if not room.is_clean and not room.is_empty:
+                for h, amphipod in enumerate(self.v.hallway):
+                    if not amphipod and self._can_move(r, h):
+                        yield self._move(room.first, r, h, into_room=False)
+
+        # all states that move an amphipod into a room
+        for h, amphipod in enumerate(self.v.hallway):
+            if amphipod:
+                for r, room in enumerate(self.v.rooms):
+                    if room.can_add(amphipod) and self._can_move(r, h):
+                        yield self._move(amphipod, r, h, into_room=True)
 
     def to_lines(self) -> Iterator[str]:
         """
