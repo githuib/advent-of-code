@@ -15,7 +15,7 @@ class _Problem[T](MultiLineProblem[T], ABC):
         for line in self.lines:
             for s in line.split():
                 yield x
-                x += try_convert(int, s, 0)
+                x += try_convert(int, s, default=0)
 
 
 class Problem1(_Problem[int]):

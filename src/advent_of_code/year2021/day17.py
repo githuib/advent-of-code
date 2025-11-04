@@ -10,9 +10,7 @@ if TYPE_CHECKING:
 
 
 def shoot(
-    x_range: tuple[int, int],
-    y_range: tuple[int, int],
-    v: tuple[int, int],
+    x_range: tuple[int, int], y_range: tuple[int, int], v: tuple[int, int]
 ) -> int | None:
     min_x, max_x = x_range
     min_y, max_y = y_range

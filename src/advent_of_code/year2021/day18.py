@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class Node(ABC):
-    def __init__(self, level: int, parent: Branch | None):
+    def __init__(self, level: int, parent: Branch | None) -> None:
         self.parent = parent
         self.level = level
 
@@ -20,7 +20,7 @@ class Node(ABC):
         return False if self.parent is None else self.parent.left == self
 
     @abstractmethod
-    def add_to_leaf(self, data: int, go_left: bool) -> None:
+    def add_to_leaf(self, data: int, *, go_left: bool) -> None:
         pass
 
     @abstractmethod
@@ -33,12 +33,12 @@ class Node(ABC):
 
 
 class Dummy(Node):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(level=0, parent=None)
         self.magnitude = 0
         self.data = None
 
-    def add_to_leaf(self, data: int, go_left: bool) -> None:
+    def add_to_leaf(self, data: int, *, go_left: bool) -> None:
         pass
 
     def check_explodes(self) -> bool:
@@ -51,7 +51,7 @@ class Dummy(Node):
 class Leaf(Node):
     parent: Branch
 
-    def __init__(self, data: int, level: int, parent: Branch):
+    def __init__(self, data: int, level: int, parent: Branch) -> None:
         super().__init__(level, parent)
         self._data = data
 
@@ -63,7 +63,7 @@ class Leaf(Node):
     def magnitude(self) -> int:
         return self._data
 
-    def add_to_leaf(self, data: int, go_left: bool) -> None:  # noqa: ARG002
+    def add_to_leaf(self, data: int, *, go_left: bool) -> None:  # noqa: ARG002
         self._data += data
 
     def check_explodes(self) -> bool:
@@ -75,15 +75,12 @@ class Leaf(Node):
             return False
         # split that shit!
         n = self._data
-        self.parent.add_child(
-            data=[n // 2, n // 2 + n % 2],
-            go_left=self.is_left,
-        )
+        self.parent.add_child(data=[n // 2, n // 2 + n % 2], go_left=self.is_left)
         return True
 
 
 class Branch(Node):
-    def __init__(self, data: list | None, level: int, parent: Branch | None):
+    def __init__(self, data: list | None, level: int, parent: Branch | None) -> None:
         super().__init__(level, parent)
         self._data = data or []
         self.left: Dummy | Leaf | Branch = Dummy()
@@ -98,10 +95,7 @@ class Branch(Node):
     def data(self) -> list | None:
         return [self.left.data, self.right.data] if self._data else None
 
-    def child(self, go_left: bool) -> Branch | Leaf | Dummy:
-        return self.left if go_left else self.right
-
-    def add_child(self, data: int | list, go_left: bool) -> None:
+    def add_child(self, data: int | list, *, go_left: bool) -> None:
         # kwargs = {"data": data, "level": self.level + 1, "parent": self}
         node: Dummy | Leaf | Branch
         node = (
@@ -118,7 +112,7 @@ class Branch(Node):
     def magnitude(self) -> int:
         return self.left.magnitude * 3 + self.right.magnitude * 2
 
-    def find_parent(self, go_left: bool) -> Branch | None:
+    def find_parent(self, *, go_left: bool) -> Branch | None:
         curr = self
         parent = curr.parent
         while parent:
@@ -128,8 +122,9 @@ class Branch(Node):
             parent = curr.parent
         return None
 
-    def add_to_leaf(self, data: int, go_left: bool) -> None:
-        self.child(go_left).add_to_leaf(data, go_left)
+    def add_to_leaf(self, data: int, *, go_left: bool) -> None:
+        child = self.left if go_left else self.right
+        child.add_to_leaf(data, go_left=go_left)
 
     def check_explodes(self) -> bool:
         if self.level < 4:
@@ -151,7 +146,7 @@ class Branch(Node):
 
 
 class Root(Branch):
-    def __init__(self, data: list):
+    def __init__(self, data: list) -> None:
         super().__init__(data, level=0, parent=None)
 
     def __add__(self, other: Root) -> Root:

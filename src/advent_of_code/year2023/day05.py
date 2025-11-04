@@ -17,13 +17,13 @@ MapEntry = tuple[int, int, int]
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         seeds, *maps = split_at(self.lines, lambda x: x == "")
         self.seeds = [int(i) for i in seeds[0][7:].split()]
         items = [[[int(i) for i in vals.split()] for vals in m[1:]] for m in maps]
         self.maps = [sorted((s, s + o, d - s) for d, s, o in f) for f in items]
-        log.debug("Seeds: %s", self.seeds)
-        log.debug("Maps: %s", self.maps)
+        log.debug(f"Seeds: {self.seeds}")
+        log.debug(f"Maps: {self.maps}")
 
 
 class Problem1(_Problem):

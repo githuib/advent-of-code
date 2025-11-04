@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class ShortestPath[S: State](ABC):
-    def __init__(self, initial_state: S):
+    def __init__(self, initial_state: S) -> None:
         self.end_state = self._initial_state = initial_state
         self.visited = set[S]()
 
@@ -34,9 +34,8 @@ class ShortestPath[S: State](ABC):
                     self.to_queue(next_state)
             self._on_state_processed(state)
         else:
-            log.warning(
-                "Queue empty before reaching the end criteria at state:\n%s", state
-            )
+            log.warning("Queue empty before reaching the end criteria at state:")
+            log.warning(state)
         self.end_state = state
         return self
 
@@ -111,7 +110,7 @@ class State[C, V](ABC):
     prev: Self | None
     cost: int
 
-    def __init__(self: Self, variables: V, prev: Self | None = None, cost: int = 0):
+    def __init__(self: Self, variables: V, prev: Self = None, cost: int = 0) -> None:
         self.v = variables
         self.prev = prev
         self.cost = cost
@@ -142,8 +141,8 @@ class State[C, V](ABC):
             yield state
             state = state.prev
 
-    def move(self: Self, distance: int = 1, **kwargs) -> Self:
-        return self.__class__(self.v.__class__(**kwargs), self, self.cost + distance)
+    def move(self: Self, variables: V, *, distance: int = 1) -> Self:
+        return self.__class__(variables, self, self.cost + distance)
 
     def __hash__(self) -> int:
         return hash(self.v)
@@ -169,9 +168,6 @@ class DijkstraState[C, V](State[C, V], ABC):
 
 
 class AStarState[C, V](DijkstraState[C, V], ABC):
-    def __init__(self: Self, variables: V, prev: Self | None = None, cost: int = 0):
-        super().__init__(variables, prev, cost)
-
     def __lt__(self, other: object) -> bool:
         """By defining this, states with a lower score (cost + heuristic) will have priority in the queue."""
         if isinstance(other, AStarState):
@@ -185,4 +181,4 @@ class AStarState[C, V](DijkstraState[C, V], ABC):
     @property
     @abstractmethod
     def heuristic(self) -> int:
-        """Basically turns the Dijkstra algo into A*"""
+        """Basically turns the Dijkstra algo into A*."""

@@ -12,7 +12,9 @@ if TYPE_CHECKING:
     from advent_of_code.geo2d import P2
 
 
-def asteroids_grouped_by_angle(laser: P2, objects: set[P2]) -> dict[float, list[P2]]:
+def asteroids_grouped_by_angle(
+    laser: P2, objects: frozenset[P2]
+) -> dict[float, list[P2]]:
     lx, ly = laser
     grouped_by_angle: dict[float, list[P2]] = {}
     for ax, ay in objects:

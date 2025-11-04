@@ -3,8 +3,8 @@ from collections import deque
 
 from yachalk import chalk
 
-from advent_of_code import AOC, log
-from advent_of_code.geo2d import P2, Dir2
+from advent_of_code import log
+from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP
 from advent_of_code.problems import GridProblem
 
 
@@ -21,43 +21,30 @@ class _Problem(GridProblem[int], ABC):
             v = self.grid[p]
             new_dirs = []
             if v == "/":
-                new_dirs.append(
-                    {
-                        Dir2.left: Dir2.down,
-                        Dir2.down: Dir2.left,
-                        Dir2.right: Dir2.up,
-                        Dir2.up: Dir2.right,
-                    }[d]
-                )
+                new_dirs.append({LEFT: DOWN, DOWN: LEFT, RIGHT: UP, UP: RIGHT}[d])
             elif v == "\\":
-                new_dirs.append(
-                    {
-                        Dir2.left: Dir2.up,
-                        Dir2.up: Dir2.left,
-                        Dir2.right: Dir2.down,
-                        Dir2.down: Dir2.right,
-                    }[d]
-                )
-            elif v == "|" and d in (Dir2.left, Dir2.right):
-                new_dirs.append(Dir2.up)
-                new_dirs.append(Dir2.down)
-            elif v == "-" and d in (Dir2.up, Dir2.down):
-                new_dirs.append(Dir2.left)
-                new_dirs.append(Dir2.right)
+                new_dirs.append({LEFT: UP, UP: LEFT, RIGHT: DOWN, DOWN: RIGHT}[d])
+            elif v == "|" and d in (LEFT, RIGHT):
+                new_dirs.append(UP)
+                new_dirs.append(DOWN)
+            elif v == "-" and d in (UP, DOWN):
+                new_dirs.append(LEFT)
+                new_dirs.append(RIGHT)
             else:
                 new_dirs.append(d)
             new_beams = {(p, nd) for nd in new_dirs if (p, nd) not in visited}
             beams.extend(new_beams)
             visited |= new_beams
         points = {p for p, _ in visited}
-        if AOC.debugging:
-            log.debug(
-                self.grid.to_str(
-                    lambda q, c: chalk.hex("034").bg_hex("bdf")(c)
-                    if q in points
-                    else chalk.hex("222").bg_hex("888")(c),
-                )
+
+        log.lazy_debug(
+            lambda: self.grid.to_lines(
+                lambda q, c: chalk.hex("034").bg_hex("bdf")(c)
+                if q in points
+                else chalk.hex("222").bg_hex("888")(c)
             )
+        )
+
         return len(points)
 
 
@@ -66,7 +53,7 @@ class Problem1(_Problem):
     my_solution = 6902
 
     def solution(self) -> int:
-        return self.energized(((-1, 0), Dir2.right))
+        return self.energized(((-1, 0), RIGHT))
 
 
 class Problem2(_Problem):
@@ -79,11 +66,11 @@ class Problem2(_Problem):
             for p, d in [
                 ((x, y), d)
                 for x in range(self.grid.width)
-                for y, d in ((-1, Dir2.down), (self.grid.height, Dir2.up))
+                for y, d in ((-1, DOWN), (self.grid.height, UP))
             ]
             + [
                 ((x, y), d)
-                for x, d in ((-1, Dir2.right), (self.grid.width, Dir2.left))
+                for x, d in ((-1, RIGHT), (self.grid.width, LEFT))
                 for y in range(self.grid.height)
             ]
         )

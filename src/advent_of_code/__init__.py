@@ -1,12 +1,16 @@
 import logging
+from dataclasses import dataclass
 from enum import Enum
-from os import get_terminal_size
-from pprint import pformat
-from typing import ClassVar
+from importlib import import_module
+from logging import getLogger
+from typing import TYPE_CHECKING
 
-from yachalk import chalk
+from advent_of_code.log import AppLogger
 
-log = logging.getLogger(__name__)
+if TYPE_CHECKING:
+    from advent_of_code.problems import Problem
+
+log = AppLogger(getLogger(__name__))
 
 
 class InputMode(Enum):
@@ -15,64 +19,22 @@ class InputMode(Enum):
     NONE = "none"
 
 
-class LogFormatter(logging.Formatter):
-    def format(self, record):
-        prefix = "" if record.name == __name__ else "[%(name)s] "
-        if record.levelno < logging.WARNING and not prefix:
-            # Debugging & info: just print the raw message (which could already be formatted)
-            if isinstance(record.msg, str):
-                return logging.Formatter(prefix + "%(message)s").format(record)
-            return pformat(record.msg, width=get_terminal_size()[0])
-        # Warnings & errors: add prefix and color
-        msg = logging.Formatter(prefix + "%(levelname)s: %(message)s").format(record)
-        prefix, *_ = msg.split(record.message)
-        msg = msg.replace("\n", "\n" + prefix)
-        return chalk.hex(
-            {
-                logging.DEBUG: "888",
-                logging.INFO: "ccc",
-                logging.WARNING: "f80",
-                logging.ERROR: "f30",
-                logging.CRITICAL: "f30",
-            }[record.levelno]
-        )(msg)
+@dataclass
+class RunnerState:
+    input_mode: InputMode
+    debugging: bool = False
 
 
-class AOC:
-    input_mode: ClassVar[InputMode]
-    debugging: ClassVar[bool] = False
-    pycharm: ClassVar[bool] = False
-
-    @classmethod
-    def setup(cls, input_mode: InputMode, debugging: bool, pycharm: bool):
-        cls.input_mode, cls.debugging, cls.pycharm = input_mode, debugging, pycharm
-        log.setLevel(logging.DEBUG)
-        debug_handler = logging.StreamHandler()
-        debug_handler.addFilter(
-            lambda record: record.name == __name__ or record.levelno > logging.DEBUG
-        )
-        debug_handler.setLevel(logging.DEBUG if debugging else logging.INFO)
-        debug_handler.setFormatter(LogFormatter())
-        log.addHandler(debug_handler)
+@dataclass
+class PuzzleData:
+    year: int
+    day: int
+    part: int
 
 
-# def logging.debug(*args: object | Callable[[], object]) -> None:
-#     if not AOC.debugging:
-#         return
-#     if not args:
-#         print()
-#     for o in args:
-#         if callable(o):
-#             logging.debug(o())
-#         elif isinstance(o, str):
-#             print(o)
-#         else:
-#             pprint(o, width=get_terminal_size()[0])
-#
-#
-# def logging.debug_iter(it: Iterator[T]) -> Iterator[T]:
-#     if not AOC.debugging:
-#         return it
-#     orig, extra = tee(it)
-#     logging.debug(list(extra))
-#     return orig
+def solve[T](runner_state: RunnerState, data: PuzzleData) -> T | None:
+    log.setup(logging.DEBUG if runner_state.debugging else logging.INFO)
+    problem_module = import_module(f"{__name__}.year{data.year}.day{data.day:02d}")
+    problem_cls: type[Problem[T]] = getattr(problem_module, f"Problem{data.part}")
+    problem_cls.data, problem_cls.runner_state = data, runner_state
+    return problem_cls.solve()

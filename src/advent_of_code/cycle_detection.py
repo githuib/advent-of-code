@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from itertools import islice, tee
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -16,9 +16,11 @@ class Cycle:
     length: int
 
 
-def floyd[T](it: Iterator[T]) -> Cycle:
+def _floyd[T](it: Iterator[T]) -> Cycle:
     """
-    https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare
+    Floyd's ("tortoise and hare") cycle detection algorithm.
+
+    👉 https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare
     """
     it_tortoise, it_cousin, it_hare = tee(it, 3)
     for tortoise, hare in zip(it_tortoise, islice(it_hare, 1, None, 2), strict=False):
@@ -41,9 +43,11 @@ def floyd[T](it: Iterator[T]) -> Cycle:
     raise CycleNotFoundError
 
 
-def brent[T](it: Iterator[T]) -> Cycle:
+def _brent[T](it: Iterator[T]) -> Cycle:
     """
-    https://en.wikipedia.org/wiki/Cycle_detection#Brent's_algorithm
+    Brent's cycle detection algorithm.
+
+    👉 https://en.wikipedia.org/wiki/Cycle_detection#Brent's_algorithm
     """
     it_tortoise, it_cousin, it_hare = tee(it, 3)
     power = cycle_length = 1
@@ -65,3 +69,13 @@ def brent[T](it: Iterator[T]) -> Cycle:
         if tortoise == cousin:
             return Cycle(cycle_start, cycle_length)
     raise CycleNotFoundError
+
+
+def detect_cycle[T](
+    it: Iterator[T], *, algorithm: Literal["floyd", "brent"] = "brent"
+) -> Cycle:
+    match algorithm:
+        case "floyd":
+            return _floyd(it)
+        case "brent":
+            return _brent(it)

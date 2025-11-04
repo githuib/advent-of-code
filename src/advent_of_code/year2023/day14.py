@@ -5,7 +5,7 @@ from itertools import groupby
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.cycle_detection import brent
+from advent_of_code.cycle_detection import detect_cycle
 from advent_of_code.problems import GridProblem
 from advent_of_code.utils import repeat_transform
 
@@ -57,11 +57,8 @@ class Problem2(_Problem):
     my_solution = 96105
 
     def solution(self) -> int:
-        cycle = brent(
-            repeat_transform(
-                self.cols(),
-                transform=lambda c: list(tilt_cycle(c)),
-            )
+        cycle = detect_cycle(
+            repeat_transform(self.cols(), transform=lambda c: list(tilt_cycle(c)))
         )
         log.debug(cycle)
         return load(

@@ -4,11 +4,11 @@ from itertools import batched
 from more_itertools import split_when
 
 from advent_of_code import log
-from advent_of_code.geo2d import P2, Dir2
+from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP
 from advent_of_code.geo3d import P3D, Dir3D, Rotation90deg3D, Trans3
-from advent_of_code.problems import MultiLineProblem, NoSolutionFoundError, var
+from advent_of_code.problems import MultiLineProblem, NoSolutionFoundError
 
-DIRECTIONS = [Dir2.right, Dir2.down, Dir2.left, Dir2.up]
+DIRECTIONS = [RIGHT, DOWN, LEFT, UP]
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -74,8 +74,8 @@ class Problem2(_Problem):
 
     def __init__(self) -> None:
         super().__init__()
-        self.size = var(test=4, puzzle=50)
-        self.folding = var(
+        self.size = self.var(test=4, puzzle=50)
+        self.folding = self.var(
             test=[
                 #       u
                 # f  f  Fr

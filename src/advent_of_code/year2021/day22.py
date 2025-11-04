@@ -28,7 +28,7 @@ def __parse_state(s: str) -> int:
 class _Problem(ParsedProblem[tuple[int, int, int, int, int, int, int], int], ABC):
     line_pattern = "{:state} x={:d}..{:d},y={:d}..{:d},z={:d}..{:d}"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.cuboids = [
             Cuboid(Span3D(P3D(x1, y1, z1), P3D(x2, y2, z2)), s)
             for s, x1, x2, y1, y2, z1, z2 in self.parsed_input
@@ -64,7 +64,7 @@ class Problem1(_Problem):
     test_solution = 590784
     my_solution = 542711
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         problem_space = Span3D(P3D(-50, -50, -50), P3D(50, 50, 50))
         self.cuboids = [c for c in self.cuboids if c.span in problem_space]

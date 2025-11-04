@@ -6,7 +6,7 @@ from advent_of_code.problems import MultiLineProblem
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.height_map = defaultdict(
             lambda: 9,
             [

@@ -10,25 +10,25 @@ if TYPE_CHECKING:
 
 
 class Module(ABC):
-    def __init__(self, destinations: list[str]):
+    def __init__(self, destinations: list[str]) -> None:
         self.destinations = destinations
 
     @abstractmethod
-    def on_pulse(self, value: bool, sender: str) -> bool | None:
+    def on_pulse(self, value: bool, sender: str) -> bool | None:  # noqa: FBT001
         pass
 
 
 class BroadcastModule(Module):
-    def on_pulse(self, value: bool, _sender: str) -> bool | None:
+    def on_pulse(self, value: bool, _sender: str) -> bool | None:  # noqa: FBT001
         return value
 
 
 class FlipFlopModule(Module):
-    def __init__(self, destinations: list[str]):
+    def __init__(self, destinations: list[str]) -> None:
         super().__init__(destinations)
         self.state = False
 
-    def on_pulse(self, value: bool, _sender: str) -> bool | None:
+    def on_pulse(self, value: bool, _sender: str) -> bool | None:  # noqa: FBT001
         if value:
             return None
         self.state = not self.state
@@ -36,11 +36,11 @@ class FlipFlopModule(Module):
 
 
 class ConjunctionModule(Module):
-    def __init__(self, destinations: list[str]):
+    def __init__(self, destinations: list[str]) -> None:
         super().__init__(destinations)
         self.input_pulses: dict[str, bool] = {}
 
-    def on_pulse(self, value: bool, sender: str) -> bool | None:
+    def on_pulse(self, value: bool, sender: str) -> bool | None:  # noqa: FBT001
         self.input_pulses[sender] = value
         return not all(self.input_pulses.values())
 

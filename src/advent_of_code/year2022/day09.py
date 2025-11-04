@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class Knot:
-    def __init__(self, tail_size: int):
+    def __init__(self, tail_size: int) -> None:
         self.pos = 0, 0
         self.tail = Knot(tail_size - 1) if tail_size else None
 

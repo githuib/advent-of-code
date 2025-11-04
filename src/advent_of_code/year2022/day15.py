@@ -1,7 +1,13 @@
 from abc import ABC
 
-from advent_of_code.geo2d import P2, Dir2, Line2, intersect_segments_2, manhattan_dist_2
-from advent_of_code.problems import ParsedProblem, var
+from advent_of_code.geo2d import (
+    P2,
+    Line2,
+    intersect_segments_2,
+    manhattan_dist_2,
+    ordinal_directions,
+)
+from advent_of_code.problems import ParsedProblem
 
 
 def coverage(sensor: P2, beacon: P2, y: int) -> P2 | None:
@@ -34,7 +40,7 @@ class _Problem(ParsedProblem[tuple[int, int, int, int], int], ABC):
 
     def __init__(self) -> None:
         self.locations = [((sx, sy), (bx, by)) for sx, sy, bx, by in self.parsed_input]
-        self.size = var(test=10, puzzle=2_000_000)
+        self.size = self.var(test=10, puzzle=2_000_000)
 
 
 class Problem1(_Problem):
@@ -78,7 +84,7 @@ class Problem2(_Problem):
                 )
                 for (sx, sy), c in sensor_coverage
             ]
-            for dx, dy in Dir2.diagonal_neighbors
+            for dx, dy in ordinal_directions
         ]
 
         uncovered_gaps = {

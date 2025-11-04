@@ -16,8 +16,7 @@ Bracket = OpeningBracket | ClosingBracket
 
 
 def parse_char(
-    line: list[Bracket],
-    stack: list[OpeningBracket] | None = None,
+    line: list[Bracket], stack: list[OpeningBracket] = None
 ) -> tuple[list[OpeningBracket], ClosingBracket | None]:
     stack = stack or []
     if not line:
@@ -39,7 +38,7 @@ def parse_char(
     return stack, cast("ClosingBracket", c)
 
 
-def calc_missing_score(stack, score):
+def calc_missing_score(stack: list[OpeningBracket], score: int) -> int:
     if not stack:
         return score
     c, *stack = stack

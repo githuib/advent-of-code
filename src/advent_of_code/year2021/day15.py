@@ -7,7 +7,7 @@ from advent_of_code.utils import mods
 
 
 class Constants:
-    def __init__(self, cave: Grid2[int]):
+    def __init__(self, cave: Grid2[int]) -> None:
         self.cave = cave
         _, self.end_position = cave.span
 
@@ -24,7 +24,7 @@ class ChitonState(DijkstraState[Constants, Variables]):
     @property
     def next_states(self) -> list[ChitonState]:
         return [
-            self.move(distance=dist, position=pos)
+            self.move(Variables(pos), distance=dist)
             for pos, dist in self.c.cave.neighbors(self.v.position)
         ]
 

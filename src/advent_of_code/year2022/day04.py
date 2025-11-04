@@ -7,15 +7,12 @@ class _Problem(ParsedProblem[tuple[int, int, int, int], int]):
     line_pattern = "{:d}-{:d},{:d}-{:d}"
 
     @abstractmethod
-    def has_overlaps(self, s1, s2) -> bool:
+    def has_overlaps(self, s1: set[int], s2: set[int]) -> bool:
         pass
 
     def solution(self) -> int:
         return sum(
-            self.has_overlaps(
-                set(range(l1, h1 + 1)),
-                set(range(l2, h2 + 1)),
-            )
+            self.has_overlaps(set(range(l1, h1 + 1)), set(range(l2, h2 + 1)))
             for l1, h1, l2, h2 in self.parsed_input
         )
 

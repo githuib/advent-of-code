@@ -12,7 +12,7 @@ class _Problem(ParsedProblem[tuple[int, ...], int], ABC):
         "Each geode robot costs {:d} ore and {:d} obsidian."
     )
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
 

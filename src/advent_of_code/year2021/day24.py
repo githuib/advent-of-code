@@ -6,38 +6,42 @@ from advent_of_code.problems import MultiLineProblem
 
 
 class ALU:
-    def __init__(self):
-        self.vars = {}
-        self.inputs = None
+    def __init__(self) -> None:
+        self.vars: dict[str, int] = {}
+        self.inputs: deque[int] = deque([])
 
-    def run_program(self, lines, inputs):
+    def run_program(self, lines: list[str], inputs: list[int]) -> None:
         self.vars = {"w": 0, "x": 0, "y": 0, "z": 0}
-        self.inputs = deque(inputs)
+        self.inputs += inputs
         for line in lines:
             self.process(*line.split())
 
-    def process(self, instruction, var, *args):
-        if args:
-            arg = args[0]
-            try:
-                arg = int(arg)
-            except ValueError:
-                arg = self.vars[arg]
-        else:
-            arg = None
-        match instruction:
-            case "inp":
-                self.vars[var] = self.inputs.popleft()
-            case "add":
-                self.vars[var] += arg
-            case "mul":
-                self.vars[var] *= arg
-            case "div":
-                self.vars[var] //= arg
-            case "mod":
-                self.vars[var] %= arg
-            case "eql":
-                self.vars[var] = int(self.vars[var] == arg)
+    def process(self, instruction: str, var: str, arg: str = "") -> None:
+        if not arg:
+            assert instruction == "inp"
+            self.vars[var] = self.inputs.popleft()
+            return
+
+        try:
+            v = int(arg)
+        except ValueError:
+            v = self.vars[arg]
+
+        def calc(v1: int) -> int:
+            match instruction:
+                case "add":
+                    return v1 + v
+                case "mul":
+                    return v1 * v
+                case "div":
+                    return v1 // v
+                case "mod":
+                    return v1 % v
+                case "eql":
+                    return int(v1 == v)
+            return NotImplemented
+
+        self.vars[var] = calc(self.vars[var])
 
 
 class _Problem(MultiLineProblem[int], ABC):

@@ -1,17 +1,19 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from advent_of_code.geo2d import P2, Dir2
+from advent_of_code.geo2d import DOWN, LEFT, RIGHT, UP
 from advent_of_code.problems import MultiLineProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-DIRECTIONS = dict(zip("UDLR", Dir2.direct_neighbors, strict=False))
+    from advent_of_code.geo2d import P2
+
+DIRECTIONS = {"U": UP, "D": DOWN, "L": LEFT, "R": RIGHT}
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         def parsed_lines() -> Iterator[dict[P2, int]]:
             for line in self.lines:
                 x, y = 0, 0

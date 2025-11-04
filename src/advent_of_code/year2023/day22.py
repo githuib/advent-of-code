@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class Brick:
-    def __init__(self, p_min: P3D, p_max: P3D):
+    def __init__(self, p_min: P3D, p_max: P3D) -> None:
         self.p_min, self.p_max = p_min, p_max
         self.connected_bottom, self.connected_top = set[Brick](), set[Brick]()
 
@@ -24,7 +24,7 @@ class Brick:
         self.p_min += diff
         self.p_max += diff
 
-    def supporting(self: Self, foundation: set[Brick] | None = None) -> set[Brick]:
+    def supporting(self: Self, foundation: set[Brick] = None) -> set[Brick]:
         return {
             bt
             for bt in self.connected_top

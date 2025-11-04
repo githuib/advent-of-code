@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
-from advent_of_code.geo2d import P2, Dir2, Grid2, Range
+from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP, Grid2, Range
 from advent_of_code.problems import NumberGridProblem
 from advent_of_code.search import DijkstraState
 
@@ -10,10 +10,10 @@ if TYPE_CHECKING:
 
 
 class Constants:
-    def __init__(self, map_: Grid2, segment_range: Range):
-        self.map = map_
+    def __init__(self, grid: Grid2, segment_range: Range) -> None:
+        self.grid = grid
         self.min_segment, self.max_segment = segment_range
-        self.end = map_.width - 1, map_.height - 1
+        self.end = grid.width - 1, grid.height - 1
 
 
 class Variables(NamedTuple):
@@ -23,11 +23,11 @@ class Variables(NamedTuple):
 
 
 DIRS: dict[P2 | None, list[P2]] = {
-    Dir2.left: [Dir2.left, Dir2.up, Dir2.down],
-    Dir2.right: [Dir2.right, Dir2.up, Dir2.down],
-    Dir2.up: [Dir2.up, Dir2.left, Dir2.right],
-    Dir2.down: [Dir2.down, Dir2.left, Dir2.right],
-    None: Dir2.direct_neighbors,
+    LEFT: [LEFT, UP, DOWN],
+    RIGHT: [RIGHT, UP, DOWN],
+    UP: [UP, LEFT, RIGHT],
+    DOWN: [DOWN, LEFT, RIGHT],
+    None: [UP, DOWN, LEFT, RIGHT],
 }
 
 
@@ -42,19 +42,17 @@ class LavaState(DijkstraState[Constants, Variables]):
     def next_states(self: Self) -> Iterator[Self]:
         x, y = self.v.pos
         for dx, dy in DIRS[self.v.from_dir]:
-            p = (x + dx, y + dy)
+            pos = x + dx, y + dy
             same_dir = (dx, dy) == self.v.from_dir
             new_seg_length = self.v.seg_length + 1 if same_dir else 1
             if (
-                (p in self.c.map)
+                (pos in self.c.grid)
                 and (new_seg_length <= self.c.max_segment)
                 and (same_dir or not 0 < self.v.seg_length < self.c.min_segment)
             ):
                 yield self.move(
-                    pos=p,
-                    from_dir=(dx, dy),
-                    seg_length=new_seg_length,
-                    distance=self.c.map[p],
+                    Variables(pos, from_dir=(dx, dy), seg_length=new_seg_length),
+                    distance=self.c.grid[pos],
                 )
 
 

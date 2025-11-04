@@ -35,7 +35,7 @@ def check_rule(rating: int, comp_op: str, value: int) -> bool:
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         workflows, ratings = split_at(self.lines, lambda s: s == "")
         self.workflows = dict(parse_workflow(line) for line in workflows)
         self.ratings = [parse_rating(line) for line in ratings]
@@ -78,14 +78,15 @@ class Problem2(_Problem):
     def solution(self) -> int:
         accepted_paths = []
 
-        def traverse(state: bool | Workflow, checks: list[Check]) -> None:
+        def traverse(state: bool | Workflow, checks: list[Check]) -> None:  # noqa: FBT001
             if isinstance(state, bool):
                 if state:
                     accepted_paths.append(checks)
-            else:
+            elif isinstance(state, tuple):
                 rules, final_step = state
                 if rules:
-                    (check, next_state), *rest = rules
+                    rule, *rest = rules
+                    check, next_state = rule
                     traverse(self.next_state(next_state), [*checks, check])
                     traverse((rest, final_step), [*checks, inverse_check(check)])
                 else:

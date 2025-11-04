@@ -3,7 +3,8 @@ from cmath import sqrt
 
 def solve_quadratic(a: float, b: float, c: float) -> tuple[float, float]:
     """
-    Find x where ax^2 + bx + c = 0
+    Find x where ax^2 + bx + c = 0.
+
     >>> solve_quadratic(20.6, -10.3, 8.7)
     (0.25, 0.25)
     >>> solve_quadratic(2.5, 25.0, 20.0)

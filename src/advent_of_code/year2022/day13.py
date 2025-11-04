@@ -35,7 +35,7 @@ class Packet(list):
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.packets = [Packet(literal_eval(line)) for line in self.lines if line]
 
 

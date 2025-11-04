@@ -5,7 +5,7 @@ from advent_of_code.problems import OneLineProblem
 
 
 class _Problem(OneLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.a, self.b = self.line.split("-")
 
     @abstractmethod

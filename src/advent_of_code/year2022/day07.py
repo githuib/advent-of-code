@@ -47,21 +47,21 @@ class Dir:
 
 
 class SubDir(Dir):
-    def __init__(self, parent: Dir):
+    def __init__(self, parent: Dir) -> None:
         super().__init__()
         self._parent = parent
 
 
 class Root(Dir):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.add_dir("/")
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self._root = Root()
-        self._current_dir = self._root
+        self._current_dir: Dir = self._root
         for line in self.lines:
             if line.startswith("$"):
                 command = line[2:]
@@ -89,7 +89,7 @@ class Problem2(_Problem):
     my_solution = 2832508
 
     def solution(self) -> int:
-        return self._root.total_size_2(self._root.size - 40000000)
+        return self._root.total_size_2(self._root.size - 40000000) or 0
 
 
 TEST_INPUT = """

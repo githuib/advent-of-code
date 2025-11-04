@@ -1,3 +1,4 @@
+from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
 
 FUBAR = {"=": -2, "-": -1, "0": 0, "1": 1, "2": 2}
@@ -26,13 +27,13 @@ class Problem1(MultiLineProblem[str]):
 
     def solution(self) -> str:
         return fuck_all_up_beyond_repair(
-            sum(situation_normal(line) for line in self.lines),
+            sum(situation_normal(line) for line in self.lines)
         )
 
 
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
-        print(r"""
+        log.info(r"""
                 ___,@
                /  <
           ,_  /    \  _,

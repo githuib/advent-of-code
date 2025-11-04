@@ -3,23 +3,23 @@ from abc import ABC
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.geo2d import P2, Dir2
+from advent_of_code.geo2d import P2, all_directions
 from advent_of_code.problems import NumberGridProblem
+
+
+def cell_str(_p: P2, v: int | None) -> str:
+    return (
+        chalk.hex("332").bg_hex("111")(".")
+        if (v == 10 or v is None)
+        else chalk.hex("111").bg_hex("0af")(chr(v))
+        if (v > 10)
+        else chalk.hex("eee").bg_hex("848")(v)
+    )
 
 
 class _Problem(NumberGridProblem[int], ABC):
     def __init__(self) -> None:
-        log.debug(
-            self.grid.to_str(
-                lambda _, v: (
-                    chalk.hex("332").bg_hex("111")(".")
-                    if (v == 10 or v is None)
-                    else chalk.hex("111").bg_hex("0af")(chr(v))
-                    if (v > 10)
-                    else chalk.hex("eee").bg_hex("848")(v)
-                )
-            )
-        )
+        log.lazy_debug(lambda: self.grid.to_lines(cell_str))
 
         self.symbols_parts: dict[P2, list[P2]] = {}
         self.parts: dict[P2, int] = {}
@@ -30,9 +30,7 @@ class _Problem(NumberGridProblem[int], ABC):
                 val = self.grid[x, y]
                 if val < 10:
                     curr_num += str(val)
-                    for n, v in self.grid.neighbors(
-                        (x, y), directions=Dir2.all_neighbors
-                    ):
+                    for n, v in self.grid.neighbors((x, y), directions=all_directions):
                         if v > 10:
                             curr_symbol = n
                 if (val >= 10 and curr_num != "") or x == self.grid.width - 1:

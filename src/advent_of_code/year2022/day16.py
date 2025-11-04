@@ -9,7 +9,7 @@ class _Problem(ParsedProblem[tuple[int, ...], int], ABC):
     # _regex_pattern = r'Valve (\w+) has flow rate=(\d+); tunnel[s]? lead[s]? to valve[s]? (?P<valves>.*)'
     # _regex_converters = [str, int, lambda s: s.split(', ')]
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
         # print(self.parsed_regex)
 

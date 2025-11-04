@@ -38,7 +38,7 @@ class Problem2(Problem1):
     test_solution = 5905
     my_solution = 251421071
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.cards["J"] = 1
 
     def hand_type(self, hand: Counter[int]) -> list[int]:

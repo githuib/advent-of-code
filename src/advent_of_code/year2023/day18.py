@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from advent_of_code.geo2d import P2, Dir2, grid_area
+from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area
 from advent_of_code.problems import MultiLineProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-DIRS = [Dir2.right, Dir2.down, Dir2.left, Dir2.up]
+DIRS = [RIGHT, DOWN, LEFT, UP]
 
 
 class _Problem(MultiLineProblem[int], ABC):

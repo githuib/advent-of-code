@@ -18,7 +18,7 @@ def exposed_sides(cubes: list[P3D]) -> int:
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.lava = [P3D.from_str(line) for line in self.lines]
 
 
@@ -51,18 +51,13 @@ class Problem2(_Problem):
                     stack.append(neighbor)
 
     def solution_a(self) -> int:
-        """
-        Approach A: Locate trapped air and subtract the
-        exposed air sides from the exposed lava sides.
-        """
+        """Approach A: Locate trapped air and subtract the exposed air sides from the exposed lava sides."""
         return exposed_sides(self.lava) - exposed_sides(
             [cube for cube in self.span.points if cube not in self.lava_and_outside]
         )
 
     def solution_b(self) -> int:
-        """
-        Approach B: Count the sides of each cube that border an outside cube.
-        """
+        """Approach B: Count the sides of each cube that border an outside cube."""
         return sum(
             self.lava_and_outside.get(neighbor, 0)
             for cube in self.lava
@@ -73,12 +68,8 @@ class Problem2(_Problem):
         solution_a, ta, ta_str = timed(self.solution_a)
         solution_b, tb, tb_str = timed(self.solution_b)
         assert solution_a == solution_b
-        log.info(
-            "Runtime solution A: %s %s", ta_str, "<-- congrats!" if ta <= tb else ""
-        )
-        log.info(
-            "Runtime solution B: %s %s", tb_str, "<-- congrats!" if tb <= ta else ""
-        )
+        log.info(f"Runtime solution A: {ta_str}{' <-- congrats!' if ta <= tb else ''}")
+        log.info(f"Runtime solution B: {tb_str}{' <-- congrats!' if tb <= ta else ''}")
         return solution_a
 
 

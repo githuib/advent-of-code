@@ -1,21 +1,21 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from advent_of_code.geo2d import P2, Dir2, grid_area, loop_length
+from advent_of_code.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area, loop_length
 from advent_of_code.problems import GridProblem, NoSolutionFoundError
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 CONNECTIONS = {
-    "S": Dir2.direct_neighbors,
+    "S": (UP, DOWN, LEFT, RIGHT),
     ".": (),
-    "|": (Dir2.up, Dir2.down),
-    "-": (Dir2.left, Dir2.right),
-    "L": (Dir2.up, Dir2.right),
-    "J": (Dir2.left, Dir2.up),
-    "7": (Dir2.left, Dir2.down),
-    "F": (Dir2.down, Dir2.right),
+    "|": (UP, DOWN),
+    "-": (LEFT, RIGHT),
+    "L": (UP, RIGHT),
+    "J": (LEFT, UP),
+    "7": (LEFT, DOWN),
+    "F": (DOWN, RIGHT),
 }
 
 
@@ -69,7 +69,7 @@ class Problem2(_Problem):
 #                 return '?'  # should never happen
 #
 #     log.debug(' ')
-#     log.debug(lambda: self.grid.to_str(lambda p, v: color(v, p in outside if outside else False)))
+#     log.lazy_debug(lambda: self.grid.to_str(lambda p, v: color(v, p in outside if outside else False)))
 
 
 # TEST_INPUT = """

@@ -22,8 +22,7 @@ class Problem1(_Problem):
             return input_
         phase_setting, *remaining_phase_settings = phase_settings
         return self.output_for(
-            remaining_phase_settings,
-            input_=self.computer.run(phase_setting, input_),
+            remaining_phase_settings, input_=self.computer.run(phase_setting, input_)
         )
 
     def solution(self) -> int:

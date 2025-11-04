@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, NamedTuple, Self
 
 from more_itertools import last
 
-from advent_of_code import AOC, log
-from advent_of_code.problems import FatalError, GridProblem, InputMode, var
+from advent_of_code import log
+from advent_of_code.problems import FatalError, GridProblem
 from advent_of_code.search import BFSState
 from advent_of_code.utils import repeat_transform
 
@@ -31,13 +31,13 @@ class GardenState(BFSState[Constants, Variables]):
 
     @property
     def next_states(self: Self) -> Iterable[Self]:
-        for p, v in self.c.grid.neighbors(self.v.pos):
+        for pos, v in self.c.grid.neighbors(self.v.pos):
             if v != "#":
-                yield self.move(pos=p, count_me=not self.v.count_me)
+                yield self.move(Variables(pos, count_me=not self.v.count_me))
 
 
 class _Problem(GridProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.start = self.grid.point_with_value("S")
 
     def num_garden_plots_slow_af(self, steps: int) -> int:
@@ -58,7 +58,7 @@ class Problem1(_Problem):
     my_solution = 3591
 
     def solution(self) -> int:
-        return self.num_garden_plots(var(test=6, puzzle=64))
+        return self.num_garden_plots(self.var(test=6, puzzle=64))
 
 
 class Problem2(_Problem):
@@ -66,7 +66,7 @@ class Problem2(_Problem):
     my_solution = 598044246091826
 
     def infinite_plots(self, steps: int) -> int:
-        if AOC.input_mode == InputMode.TEST:
+        if self.is_test_run:
             msg = "This approach only works for the puzzle data!"
             raise FatalError(msg)
         size, (center, _) = self.grid.width, self.start
@@ -78,7 +78,7 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         self.grid.infinite = True
-        if AOC.input_mode == InputMode.TEST:
+        if self.is_test_run:
             for i, s in [
                 (6, 16),
                 (10, 50),
@@ -89,11 +89,7 @@ class Problem2(_Problem):
             ]:  # (5000, 16733044)
                 ans = self.num_garden_plots(i)
                 log.info(
-                    "Checking input %d: %s == %s -> %s",
-                    i,
-                    s,
-                    ans,
-                    "👌" if ans == s else "Nope",
+                    f"Checking input {i}: {s} == {ans} -> {'👌' if ans == s else 'Nope'}"
                 )
             return 0
         return self.infinite_plots(26501365)

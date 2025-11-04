@@ -1,49 +1,66 @@
-from collections.abc import Callable, Iterable, Iterator, Mapping
 from dataclasses import dataclass
 from functools import cached_property
 from math import hypot
 from os import get_terminal_size
-from typing import ClassVar, Literal, overload
+from typing import TYPE_CHECKING, Literal, overload
 
-from advent_of_code.utils import pairwise_circular, pixel, triplewise_circular
+from advent_of_code.utils import pairwise_circular, pixel, tripletwise_circular
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable, Iterator, Mapping
 
 P2 = tuple[int, int]
 Range = tuple[int, int]
 Line2 = tuple[P2, P2]
 
 
-class Dir2:
-    up = (0, -1)
-    down = (0, 1)
-    left = (-1, 0)
-    right = (1, 0)
+# class D2:
+UP = 0, -1
+DOWN = 0, 1
+LEFT = -1, 0
+RIGHT = 1, 0
 
-    direct_neighbors: ClassVar[list[P2]] = [up, down, left, right]
+LEFT_UP = -1, -1
+LEFT_DOWN = -1, 1
+RIGHT_UP = 1, -1
+RIGHT_DOWN = 1, 1
 
-    left_up = (-1, -1)
-    left_down = (-1, 1)
-    right_up = (1, -1)
-    right_down = (1, 1)
 
-    diagonal_neighbors: ClassVar[list[P2]] = [left_down, right_up, left_up, right_down]
+# Side = Literal[LEFT, RIGHT]
+sides: list[P2] = [LEFT, RIGHT]
 
-    all_neighbors: ClassVar[list[P2]] = [
-        up,
-        down,
-        left,
-        right,
-        left_up,
-        left_down,
-        right_up,
-        right_down,
-    ]
+# CardinalDirection = Literal[UP, DOWN] | Side
+cardinal_directions: list[P2] = [UP, DOWN, *sides]
+
+# OrdinalDirection = Literal[LEFT_UP, RIGHT_UP, LEFT_DOWN, RIGHT_DOWN]
+ordinal_directions: list[P2] = [LEFT_UP, RIGHT_UP, LEFT_DOWN, RIGHT_DOWN]
+
+# Direction = CardinalDirection | OrdinalDirection
+all_directions: list[P2] = [*cardinal_directions, *ordinal_directions]
+
+Side = Literal["L", "R"]
+CardinalDirection = Literal["U", "D"] | Side
+
+
+def rotate(direction: CardinalDirection, side: Side) -> CardinalDirection:
+    # (curr_dir + (1 if direction == "R" else -1)) % 4
+    match (direction, side):
+        case ("U", "L") | ("D", "R"):
+            return "L"
+        case ("U", "R") | ("D", "L"):
+            return "R"
+        case ("L", "R") | ("R", "L"):
+            return "U"
+        case ("L", "L") | ("R", "R"):
+            return "D"
+    raise NotImplementedError
 
 
 def neighbors_2(
-    pos: P2, points: Iterable[P2] | None = None, directions: Iterable[P2] | None = None
+    pos: P2, points: Iterable[P2] = None, directions: Iterable[P2] = None
 ) -> Iterator[P2]:
     x, y = pos
-    for dx, dy in directions or Dir2.direct_neighbors:
+    for dx, dy in directions or cardinal_directions:
         new_pos = x + dx, y + dy
         if points is None or new_pos in points:
             yield new_pos
@@ -56,6 +73,8 @@ def manhattan_dist_2(p1: P2, p2: P2) -> int:
 
 def loop_length(points: Iterable[P2]) -> int:
     """
+    Circumference of polygon.
+
     >>> loop_length(
     ...     [(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)]
     ... )
@@ -66,6 +85,8 @@ def loop_length(points: Iterable[P2]) -> int:
 
 def area(points: Iterable[P2]) -> int:
     """
+    Area of polygon.
+
     >>> area([(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)])
     28
     """
@@ -73,15 +94,17 @@ def area(points: Iterable[P2]) -> int:
         abs(
             sum(
                 x2 * (y3 - y1)
-                for (_, y1), (x2, _), (_, y3) in triplewise_circular(points)
+                for (_, y1), (x2, _), (_, y3) in tripletwise_circular(points)
             )
         )
         // 2
     )
 
 
-def grid_area(points: Iterable[P2], include_loop: bool = True) -> int:
+def grid_area(points: Iterable[P2], *, include_loop: bool = True) -> int:
     """
+    Area of grid.
+
     >>> grid_area(
     ...     [(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)]
     ... )
@@ -102,11 +125,13 @@ def cross_2(p1: P2, p2: P2) -> int:
 
 
 def intersect_2(
-    line_1: Line2, line_2: Line2, segments: bool
+    line_1: Line2, line_2: Line2, *, segments: bool
 ) -> tuple[float, float] | None:
     """
-    https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
-    https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
+    Intersection of two lines.
+
+    👉 https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
+    👉 https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment.
     """
     (xs1, ys1), (xe1, ye1) = s1, e1 = line_1
     (xs2, ys2), (xe2, ye2) = s2, e2 = line_2
@@ -129,49 +154,50 @@ def intersect_2(
 
 
 def intersect_lines_2(line_1: Line2, line_2: Line2) -> tuple[float, float] | None:
-    """
-    https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
-    """
+    """https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line."""
     return intersect_2(line_1, line_2, segments=False)
 
 
 def intersect_segments_2(line_1: Line2, line_2: Line2) -> tuple[float, float] | None:
-    """
-    https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment
-    """
+    """https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment."""
     return intersect_2(line_1, line_2, segments=True)
 
 
 class Grid2[E](dict[P2, E]):
     def __init__(
         self,
-        d: Mapping[P2, E] | Iterable[P2] | None = None,
-        default: E = None,
+        d: Mapping[P2, E] | Iterable[tuple[P2, E]] | None = None,
+        # default: E = None,
+        *,
         infinite: bool = False,
-    ):
-        if isinstance(d, Mapping):
-            super().__init__(d)
-        elif isinstance(d, Iterable) and default is not None:
-            super().__init__(dict.fromkeys(d, default))
-        else:
-            super().__init__({})
+    ) -> None:
+        # if isinstance(d, Mapping | Iterable):
+        #     super().__init__(d)
+        # # elif isinstance(d, Iterable) and default is not None:
+        # #     # super().__init__(dict.fromkeys(d, default))
+        # #     super().__init__(dict.fromkeys(d, default))
+        # else:
+        #     super().__init__({})
+        super().__init__(d or {})
         self.infinite = infinite
         if infinite:
             # make sure current width & height are cached
             _ = self.size
 
     @classmethod
+    def from_points(cls, points: Iterable[P2], value: E) -> Grid2[E]:
+        return Grid2(dict.fromkeys(points, value))
+
+    @classmethod
     def from_lines(cls: type[Grid2], lines: list[str]) -> Grid2[str]:
         return Grid2(
-            {
-                (x, y): element
-                for y, line in enumerate(lines)
-                for x, element in enumerate(line)
-            }
+            ((x, y), element)
+            for y, line in enumerate(lines)
+            for x, element in enumerate(line)
         )
 
     def converted[C](self: Grid2[E], converter: Callable[[E], C]) -> Grid2[C]:
-        return Grid2({p: converter(v) for p, v in self.items()})
+        return Grid2((p, converter(v)) for p, v in self.items())
 
     def __getitem__(self, key: P2) -> E:
         if self.infinite:
@@ -206,65 +232,62 @@ class Grid2[E](dict[P2, E]):
     def neighbors(
         self,
         pos: P2,
+        *,
         include_values: Literal[False],
-        directions: Iterable[P2] | None = None,
+        directions: Iterable[P2] = None,
     ) -> Iterator[P2]: ...
 
     @overload
     def neighbors(
         self,
         pos: P2,
+        directions: Iterable[P2] = None,
+        *,
         include_values: Literal[True] = True,
-        directions: Iterable[P2] | None = None,
     ) -> Iterator[tuple[P2, E]]: ...
 
     def neighbors(
-        self,
-        pos: P2,
-        include_values: bool = True,
-        directions: Iterable[P2] | None = None,
+        self, pos: P2, directions: Iterable[P2] = None, *, include_values: bool = True
     ) -> Iterator[P2 | tuple[P2, E]]:
         for n in neighbors_2(pos, None if self.infinite else self, directions):
             yield (n, self[n]) if include_values else n
 
     def point_with_value(self, value: E) -> P2:
-        points = self.points_with_value(value)
-        assert len(points) == 1
-        return points.pop()
+        try:
+            point, *_ = self.points_with_value(value)
+        except ValueError as e:
+            raise LookupError from e
+        else:
+            return point
 
-    def points_with_value(self, *value: E) -> set[P2]:
+    def points_with_value(self, *value: E) -> frozenset[P2]:
         return self.points_with_values(value)
 
-    def points_with_values(self, values: Iterable[E]) -> set[P2]:
-        return {p for p, v in self.items() if v in values}
+    def points_with_values(self, values: Iterable[E]) -> frozenset[P2]:
+        return frozenset(p for p, v in self.items() if v in values)
 
-    def to_str(
+    def to_lines(
         self,
-        value_func: Callable[[P2, E | None], str] | None = None,
-        min_x: int | None = None,
-        max_x: int | None = None,
-        min_y: int | None = None,
-        max_y: int | None = None,
-    ) -> str:
+        value_func: Callable[[P2, E | None], str] = None,
+        min_x: int = None,
+        max_x: int = None,
+        min_y: int = None,
+        max_y: int = None,
+    ) -> Iterator[str]:
         (x_min, y_min), (x_max, y_max) = self.span
         xl, yl = min_x or x_min, min_y or y_min
         xh, yh = max_x or x_max, max_y or y_max
         max_width = get_terminal_size()[0]
-        return (
-            "\n".join(
-                "".join(
-                    value_func((x, y), self.get((x, y)))
-                    if value_func
-                    else pixel(self.get((x, y)))
-                    for x in range(xl, min(xl + max_width, xh + 1))
-                )
-                for y in range(yl, yh + 1)
+        for y in range(yl, yh + 1):
+            yield "".join(
+                value_func((x, y), self.get((x, y)))
+                if value_func
+                else pixel(self.get((x, y)))
+                for x in range(xl, min(xl + max_width, xh + 1))
             )
-            + "\n"
-        )
 
-    def __repr__(self) -> str:
-        return self.to_str()
+    # def __repr__(self) -> str:
+    #     return "\n".join(self.to_lines())
 
 
 # class NumberMat2(Mat2[int]):
@@ -399,7 +422,7 @@ class P2D:
 # class Matrix2D(dict[P2D, int]):
 #     def __init__(
 #         self,
-#         d: Mapping[P2D, int] | Iterable[P2D] | Mapping[P2, int] | Iterable[P2] | None = None,
+#         d: Mapping[P2D, int] | Iterable[P2D] | Mapping[P2, int] | Iterable[P2] = None,
 #     ):
 #         d = d or {}
 #         items: Iterable[tuple[P2D | P2, int]]

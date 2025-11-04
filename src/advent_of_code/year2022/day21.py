@@ -86,7 +86,7 @@ class Operation(Node):
     def prune(self) -> Node:
         return self.left.prune().merge(self.op, self.right.prune())
 
-    def _op_left(self, result: int):
+    def _op_left(self, result: int) -> int:
         left = self.left.value
         match self.op:
             case "+":
@@ -100,7 +100,7 @@ class Operation(Node):
             case _:
                 raise ValueError
 
-    def _op_right(self, result: int):
+    def _op_right(self, result: int) -> int:
         right = self.right.value
         match self.op:
             case "+":
@@ -115,7 +115,7 @@ class Operation(Node):
                 raise ValueError
 
     def solve_equation(self, result: int = 0) -> int:
-        log.debug("%s = %d", self, result)
+        log.debug(f"{self} = {result}")
         if isinstance(self.right, Number):
             return self.left.solve_equation(self._op_right(result))
         if isinstance(self.left, Number):
@@ -124,7 +124,7 @@ class Operation(Node):
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         Node.jobs = {line[:4]: parse_job(line[6:]) for line in self.lines}
 
 
@@ -144,7 +144,7 @@ class Problem2(_Problem):
         left, _, right = Node.jobs["root"]
         Node.variable = "humn"
         result = Operation.from_monkeys(left, "-", right).solve_equation()
-        log.debug("%s = %d", SYMBOLS[Node.variable], result)
+        log.debug(f"{SYMBOLS[Node.variable]} = {result}")
         return result
 
 

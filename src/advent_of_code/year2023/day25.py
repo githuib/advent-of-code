@@ -21,9 +21,7 @@ class Problem1(MultiLineProblem[int]):
         # )
         return prod(
             len(c)
-            for c in Graph.ListDict(
-                {line[:3]: line[5:].split() for line in self.lines},
-            )
+            for c in Graph.ListDict({line[:3]: line[5:].split() for line in self.lines})
             .mincut()
             .partition
         )

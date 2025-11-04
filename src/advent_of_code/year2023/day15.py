@@ -6,6 +6,8 @@ from advent_of_code.problems import OneLineProblem
 
 def hash_(s: str) -> int:
     """
+    Hashish.
+
     >>> hash_("HASH")
     52
     """
@@ -13,7 +15,7 @@ def hash_(s: str) -> int:
 
 
 class _Problem(OneLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.operations = self.input.split(",")
 
 

@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         def parsed() -> Iterator[list[str]]:
             for line in self.lines:
                 yield line.split(" => ")

@@ -4,7 +4,7 @@ from advent_of_code.problems import MultiLineProblem
 
 
 class Board:
-    def __init__(self, input_lines: list[str]):
+    def __init__(self, input_lines: list[str]) -> None:
         # parse 5 x 5 bingo board from input
         self.data = [[int(x) for x in line.split()] for line in input_lines]
         # data with rows and columns swapped

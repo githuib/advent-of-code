@@ -4,7 +4,7 @@ from itertools import combinations
 from advent_of_code import log
 from advent_of_code.geo2d import intersect_lines_2
 from advent_of_code.geo3d import P3D, Grid3D
-from advent_of_code.problems import NoSolutionFoundError, ParsedProblem, var
+from advent_of_code.problems import NoSolutionFoundError, ParsedProblem
 
 Trajectory = tuple[P3D, P3D]
 
@@ -16,33 +16,34 @@ class _Problem(ParsedProblem[Trajectory, int], ABC):
         self.hailstone_pairs = set(combinations(self.parsed_input, 2))
 
 
-def check(h1: Trajectory, h2: Trajectory) -> bool:
-    check_range = var(test=(7, 27), puzzle=(200_000_000_000_000, 400_000_000_000_000))
-    (x1, y1, _), (vx1, vy1, _) = h1
-    (x2, y2, _), (vx2, vy2, _) = h2
-    i = intersect_lines_2(
-        ((x1, y1), (x1 + vx1, y1 + vy1)), ((x2, y2), (x2 + vx2, y2 + vy2))
-    )
-    if i is None:
-        return False
-    x, y = i
-    r_min, r_max = check_range
-    return (
-        r_min <= x <= r_max
-        and r_min <= y <= r_max
-        and (x - x1) * vx1 >= 0
-        and (y - y1) * vy1 >= 0
-        and (x - x2) * vx2 >= 0
-        and (y - y2) * vy2 >= 0
-    )
-
-
 class Problem1(_Problem):
     test_solution = 2
     my_solution = 15593
 
+    def check(self, h1: Trajectory, h2: Trajectory) -> bool:
+        check_range = self.var(
+            test=(7, 27), puzzle=(200_000_000_000_000, 400_000_000_000_000)
+        )
+        (x1, y1, _), (vx1, vy1, _) = h1
+        (x2, y2, _), (vx2, vy2, _) = h2
+        i = intersect_lines_2(
+            ((x1, y1), (x1 + vx1, y1 + vy1)), ((x2, y2), (x2 + vx2, y2 + vy2))
+        )
+        if i is None:
+            return False
+        x, y = i
+        r_min, r_max = check_range
+        return (
+            r_min <= x <= r_max
+            and r_min <= y <= r_max
+            and (x - x1) * vx1 >= 0
+            and (y - y1) * vy1 >= 0
+            and (x - x2) * vx2 >= 0
+            and (y - y2) * vy2 >= 0
+        )
+
     def solution(self) -> int:
-        return sum(check(h1, h2) for h1, h2 in self.hailstone_pairs)
+        return sum(self.check(h1, h2) for h1, h2 in self.hailstone_pairs)
 
 
 class Problem2(_Problem):
@@ -94,7 +95,9 @@ class Problem2(_Problem):
         p_rock = P3D(
             px, round(p1.y + (v1.y - v_rock.y) * t), round(p1.z + (v1.z - v_rock.z) * t)
         )
-        log.debug("Position: %s\nVelocity: %s\nTime: %d", p_rock, v_rock, t)
+        log.debug(f"Position: {p_rock}")
+        log.debug(f"Velocity: {v_rock}")
+        log.debug(f"Time: {t}")
         return p_rock.manhattan_length
 
 

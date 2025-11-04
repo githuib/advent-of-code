@@ -1,11 +1,13 @@
 from abc import ABC
 from collections import deque
+from functools import partial
 from itertools import count, cycle
 from typing import TYPE_CHECKING
 
 from more_itertools import nth_or_last, unzip
 
-from advent_of_code.cycle_detection import brent
+from advent_of_code import log
+from advent_of_code.cycle_detection import detect_cycle
 from advent_of_code.problems import OneLineProblem
 from advent_of_code.utils import pixel
 
@@ -28,22 +30,19 @@ def occludes_with(shape: list[int], pattern: deque[int], y: int) -> bool:
     return any(i <= y and pattern[y - i] & row for i, row in enumerate(shape))
 
 
-def print_board(shape: list[int], pattern: deque[int], y: int) -> None:
+def board_str(shape: list[int], pattern: deque[int], y: int) -> Iterator[str]:
     for i, row in enumerate(pattern):
-        print(
-            "".join(
-                pixel(
-                    2
-                    if (
-                        0 <= (s := y - min(0, y - len(shape) + 1) - i) < len(shape)
-                        and shape[s] >> j & 1
-                    )
-                    else row >> j & 1
+        yield "".join(
+            pixel(
+                2
+                if (
+                    0 <= (s := y - min(0, y - len(shape) + 1) - i) < len(shape)
+                    and shape[s] >> j & 1
                 )
-                for j in range(6, -1, -1)
+                else row >> j & 1
             )
+            for j in range(6, -1, -1)
         )
-    print()
 
 
 class _Problem(OneLineProblem[int], ABC):
@@ -82,7 +81,15 @@ class _Problem(OneLineProblem[int], ABC):
                             height += 1
                         else:
                             pattern[py] |= row
-                    # print_board(curr_shape, pattern, y)
+
+                    log.lazy_debug(
+                        partial(
+                            lambda s, y_: board_str(s, pattern, y_),
+                            s=curr_shape[:],
+                            y_=y,
+                        )
+                    )
+
                     yield height, list(pattern)
                     break
 
@@ -105,7 +112,7 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         _heights, patterns = unzip(self.play())
-        cycle_ = brent(patterns)
+        cycle_ = detect_cycle(patterns)
         n = 1_000_000_000_000 - cycle_.start
         return (
             self.height_at_t(cycle_.start + cycle_.length)

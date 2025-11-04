@@ -1,13 +1,18 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from copy import copy
-from dataclasses import dataclass
-from typing import NamedTuple
+from dataclasses import dataclass, field
+from functools import cached_property
+from typing import TYPE_CHECKING, NamedTuple
 
 from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
 from advent_of_code.search import DijkstraState
+from advent_of_code.utils import PRE_A
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 @dataclass
@@ -62,9 +67,10 @@ class Constants(NamedTuple):
     room_size: int
 
 
-class Variables(NamedTuple):
+@dataclass
+class Variables:
     rooms: list[Room]
-    hallway: list[int]
+    hallway: list[int] = field(default_factory=lambda: [0] * 7)
 
 
 class AmphipodState(DijkstraState[Constants, Variables]):
@@ -82,23 +88,29 @@ class AmphipodState(DijkstraState[Constants, Variables]):
             or (hall > room + 2 and any(self.v.hallway[room + 2 : hall]))
         )
 
-    def _move(self, amphipod: int, r: int, h: int, into_room: bool) -> AmphipodState:
+    def _move(self, amphipod: int, r: int, h: int, *, into_room: bool) -> AmphipodState:
         rooms = [copy(room) for room in self.v.rooms]
+        room = rooms[r]
         hallway = self.v.hallway[:]
+
         if into_room:
-            rooms[r].add(hallway[h])
+            room.add(hallway[h])
             hallway[h] = 0
         else:
-            hallway[h] = rooms[r].remove()
+            hallway[h] = room.remove()
+
+        is_on_hall_end = h in (0, 6)
         # Trust me, I'm an engineer
         steps = (
             abs(h * 2 - r * 2 - 3)
             + 1
-            - int(h in (0, 6))
-            + rooms[r].spots_left
+            - int(is_on_hall_end)
+            + room.spots_left
             - int(into_room)
         )
-        return self.move(steps * 10 ** (amphipod - 1), rooms=rooms, hallway=hallway)
+        return self.move(
+            Variables(rooms, hallway), distance=steps * 10 ** (amphipod - 1)
+        )
 
     @property
     def next_states(self) -> list[AmphipodState]:
@@ -118,7 +130,7 @@ class AmphipodState(DijkstraState[Constants, Variables]):
             if room.can_add(amphipod) and self._can_move(r, h)
         ]
 
-    def __repr__(self) -> str:
+    def to_lines(self) -> Iterator[str]:
         """
         Code is not meant to look readable, just to print the mushroom.
 
@@ -138,60 +150,56 @@ class AmphipodState(DijkstraState[Constants, Variables]):
                 e if c == "." else chalk.hex("111").bg_hex("0af")(c) for c in cs
             )
 
-        def p(i):  # ik zat in tram 5 en m'n lul stond stijf
-            return "  " if i else w * 2
+        def p(r: int) -> str:
+            return "  " if r > 0 else w * 2
 
         s = ".ABCD"
         h = ".".join(s[a] for a in self.v.hallway)
         rs = self.c.room_size
-        return (
-            w * 13
-            + "\n"
-            + w
-            + q(h[0] + h[2:-2] + h[-1])
-            + w
-            + "\n"
-            + "\n".join(
+        yield f"{w * 13}"
+        yield f"{w + q(h[0] + h[2:-2] + h[-1]) + w}"
+        for i in range(rs):
+            yield (
                 p(i)
                 + w
                 + w.join(q(s[r.get(rs - i - 1)]) for r in self.v.rooms)
                 + w
                 + p(i)
-                for i in range(rs)
             )
-            + "\n  "
-            + w * 9
-            + "  "
-        )
+        yield f"  {w * 9}  "
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def shortest_path(self, is_part_1: bool) -> int:
-        lines = self.lines[5:1:-3] if is_part_1 else self.lines[5:1:-1]
-        room_size = len(lines)
-        path = AmphipodState.find_path(
-            Variables(
-                rooms=[
-                    Room(
-                        name,
-                        room_size,
-                        [{"A": 1, "B": 2, "C": 3, "D": 4}[c] for c in content],
-                    )
-                    for name, content in enumerate(
-                        zip(*[line[3:10:2] for line in lines], strict=False), 1
-                    )
-                ],
-                hallway=[0] * 7,
-            ),
-            Constants(room_size),
-        )
+    @property
+    @abstractmethod
+    def _input_lines(self) -> list[str]:
+        pass
 
-        for i, state in enumerate(path.states):
-            if i:
-                log.debug("Step %d, cost so far: %d", i, state.cost)
-                log.debug(" ")
-            log.debug(state)
-            log.debug(" ")
+    @property
+    def _room_content(self) -> Iterator[list[int]]:
+        room_input: Iterator[tuple[str, ...]] = zip(
+            *(line[3:10:2] for line in self._input_lines), strict=True
+        )
+        for content in room_input:
+            yield [ord(c) - PRE_A for c in content]
+
+    def solution(self) -> int:
+        room_size = len(self._input_lines)
+        rooms = [
+            Room(name, room_size, content)
+            for name, content in enumerate(self._room_content, 1)
+        ]
+        path = AmphipodState.find_path(Variables(rooms), Constants(room_size))
+
+        def debug_str() -> Iterator[str]:
+            for i, state in enumerate(path.states):
+                if i > 0:
+                    yield f"Step {i}, cost so far: {state.cost}"
+                    yield ""
+                yield from state.to_lines()
+                yield ""
+
+        log.lazy_debug(debug_str)
 
         return path.length
 
@@ -200,16 +208,18 @@ class Problem1(_Problem):
     test_solution = 12521
     my_solution = 12530
 
-    def solution(self) -> int:
-        return self.shortest_path(True)
+    @cached_property
+    def _input_lines(self) -> list[str]:
+        return self.lines[5:1:-3]
 
 
 class Problem2(_Problem):
     test_solution = 44169
     my_solution = 50492
 
-    def solution(self) -> int:
-        return self.shortest_path(False)
+    @cached_property
+    def _input_lines(self) -> list[str]:
+        return self.lines[5:1:-1]
 
 
 TEST_INPUT = """

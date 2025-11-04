@@ -4,12 +4,12 @@ from copy import deepcopy
 from math import lcm
 
 from advent_of_code.geo3d import P3D
-from advent_of_code.problems import ParsedProblem, var
+from advent_of_code.problems import ParsedProblem
 from advent_of_code.utils import compare
 
 
 class Moon:
-    def __init__(self, position: P3D):
+    def __init__(self, position: P3D) -> None:
         self.position = position
         self.velocity = P3D()
 
@@ -56,7 +56,7 @@ class Problem1(_Problem):
     my_solution = 10028
 
     def solution(self) -> int:
-        for _ in range(var(test=100, puzzle=1000)):
+        for _ in range(self.var(test=100, puzzle=1000)):
             self.simulate_motion()
         return sum(moon.total_energy for moon in self.moons)
 

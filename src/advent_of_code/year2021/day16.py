@@ -5,7 +5,7 @@ from advent_of_code.problems import MultiLineProblem
 
 
 class Packet:
-    def __init__(self, bits: str):
+    def __init__(self, bits: str) -> None:
         self._bits = bits
         self.packets: list[Packet] = []
         self._version = int(bits[:3], 2)
@@ -79,7 +79,7 @@ class Packet:
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.packet = Packet("".join(f"{int(c, 16):04b}" for c in (self.lines[0])))
         self.packet.parse()
 

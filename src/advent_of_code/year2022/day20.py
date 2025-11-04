@@ -56,7 +56,7 @@ class Node:
         self.next = n
         n.prev = self
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self.val)
 
 

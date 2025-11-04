@@ -1,9 +1,8 @@
 import argparse
 from datetime import UTC, datetime
-from importlib import import_module
 
-from advent_of_code import InputMode
-from advent_of_code.problems import Problem
+from advent_of_code import solve
+from advent_of_code.problems import InputMode, PuzzleData, RunnerState
 
 
 def main() -> None:
@@ -24,9 +23,9 @@ def main() -> None:
     )
     parser.add_argument("--part", dest="part", type=int, choices=[1, 2], required=True)
     parser.add_argument("-t", "--test", dest="test", action="store_true")
-    parser.add_argument("-d", "--debug", dest="debug", action="store_true")
+    parser.add_argument("-d", "--debug", dest="debugging", action="store_true")
     parser.add_argument("-n", "--no-input", dest="no_input", action="store_true")
-    parser.add_argument("-p", "--pycharm", dest="pycharm", action="store_true")
+    # parser.add_argument("-p", "--pycharm", dest="pycharm", action="store_true")
     args = parser.parse_args()
 
     input_mode = (
@@ -36,15 +35,9 @@ def main() -> None:
         if args.test
         else InputMode.PUZZLE
     )
-    problem_cls: type[Problem] = getattr(
-        import_module(f"advent_of_code.year{args.year}.day{args.day:02d}"),
-        f"Problem{args.part}",
-    )
-    problem_cls.solve(
-        Problem.Data(args.year, args.day, args.part),
-        input_mode,
-        args.debug,
-        args.pycharm,
+    solve(
+        RunnerState(input_mode, args.debugging),  # , args.pycharm),
+        PuzzleData(args.year, args.day, args.part),
     )
 
 

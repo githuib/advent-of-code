@@ -18,7 +18,7 @@ def ways_to_win(time: int, dist: int) -> int:
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    def __init__(self):
+    def __init__(self) -> None:
         self.parsed = [
             [int(s) for s in re.findall(r"\d+", line)] for line in self.lines
         ]

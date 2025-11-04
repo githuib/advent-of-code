@@ -1,17 +1,17 @@
-from collections.abc import Callable, Hashable, Iterable, Iterator
-from itertools import chain, count, pairwise, repeat, takewhile, tee
+import re
+import unicodedata
+from collections.abc import Callable, Iterable, Iterator
+from itertools import chain, pairwise, repeat, takewhile, tee, zip_longest
 from time import perf_counter_ns
-from typing import (
-    Protocol,
-    overload,
-    runtime_checkable,
-)
+from typing import Protocol, cast, overload, runtime_checkable
 
 from yachalk import chalk
 
-from advent_of_code import AOC, log
-
 Predicate = Callable[..., bool]
+
+
+PRE_a = ord("a") - 1
+PRE_A = ord("A") - 1
 
 
 def timed[T](func: Callable[[], T]) -> tuple[T, int, str]:
@@ -46,7 +46,7 @@ class Sortable(Protocol):
 
 
 class Unique:
-    def __init__(self, data: object):
+    def __init__(self, data: object) -> None:
         self.data = data
 
     def __lt__(self, other: object) -> bool:
@@ -58,56 +58,69 @@ class Unique:
         return repr(self.data)
 
 
-def pixel(
-    value,
+def pixel[T](
+    value: T,
     on: str = chalk.hex("0af").bg_hex("0af")("#"),
     off: str = chalk.hex("654").bg_hex("654")("."),
     special: str = chalk.hex("b40").bg_hex("b40")("^"),
-    pixels: dict[int | str, str] | None = None,
+    pixels: dict[T, str] = None,
 ) -> str:
-    if value is None:
-        value = -1
-    if pixels is None:
-        pixels = (
-            {0: off, 1: on, 2: special}
-            if isinstance(value, int)
-            else {".": off, "#": on, "^": special}
-        )
-    return pixels.get(min(value, max(pixels.keys())), " ")
+    if isinstance(value, int):
+        int_pixels = cast("dict[int, str]", pixels) or {0: off, 1: on, 2: special}
+        return int_pixels.get(min(cast("int", value), max(int_pixels.keys())), " ")
+    if isinstance(value, str):
+        str_pixels = cast("dict[str, str]", pixels) or {".": off, "#": on, "^": special}
+        return str_pixels.get(cast("str", value), " ")
+    return " "
 
 
-# def logging.debug_grid(
-#     grid: Iterable[Iterable[int]],
-#     on: str = chalk.hex('0af').bg_hex('0af')('#'),
-#     off: str = chalk.hex('654').bg_hex('654')('.'),
-#     special: str = chalk.hex('b40').bg_hex('b40')('^'),
-#     pixels: dict[int, str] = None,
-# ) -> None:
-#     if not AOC.debugging:
-#         return
-#     for row in grid:
-#         logging.debug(''.join(pixel(v, on, off, special, pixels) for v in row))
+pat = re.compile(r"\x1b\[\d+(;\d+)*m")
 
 
-def debug_table(
-    table: Iterable[Iterable[object]], widths: Iterable[int] | None = None
-) -> None:
-    if not AOC.debugging:
-        return
-    rows = [
-        [(v if isinstance(v, tuple) else (str(v), len(str(v)))) for v in row]
-        for row in table
-    ]
-    widths_ = [max(length for _, length in col) for col in zip(*rows, strict=False)]
-    for i, w in enumerate(widths or []):
-        widths_[i] = w
-    for i, row in enumerate(rows):
-        log.debug(
-            " %s",
-            "   ".join(
-                (chalk.underline(s) if i == 0 else s) + " " * (w - length)
-                for (s, length), w in zip(row, widths_, strict=False)
-            ),
+def strip_ansi(s: str) -> str:
+    return pat.sub("", s)
+
+
+def strlen(s: str) -> int:
+    return sum(
+        (2 if unicodedata.east_asian_width(c) == "W" else 1) for c in strip_ansi(s)
+    )
+
+
+def pad_with_spaces(s: str, width: int) -> str:
+    return s + " " * max(width - strlen(s), 0)
+
+
+def table_cell_str(s: str, width: int, row: int) -> str:
+    return pad_with_spaces(chalk.underline(s) if row == 0 else s, width)
+
+
+def table_lines(
+    *table: Iterable[object],
+    column_sep: str = "  ",
+    min_columns_widths: Iterable[int] = None,
+) -> Iterator[str]:
+    def iter_row_strs() -> Iterator[list[str]]:
+        for row_cells in table:
+            if row_cells:
+                yield [str(v) for v in row_cells]
+
+    cols: list[tuple[str, ...]] = list(zip_longest(*iter_row_strs(), fillvalue=""))
+
+    def max_columns_widths() -> Iterator[int]:
+        for col in cols:
+            yield max(strlen(s) for s in col)
+
+    def column_widths() -> Iterator[int]:
+        for col_width, min_width in zip_longest(
+            max_columns_widths(), min_columns_widths or [], fillvalue=0
+        ):
+            yield max(col_width, min_width)
+
+    rows: Iterator[tuple[str, ...]] = zip(*cols, strict=True)
+    for r, row in enumerate(rows):
+        yield column_sep.join(
+            table_cell_str(s, w, r) for s, w in zip(row, column_widths(), strict=True)
         )
 
 
@@ -117,6 +130,8 @@ def compose_number(numbers: Iterable[int]) -> int:
 
 def bits_to_int(bits: Iterable[bool]) -> int:
     """
+    Convert boolean array -> number.
+
     >>> bits_to_int([True, False, False, True, False, True, True])
     75
     """
@@ -125,6 +140,8 @@ def bits_to_int(bits: Iterable[bool]) -> int:
 
 def int_to_bits(i: int, min_length: int = 0) -> list[bool]:
     """
+    Convert number -> boolean array.
+
     >>> int_to_bits(75)
     [True, False, False, True, False, True, True]
     >>> int_to_bits(75, min_length=10)
@@ -145,14 +162,16 @@ def compare(v1: int, v2: int) -> int:
 
 
 @overload
-def try_convert[T, R](cls: Callable[[T], R], val: T, default: R) -> R: ...
+def try_convert[T, R](cls: Callable[[T], R], val: T, *, default: R) -> R: ...
 
 
 @overload
-def try_convert[T, R](cls: Callable[[T], R], val: T, default: None) -> R | None: ...
+def try_convert[T, R](
+    cls: Callable[[T], R], val: T, *, default: None = None
+) -> R | None: ...
 
 
-def try_convert[T, R](cls: Callable[[T], R], val: T, default: R = None) -> R | None:
+def try_convert[T, R](cls: Callable[[T], R], val: T, *, default: R = None) -> R | None:
     try:
         return cls(val)
     except ValueError:
@@ -168,7 +187,7 @@ def pairwise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T]]:
     return zip(a, chain(b, (next(b),)), strict=False)
 
 
-def triplewise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T, T]]:
+def tripletwise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T, T]]:
     a, b, c = tee(it, 3)
     return zip(a, chain(b, (next(b),)), chain(c, (next(c), next(c))), strict=False)
 
@@ -176,8 +195,8 @@ def triplewise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T, T]]:
 def repeat_transform[T](
     value: T,
     transform: Callable[[T], T],
-    times: int | None = None,
-    while_condition: Callable[[T], bool] | None = None,
+    times: int = None,
+    while_condition: Callable[[T], bool] = None,
 ) -> Iterator[T]:
     if while_condition:
         yield from takewhile(while_condition, repeat_transform(value, transform, times))
@@ -201,7 +220,7 @@ def first_duplicate[T](it: Iterable[T]) -> tuple[int, T]:
     raise StopIteration
 
 
-def smart_range(start: int, stop: int, inclusive: bool = False) -> Iterable[int]:
+def smart_range(start: int, stop: int, *, inclusive: bool = False) -> Iterable[int]:
     direction = 1 if start <= stop else -1
     if inclusive:
         stop += direction
@@ -223,6 +242,7 @@ def grouped[T](input_values: Iterable[T], delimeter: T = None) -> Iterator[list[
 def group_tuples[K, V](items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
     """
     Group items in a dict by key(item).
+
     >>> group_tuples(
     ...     [
     ...         ("m", "Arnold"),
@@ -243,6 +263,7 @@ def group_tuples[K, V](items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
 def group_by[K, V](items: Iterable[V], key: Callable[[V], K]) -> dict[K, list[V]]:
     """
     Group items in a dict by key(item).
+
     >>> group_by(
     ...     ["Alice", "Bill", "Bob", "Charles", "Arnold", "Chuck"], key=lambda s: s[0]
     ... )
@@ -259,32 +280,33 @@ def transposed(lines: Iterable[str]) -> Iterator[str]:
         yield "".join(col)
 
 
-def map_to_int_ids[D: Iterator | list | tuple | dict](data: D) -> D:
-    ids = {}
-    ids_gen = count()
+# def map_to_int_ids[D: Iterator | list | tuple | dict](data: D) -> D:
+#     ids = {}
+#     ids_gen = count()
+#
+#     def map_to_int_ids_rec(value: D) -> D:
+#         if isinstance(value, Iterator):
+#             return (map_to_int_ids_rec(v) for v in value)
+#         if isinstance(value, list):
+#             return [map_to_int_ids_rec(v) for v in value]
+#         if isinstance(value, tuple):
+#             return tuple(map_to_int_ids_rec(v) for v in value)
+#         if isinstance(value, dict):
+#             return {k: map_to_int_ids_rec(v) for k, v in value.items()}
+#         if not isinstance(value, Hashable):
+#             error = f"Item is not hashable: {value}"
+#             raise TypeError(error)
+#         if value not in ids:
+#             ids[value] = next(ids_gen)
+#         return ids[value]
+#
+#     return map_to_int_ids_rec(data)
 
-    def map_to_int_ids_rec(value):
-        if isinstance(value, Iterator):
-            return (map_to_int_ids_rec(v) for v in value)
-        if isinstance(value, list):
-            return [map_to_int_ids_rec(v) for v in value]
-        if isinstance(value, tuple):
-            return tuple(map_to_int_ids_rec(v) for v in value)
-        if isinstance(value, dict):
-            return {k: map_to_int_ids_rec(v) for k, v in value.items()}
-        if not isinstance(value, Hashable):
-            return ValueError(f"Item is not hashable: {value}")
-        if value not in ids:
-            ids[value] = next(ids_gen)
-        return ids[value]
 
-    return map_to_int_ids_rec(data)
-
-
-def padded(lines: Iterable[str], maxlen: int | None = None) -> Iterator[str]:
-    maxlen = maxlen or max(len(line) for line in lines)
+def padded(lines: Iterable[str], max_length: int = None) -> Iterator[str]:
+    max_length = max_length or max(len(line) for line in lines)
     for line in lines:
-        yield line.ljust(maxlen)
+        yield line.ljust(max_length)
 
 
 def split_at(s: str, pos: int) -> tuple[str, str]:
@@ -292,8 +314,7 @@ def split_at(s: str, pos: int) -> tuple[str, str]:
 
 
 def split_conditional[T](
-    collection: list[T],
-    condition: Callable[[T], bool],
+    collection: list[T], condition: Callable[[T], bool]
 ) -> tuple[list[T], list[T]]:
     left = [item for item in collection if condition(item)]
     right = [item for item in collection if item not in left]

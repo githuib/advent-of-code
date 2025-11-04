@@ -27,7 +27,7 @@ class P3D(NamedTuple):
     def manhattan_distance_to(self, other: P3D) -> int:
         return (other - self).manhattan_length
 
-    def __neg__(self):
+    def __neg__(self) -> P3D:
         x, y, z = self
         return P3D(-x, -y, -z)
 
@@ -78,30 +78,29 @@ class P3D(NamedTuple):
     def cross(self, other: P3D) -> P3D:
         x, y, z = self
         ox, oy, oz = other
-        return P3D(
-            y * oz - z * oy,
-            z * ox - x * oz,
-            x * oy - y * ox,
-        )
+        return P3D(y * oz - z * oy, z * ox - x * oz, x * oy - y * ox)
 
     def transform(self: P3D, transformation: Trans3) -> P3D:
         """
-                               z       x       y
-        (x, y, z) transform (2, a), (0, b), (1, c) =  (z * a, x * b, y * c)
+        Transform point according to transformation vector.
+
+                               Z       x       y
+        (x, y, z) transform (2, a), (0, b), (1, c) =  (z * a, x * b, y * c).
         """
         return P3D(*[self[i] * n for i, n in transformation])  # pylint: disable=unsubscriptable-object
 
-    def inv_transform(self, transformation: Trans3) -> P3D:
-        """
-            0        1        2              0        1        2
-        [(2, dx), (0, dy), (1, dz)]  ->  [(1, dy), (2, dz), (0, dx)]
-                               z       x       y
-        (x, y, z) inv_trans (2, a), (0, b), (1, c)
-                               y       z       x
-        (x, y, z) transform (1, b), (2, c), (0, a) =  (y * b, z * c, x * a)
-        """
-        td = {n: (i, d) for i, (n, d) in enumerate(transformation)}
-        return P3D(*[self[i] * n for i, n in (td[0], td[1], td[2])])  # pylint: disable=unsubscriptable-object
+    # def inv_transform(self, transformation: Trans3) -> P3D:
+    #     """Something.
+    #
+    #         0        1        2              0        1        2
+    #     [(2, dx), (0, dy), (1, dz)]  ->  [(1, dy), (2, dz), (0, dx)]
+    #                            z       x       y
+    #     (x, y, z) inv_trans (2, a), (0, b), (1, c)
+    #                            y       z       x
+    #     (x, y, z) transform (1, b), (2, c), (0, a) =  (y * b, z * c, x * a).
+    #     """
+    #     td = {n: (i, d) for i, (n, d) in enumerate(transformation)}
+    #     return P3D(*[self[i] * n for i, n in (td[0], td[1], td[2])])  # pylint: disable=unsubscriptable-object
 
     @classmethod
     def min(cls, p1: P3D, p2: P3D) -> P3D:
@@ -118,20 +117,29 @@ class P3D(NamedTuple):
     # def __repr__(self):
     #     return f'({self.x}, {self.y}, {self.z})'
 
-    def rotated_90_x(self, clockwise: bool = True) -> P3D:
-        return self.transform(
-            Rotation90deg3D.x_cw if clockwise else Rotation90deg3D.x_ccw
-        )
-
-    def rotated_90_y(self, clockwise: bool = True) -> P3D:
-        return self.transform(
-            Rotation90deg3D.y_cw if clockwise else Rotation90deg3D.y_ccw
-        )
-
-    def rotated_90_z(self, clockwise: bool = True) -> P3D:
-        return self.transform(
-            Rotation90deg3D.z_cw if clockwise else Rotation90deg3D.z_ccw
-        )
+    # @property
+    # def rotated_90_x_cw(self) -> P3D:
+    #     return self.transform(Rotation90deg3D.x_cw)
+    #
+    # @property
+    # def rotated_90_y_cw(self) -> P3D:
+    #     return self.transform(Rotation90deg3D.y_cw)
+    #
+    # @property
+    # def rotated_90_z_cw(self) -> P3D:
+    #     return self.transform(Rotation90deg3D.z_cw)
+    #
+    # @property
+    # def rotated_90_x_ccw(self) -> P3D:
+    #     return self.transform(Rotation90deg3D.x_ccw)
+    #
+    # @property
+    # def rotated_90_y_ccw(self) -> P3D:
+    #     return self.transform(Rotation90deg3D.y_ccw)
+    #
+    # @property
+    # def rotated_90_z_ccw(self) -> P3D:
+    #     return self.transform(Rotation90deg3D.z_ccw)
 
 
 class Dir3D:
@@ -145,7 +153,7 @@ class Dir3D:
 
 
 class Span3D:
-    def __init__(self, p1: P3D, p2: P3D, fix_order: bool = False):
+    def __init__(self, p1: P3D, p2: P3D, *, fix_order: bool = False) -> None:
         if fix_order:
             # (x1, y1, z1), (x2, y2, z2) = p1, p2
             # self.p_min = P3D(min(x1, x2), min(y1, y2), min(z1, z2))
@@ -172,7 +180,7 @@ class Span3D:
         p_max = P3D.min(self.p_max, other.p_max)
         return Span3D(p_min, P3D.max(p_min - P3D.unity(), p_max))
 
-    def __eq__(self, other: object):
+    def __eq__(self, other: object) -> bool:
         if isinstance(other, Span3D):
             return (self.p_min, self.p_max) == (other.p_min, other.p_max)
         return NotImplemented
@@ -180,7 +188,7 @@ class Span3D:
     def __bool__(self) -> bool:
         return self.volume != 0
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.p_min} {self.p_max}"
 
     @property
@@ -198,7 +206,7 @@ class Span3D:
 class Grid3D(dict[P3D, int]):
     def __init__(
         self, d: Mapping[P3D, int] | Iterable[P3D] | None = None, default: int = 1
-    ):
+    ) -> None:
         if isinstance(d, Mapping):
             super().__init__(d)
         elif isinstance(d, Iterable):
@@ -243,21 +251,37 @@ class Grid3D(dict[P3D, int]):
     def transform(self, transformation: Trans3) -> Grid3D:
         return Grid3D({p.transform(transformation): v for p, v in self.items()})
 
-    def rotated_90_x(self, clockwise: bool = True) -> Grid3D:
-        return Grid3D({p.rotated_90_x(clockwise): v for p, v in self.items()})
-
-    def rotated_90_y(self, clockwise: bool = True) -> Grid3D:
-        return Grid3D({p.rotated_90_y(clockwise): v for p, v in self.items()})
-
-    def rotated_90_z(self, clockwise: bool = True) -> Grid3D:
-        return Grid3D({p.rotated_90_z(clockwise): v for p, v in self.items()})
+    # @property
+    # def rotated_90_x_cw(self) -> Grid3D:
+    #     return Grid3D({p.rotated_90_x_cw: v for p, v in self.items()})
+    #
+    # @property
+    # def rotated_90_y_cw(self) -> Grid3D:
+    #     return Grid3D({p.rotated_90_y_cw: v for p, v in self.items()})
+    #
+    # @property
+    # def rotated_90_z_cw(self) -> Grid3D:
+    #     return Grid3D({p.rotated_90_z_cw: v for p, v in self.items()})
+    #
+    # @property
+    # def rotated_90_x_ccw(self) -> Grid3D:
+    #     return Grid3D({p.rotated_90_x_ccw: v for p, v in self.items()})
+    #
+    # @property
+    # def rotated_90_y_ccw(self) -> Grid3D:
+    #     return Grid3D({p.rotated_90_y_ccw: v for p, v in self.items()})
+    #
+    # @property
+    # def rotated_90_z_ccw(self) -> Grid3D:
+    #     return Grid3D({p.rotated_90_z_ccw: v for p, v in self.items()})
 
 
 class Trans3(NamedTuple):
     """
     Could result in a rotation, mirroring or a combination of both, in "90 degree" terms.
+
                            z       x       y
-    (x, y, z) transform (2, a), (0, b), (1, c) =  (z * a, x * b, y * c)
+    (x, y, z) transform (2, a), (0, b), (1, c) =  (z * a, x * b, y * c).
     """
 
     a: tuple[int, int]
@@ -267,13 +291,20 @@ class Trans3(NamedTuple):
     @property
     def inverse(self) -> Trans3:
         """
+        Inverse of the transform.
+
             0        1        2              0        1        2
-        [(2, dx), (0, dy), (1, dz)]  ->  [(1, dy), (2, dz), (0, dx)]
+        [(2, dx), (0, dy), (1, dz)]  ->  [(1, dy), (2, dz), (0, dx)].
+
+                               z       x       y
+        (x, y, z) inv_trans (2, a), (0, b), (1, c)
+                               y       z       x
+        (x, y, z) transform (1, b), (2, c), (0, a) =  (y * b, z * c, x * a).
         """
         td = {n: (i, d) for i, (n, d) in enumerate(self)}
         return Trans3(td[0], td[1], td[2])
 
-    def __invert__(self):
+    def __invert__(self) -> Trans3:
         return self.inverse
 
 

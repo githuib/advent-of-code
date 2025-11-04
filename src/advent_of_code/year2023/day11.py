@@ -11,7 +11,7 @@ from advent_of_code.utils import repeat_transform
 class _Problem(GridProblem[int], ABC):
     empty_factor: int
 
-    def __init__(self):
+    def __init__(self) -> None:
         log.debug(self.grid)
 
     def solution(self) -> int:

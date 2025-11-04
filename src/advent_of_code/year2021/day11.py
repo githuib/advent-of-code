@@ -1,8 +1,12 @@
 from abc import ABC
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
-from advent_of_code import AOC, log
+from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 octopi: dict[tuple[int, int], Octopus] = {}
 
@@ -37,8 +41,17 @@ class Octopus:
                 octopus.check_flash()
 
 
+def octopus_str(x: int, y: int) -> str:
+    return f"{octopi[x, y].energy} " if octopi[x, y].energy else "💩"
+
+
 class _Problem(MultiLineProblem[int], ABC):
-    def assignment(self, max_steps: int | None = None) -> list[int]:
+    def octopi_str(self) -> Iterator[str]:
+        size = len(self.lines[0])
+        for y in range(size):
+            yield " ".join(octopus_str(x, y) for x in range(size))
+
+    def assignment(self, max_steps: int = None) -> list[int]:
         for y, line in enumerate(self.lines):
             for x, energy in enumerate(line):
                 octopi[x, y] = Octopus(int(energy), x, y)
@@ -47,16 +60,8 @@ class _Problem(MultiLineProblem[int], ABC):
         steps = 0
         while not max_steps or steps < max_steps:
             steps += 1
-            size = len(self.lines[0])
-            if AOC.debugging:
-                for y in range(size):
-                    log.debug(
-                        " ".join(
-                            f"{octopi[x, y].energy} " if octopi[x, y].energy else "💩"
-                            for x in range(size)
-                        )
-                    )
-                log.debug("")
+
+            log.debug(self.octopi_str)
 
             for octopus in octopi.values():
                 octopus.energy += 1

@@ -48,15 +48,14 @@ class _Problem(
 ):
     num_rounds: int
 
-    multi_line_pattern = """Monkey {:d}:
-  Starting items: {:items}
+    multi_line_pattern = """Starting items: {:items}
   Operation: new = old {:operation}
   Test: divisible by {:d}
     If true: throw to monkey {:d}
     If false: throw to monkey {:d}"""
 
-    def __init__(self):
-        self.monkeys = [Monkey(*data) for _, *data in self.parsed_input]
+    def __init__(self) -> None:
+        self.monkeys = [Monkey(*data) for data in self.parsed_input]
 
     def do_the_monkey(self, num_rounds: int, adjust: Callable[[int], int]) -> int:
         for _ in range(num_rounds):

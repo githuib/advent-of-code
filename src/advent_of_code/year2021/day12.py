@@ -16,7 +16,7 @@ class _Problem(MultiLineProblem[int], ABC):
                 self._graph[node2].append(node1)
 
     def find_paths(
-        self, node: str = "start", visited: set[str] | None = None
+        self, node: str = "start", visited: set[str] = None
     ) -> list[list[str]]:
         if node == "end":
             return [["end"]]

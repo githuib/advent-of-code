@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING, Self
+
 from yachalk import chalk
 
 from advent_of_code import log
@@ -5,13 +7,16 @@ from advent_of_code.geo2d import P2, Grid2
 from advent_of_code.problems import GridProblem, MultiLineProblem
 from advent_of_code.utils import first_duplicate
 
-SeaCucumbers = list[set[P2]]
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+SeaCucumbers = tuple[frozenset[P2], frozenset[P2]]
 
 
-def board_str(sea_cucumbers: SeaCucumbers) -> str:
+def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     east, south = sea_cucumbers
     board = Grid2[str](dict.fromkeys(east, ">") | dict.fromkeys(south, "v"))
-    return board.to_str(
+    return board.to_lines(
         lambda _, v: {
             None: chalk.hex("0af").bg_hex("0af")("."),
             ">": chalk.hex("888").bg_hex("888")(">"),
@@ -24,47 +29,49 @@ class Problem1(GridProblem[int]):
     test_solution = 58
     my_solution = 389
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.width = self.grid.width
         self.height = self.grid.height
-        self.sea_cucumbers = [self.grid.points_with_values(c) for c in ">v"]
+        self.sea_cucumbers = (
+            self.grid.points_with_values(">"),
+            self.grid.points_with_values("v"),
+        )
 
-    def __iter__(self):
+    def __iter__(self) -> Self:
         return self
 
-    def __next__(self):
-        old = east, south = self.sea_cucumbers
-        east = {
+    def __next__(self) -> SeaCucumbers:
+        prev = east, south = self.sea_cucumbers
+        east = frozenset(
             ((x, y) if ((p := ((x + 1) % self.width, y)) in east or p in south) else p)
             for (x, y) in east
-        }
-        self.sea_cucumbers = (
-            east,
-            {
-                (
-                    (x, y)
-                    if ((p := (x, (y + 1) % self.height)) in east or p in south)
-                    else p
-                )
-                for (x, y) in south
-            },
         )
-        return old
+        south = frozenset(
+            ((x, y) if ((p := (x, (y + 1) % self.height)) in east or p in south) else p)
+            for (x, y) in south
+        )
+        self.sea_cucumbers = east, south
+        return prev
 
     def solution(self) -> int:
+        log.lazy_debug(lambda: board_str(self.sea_cucumbers))
         n, sea_cucumbers = first_duplicate(self)
-        log.debug(board_str(sea_cucumbers))
+        log.lazy_debug(lambda: board_str(sea_cucumbers))
         return n
 
 
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
-        print("""
-         __  |__
-       __L L_|L L__
- ...[+(____________)
-        C_________/
-""")
+        """Day 25 didn't have a part 2."""
+        log.info(
+            chalk.bg_hex("0df").hex("df0")("""
+                                               .
+                    __  |__                    .
+                  __L L_|L L__                 .
+            ...[+(____________)                .
+                   C_________/                 .
+                                               .""")
+        )
 
 
 TEST_INPUT = """
