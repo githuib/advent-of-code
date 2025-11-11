@@ -94,6 +94,25 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
     return success
 
 
+def quiet_solve[T](problem_cls: type[Problem[T]]) -> bool:
+    problem = problem_cls()
+    answer = problem.actual_solution
+    try:
+        attempt = problem.solution()
+
+    except NoSolutionFoundError:
+        return False
+
+    except FatalError as exc:
+        log.fatal(exc.message)
+        return False
+
+    else:
+        if attempt is None:
+            return problem.has_no_input
+        return attempt == answer
+
+
 def main() -> None:
     ty, tm, td = (t := datetime.now(UTC).date()).year, t.month, t.day
     y, d = (ty + int(dec := tm == 12) - 1), (td if dec and td <= 25 else None)
@@ -114,18 +133,28 @@ def main() -> None:
     parser.add_argument("-t", "--test", dest="test", action="store_true")
     parser.add_argument("-d", "--debug", dest="debugging", action="store_true")
     parser.add_argument("-n", "--no-input", dest="no_input", action="store_true")
+    parser.add_argument("-q", "--quiet", dest="quiet", action="store_true")
     # parser.add_argument("-p", "--pycharm", dest="pycharm", action="store_true")
     args = parser.parse_args()
 
-    log.set_level(logging.DEBUG if args.debugging else logging.INFO)
-
-    data = PuzzleData(
-        args.year,
-        args.day,
-        args.part,
-        "none" if args.no_input else "test" if args.test else "puzzle",
+    log.set_level(
+        logging.DEBUG
+        if args.debugging
+        else logging.ERROR
+        if args.quiet
+        else logging.INFO
     )
-    sys.exit(not solve(load_problem(data)))
+
+    problem_cls = load_problem(
+        PuzzleData(
+            args.year,
+            args.day,
+            args.part,
+            "none" if args.no_input else "test" if args.test else "puzzle",
+        )
+    )
+    success = quiet_solve(problem_cls) if args.quiet else solve(problem_cls)
+    sys.exit(not success)
 
 
 if __name__ == "__main__":
