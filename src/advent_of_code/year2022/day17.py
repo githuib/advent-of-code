@@ -100,7 +100,7 @@ class _Problem(OneLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 3068
-    my_solution = 3173
+    puzzle_solution = 3173
 
     def solution(self) -> int:
         return self.height_at_t(2022)
@@ -108,7 +108,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 1514285714288
-    my_solution = 1570930232582
+    puzzle_solution = 1570930232582
 
     def solution(self) -> int:
         _heights, patterns = unzip(self.play())

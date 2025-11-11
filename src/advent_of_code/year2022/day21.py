@@ -130,7 +130,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 152
-    my_solution = 62386792426088
+    puzzle_solution = 62386792426088
 
     def solution(self) -> int:
         return Node.from_job("root").value
@@ -138,7 +138,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 301
-    my_solution = 4945453364388
+    puzzle_solution = 4945453364388
 
     def solution(self) -> int:
         left, _, right = Node.jobs["root"]

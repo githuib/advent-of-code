@@ -21,7 +21,7 @@ class _Problem(MultiLineProblem[int]):
 
 class Problem1(_Problem):
     test_solution = 142
-    my_solution = 53080
+    puzzle_solution = 53080
 
     _pattern = re.compile(r"[1-9]")
 
@@ -42,7 +42,7 @@ DIGITS = {s: str(i) for i, s in enumerate(DIGIT_NAMES, 1)}
 
 class Problem2(_Problem):
     test_solution = 281
-    my_solution = 53268
+    puzzle_solution = 53268
 
     _pattern = re.compile(rf"(?=([1-9]|{'|'.join(DIGIT_NAMES)}))")
 

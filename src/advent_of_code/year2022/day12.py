@@ -166,7 +166,7 @@ class _Problem(NumberGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 31
-    my_solution = 490
+    puzzle_solution = 490
 
     def solution(self) -> int:
         return self.shortest_path(start="E", end="S")
@@ -174,7 +174,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 29
-    my_solution = 488
+    puzzle_solution = 488
 
     def solution(self) -> int:
         return self.shortest_path(start="E", end="a")

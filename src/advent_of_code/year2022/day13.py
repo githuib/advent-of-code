@@ -41,7 +41,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 13
-    my_solution = 4821
+    puzzle_solution = 4821
 
     def solution(self) -> int:
         return sum(
@@ -51,7 +51,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 140
-    my_solution = 21890
+    puzzle_solution = 21890
 
     def solution(self) -> int:
         d1, d2 = Packet([[2]]), Packet([[6]])

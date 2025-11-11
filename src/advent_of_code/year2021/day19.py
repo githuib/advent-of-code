@@ -55,7 +55,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 79
-    my_solution = 408
+    puzzle_solution = 408
 
     def solution(self) -> int:
         self.find_beacons()
@@ -64,7 +64,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 3621
-    my_solution = 13348
+    puzzle_solution = 13348
 
     def solution(self) -> int:
         self.find_beacons()

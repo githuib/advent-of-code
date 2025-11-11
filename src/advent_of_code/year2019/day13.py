@@ -16,7 +16,7 @@ class Tile(IntEnum):
 
 class Problem1(IntcodeProblem[int]):
     test_solution = None
-    my_solution = 333
+    puzzle_solution = 333
 
     def solution(self) -> int:
         return list(self.computer.run_to_next_output())[2::3].count(Tile.BLOCK)
@@ -24,7 +24,7 @@ class Problem1(IntcodeProblem[int]):
 
 class Problem2(Problem1):
     test_solution = None
-    my_solution = 16539
+    puzzle_solution = 16539
 
     def solution(self) -> int:
         self.computer.program[0] = 2

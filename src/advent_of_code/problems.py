@@ -1,60 +1,14 @@
 import sys
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar, Self
+from typing import ClassVar, Literal, Self
 
 from more_itertools import strip
 from parse import findall  # type: ignore[import-untyped]
-from yachalk import chalk
 
-from advent_of_code import InputMode, PuzzleData, RunnerState, log
-from advent_of_code.utils.cli import human_readable_duration, timed
 from advent_of_code.utils.geo2d import NumberGrid2, StringGrid2
 from advent_of_code.utils.geo3d import P3D
-from advent_of_code.utils.strings import strlen
-
-
-def solution_lines[T](my_solution: T, actual_solution: T) -> list[str]:
-    mine: list[str] = (
-        my_solution.strip().splitlines()
-        if isinstance(my_solution, str)
-        else [str(my_solution)]
-    )
-    actual: list[str] = (
-        [""]
-        if (actual_solution is None)
-        else actual_solution.strip().splitlines()
-        if (isinstance(actual_solution, str))
-        else [str(actual_solution)]
-    )
-    if len(mine) > 1:
-        mine = ["", *mine]
-    if len(actual) > 1:
-        actual = ["", *actual]
-
-    if not actual_solution:
-        return ["Attempted solution... 👾 ", "", *mine]
-
-    if my_solution == actual_solution:
-        return ["Correct solution! 🍻 ", "", *mine]
-
-    my_answer = f"{chalk.red_bright('✘')} Your answer:"
-    actual_answer = f"{chalk.green_bright('✔')} Correct answer:"
-    return ["Wrong solution! 💀"] + (
-        [f"{my_answer}    {mine[0]}", f"{actual_answer} {actual[0]}"]
-        if (len(mine) == 1 and len(actual) == 1)
-        else ["", my_answer, *mine, "", actual_answer, *actual]
-    )
-
-
-def duration_emoji(duration_str: str) -> str:
-    if duration_str.endswith("minutes"):
-        return "🦥"
-    if duration_str.endswith("seconds"):
-        return "🐢"
-    if duration_str.endswith("ms"):
-        return "🐇"
-    return "🚀"
 
 
 class NoSolutionFoundError(Exception):
@@ -66,26 +20,36 @@ class FatalError(Exception):
         self.message = message
 
 
+InputMode = Literal["puzzle", "test", "none"]
+
+
+@dataclass
+class PuzzleData:
+    year: int
+    day: int
+    part: int
+    input_mode: InputMode
+
+
 class Problem[T](ABC):
     test_solution: T | None = None
-    my_solution: T | None = None
+    puzzle_solution: T | None = None
 
     line_count: int
     input: str
     corrected_input: str
-    is_debugged_run: bool = False
     is_test_run: bool = False
+    has_no_input: bool = False
 
-    runner_state: ClassVar[RunnerState]
     data: ClassVar[PuzzleData]
 
     def __new__(cls) -> Self:
         # Read input into problem instance before its actual __init__() will be called.
         self: Self = super().__new__(cls)
 
-        self.is_debugged_run = cls.runner_state.debugging
-        self.is_test_run = cls.runner_state.input_mode == InputMode.TEST
-        if cls.runner_state.input_mode != InputMode.NONE:
+        self.is_test_run = cls.data.input_mode == "test"
+        self.has_no_input = cls.data.input_mode == "none"
+        if not self.has_no_input:
             self._load_input()
         return self
 
@@ -117,45 +81,8 @@ class Problem[T](ABC):
         self.process_input()
 
     @property
-    def given_solution(self) -> T | None:
-        return self.test_solution if self.is_test_run else self.my_solution
-
-    @classmethod
-    def solve(cls) -> tuple[T | None, bool]:
-        solution: T | None = None
-
-        instance, duration_init, _dur_init_str = timed(cls)
-        try:
-            solution, duration_solution, _dur_solution_str = timed(instance.solution)
-
-        except NoSolutionFoundError:
-            lines = ["No solution found!? 🤷‍️"]
-
-        except FatalError as exc:
-            log.fatal(exc.message)
-            lines = ["The process died before a solution could be found. 💀‍️"]
-
-        else:
-            if solution is None:
-                return None, cls.runner_state.input_mode == InputMode.NONE
-
-            lines = solution_lines(solution, instance.given_solution)
-            duration_total = duration_init + duration_solution
-            duration_str = human_readable_duration(duration_total)
-            # TODO: Might be interesting to show input loading time.
-            lines += ["", f"Solved in {duration_str} {duration_emoji(duration_str)} "]
-
-        width = max(strlen(line) for line in lines)
-        log.info(" " * (width + 4))
-        log.info(f" {chalk.bg_hex('332')(' ' * (width + 2))} ")
-        for line in lines:
-            log.info(
-                f" {chalk.bg_hex('332')(f' {line} {" " * (width - strlen(line))}')} "
-            )
-        log.info(f" {chalk.bg_hex('332')(' ' * (width + 2))} ")
-        log.info(" " * (width + 4))
-
-        return solution, (solution is not None and solution == instance.given_solution)
+    def actual_solution(self) -> T | None:
+        return self.test_solution if self.is_test_run else self.puzzle_solution
 
     @abstractmethod
     def process_input(self) -> None:

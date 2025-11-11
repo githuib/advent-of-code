@@ -22,14 +22,14 @@ class _Problem(OneLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 37
-    my_solution = 349812
+    puzzle_solution = 349812
 
     false = False
 
 
 class Problem2(_Problem):
     test_solution = 168
-    my_solution = 99763899
+    puzzle_solution = 99763899
 
     false = True
 

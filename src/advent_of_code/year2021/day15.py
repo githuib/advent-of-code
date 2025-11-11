@@ -32,7 +32,7 @@ class ChitonState(DijkstraState[Constants, Variables]):
 
 class Problem1(NumberGridProblem[int]):
     test_solution = 40
-    my_solution = 583
+    puzzle_solution = 583
 
     def solution(self) -> int:
         log.lazy_debug(self.grid.to_lines)
@@ -42,7 +42,7 @@ class Problem1(NumberGridProblem[int]):
 
 class Problem2(Problem1):
     test_solution = 315
-    my_solution = 2927
+    puzzle_solution = 2927
 
     def solution(self) -> int:
         w, h = self.grid.size

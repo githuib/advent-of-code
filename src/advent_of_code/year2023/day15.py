@@ -21,7 +21,7 @@ class _Problem(OneLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 1320
-    my_solution = 507666
+    puzzle_solution = 507666
 
     def solution(self) -> int:
         return sum(hash_(s) for s in self.operations)
@@ -29,7 +29,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 145
-    my_solution = 233537
+    puzzle_solution = 233537
 
     def solution(self) -> int:
         boxes: dict[int, dict[str, int]] = {}

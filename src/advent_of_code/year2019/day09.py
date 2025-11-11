@@ -12,14 +12,14 @@ class _Problem(IntcodeProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = 2406950601
+    puzzle_solution = 2406950601
 
     n = 1
 
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 83239
+    puzzle_solution = 83239
 
     n = 2
 

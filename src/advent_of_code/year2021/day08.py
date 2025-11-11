@@ -21,7 +21,7 @@ class _Problem(ParsedProblem[tuple[list[str], list[str]], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 26
-    my_solution = 514
+    puzzle_solution = 514
 
     def solution(self) -> int:
         return len(
@@ -62,7 +62,7 @@ def decode_output(signal: Iterable[str], output: Iterable[str]) -> int:
 
 class Problem2(_Problem):
     test_solution = 61229
-    my_solution = 1012272
+    puzzle_solution = 1012272
 
     def solution(self) -> int:
         return sum(

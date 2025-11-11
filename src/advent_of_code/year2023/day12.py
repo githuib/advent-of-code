@@ -43,7 +43,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 21
-    my_solution = 7674
+    puzzle_solution = 7674
 
     def _find(self, s: str, c: Criteria) -> int:
         return find(s, c)
@@ -51,7 +51,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 525152
-    my_solution = 4443895258186
+    puzzle_solution = 4443895258186
 
     def _find(self, s: str, c: Criteria) -> int:
         return find("?".join([s] * 5), c * 5)

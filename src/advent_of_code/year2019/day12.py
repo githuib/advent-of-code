@@ -53,7 +53,7 @@ class _Problem(ParsedProblem[Iterable[int], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 1940
-    my_solution = 10028
+    puzzle_solution = 10028
 
     def solution(self) -> int:
         for _ in range(self.var(test=100, puzzle=1000)):
@@ -63,7 +63,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 4686774924
-    my_solution = 314610635824376
+    puzzle_solution = 314610635824376
 
     def solution(self) -> int:
         original_moons = deepcopy(self.moons)

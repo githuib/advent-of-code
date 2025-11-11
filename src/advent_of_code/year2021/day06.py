@@ -17,14 +17,14 @@ class _Problem(OneLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 5934
-    my_solution = 362740
+    puzzle_solution = 362740
 
     steps = 80
 
 
 class Problem2(_Problem):
     test_solution = 26984457539
-    my_solution = 1644874076764
+    puzzle_solution = 1644874076764
 
     steps = 256
 

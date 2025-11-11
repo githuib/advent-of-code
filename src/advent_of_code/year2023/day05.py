@@ -28,7 +28,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 35
-    my_solution = 309796150
+    puzzle_solution = 309796150
 
     def solution(self) -> int:
         def get_next_value(item: int, m: Iterable[MapEntry]) -> int:
@@ -42,7 +42,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 46
-    my_solution = 50716416
+    puzzle_solution = 50716416
 
     def solution(self) -> int:
         def get_next_ranges(

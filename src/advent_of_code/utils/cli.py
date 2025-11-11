@@ -19,6 +19,7 @@ class Pixel(Enum):
 
 
 def timed[T](func: Callable[[], T]) -> tuple[T, int, str]:
+    """Return the function result along with its run duration (both in nanoseconds and human-readable format)."""
     start = perf_counter_ns()
     result = func()
     end = perf_counter_ns()

@@ -18,7 +18,7 @@ class _Problem(ParsedProblem[tuple[set[str], set[str]], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 13
-    my_solution = 20117
+    puzzle_solution = 20117
 
     def solution(self) -> int:
         return sum(2 ** (w - 1) for w in self.matching if w)
@@ -26,7 +26,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 30
-    my_solution = 13768818
+    puzzle_solution = 13768818
 
     def solution(self) -> int:
         n = self.line_count

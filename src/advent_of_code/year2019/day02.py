@@ -15,7 +15,7 @@ class _Problem(IntcodeProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = 7210630
+    puzzle_solution = 7210630
 
     def solution(self) -> int:
         return self.run_program(noun=12, verb=2)
@@ -23,7 +23,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 3892
+    puzzle_solution = 3892
 
     def solution(self) -> int:
         for noun in range(100):

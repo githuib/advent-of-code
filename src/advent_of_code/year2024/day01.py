@@ -22,7 +22,7 @@ class _Problem(ParsedProblem[tuple[int, int], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 11
-    my_solution = 1341714
+    puzzle_solution = 1341714
 
     def _compare(self, n1: int, n2: int) -> int:
         return abs(n1 - n2)
@@ -30,7 +30,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 31
-    my_solution = None
+    puzzle_solution = None
 
     def _compare(self, n1: int, n2: int) -> int:
         return abs(n1 - n2)

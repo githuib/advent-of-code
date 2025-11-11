@@ -8,7 +8,7 @@ SIZE = WIDTH * HEIGHT
 
 class Problem1(OneLineProblem[int]):
     test_solution = None
-    my_solution = 1072
+    puzzle_solution = 1072
 
     def solution(self) -> int:
         first_line = self.line
@@ -28,7 +28,7 @@ class Problem1(OneLineProblem[int]):
 
 class Problem2(OneLineProblem[str]):
     test_solution = None
-    my_solution = """
+    puzzle_solution = """
 █░░░██░░░░████░███░░░░██░
 █░░░██░░░░█░░░░█░░█░░░░█░
 ░█░█░█░░░░███░░█░░█░░░░█░

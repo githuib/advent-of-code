@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class Problem1(MultiLineProblem[int]):
     test_solution = 114
-    my_solution = 1772145754
+    puzzle_solution = 1772145754
 
     def __init__(self) -> None:
         self.sequences = [[int(i) for i in line.split()] for line in self.lines]
@@ -28,7 +28,7 @@ class Problem1(MultiLineProblem[int]):
 
 class Problem2(Problem1):
     test_solution = 2
-    my_solution = 867
+    puzzle_solution = 867
 
     def __init__(self) -> None:
         super().__init__()

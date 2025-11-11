@@ -9,7 +9,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = None
+    puzzle_solution = None
 
     def solution(self) -> int:
         return 0
@@ -17,7 +17,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = None
+    puzzle_solution = None
 
     def solution(self) -> int:
         return 0

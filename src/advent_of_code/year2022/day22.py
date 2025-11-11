@@ -26,7 +26,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 6032
-    my_solution = 189140
+    puzzle_solution = 189140
 
     def solution(self) -> int:
         walls = self.map_2d.points_with_value("#")
@@ -57,7 +57,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 5031
-    my_solution = 115063
+    puzzle_solution = 115063
 
     def __init__(self) -> None:
         super().__init__()

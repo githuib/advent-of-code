@@ -204,7 +204,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 12521
-    my_solution = 12530
+    puzzle_solution = 12530
 
     @cached_property
     def _input_lines(self) -> list[str]:
@@ -213,7 +213,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 44169
-    my_solution = 50492
+    puzzle_solution = 50492
 
     @cached_property
     def _input_lines(self) -> list[str]:

@@ -18,7 +18,7 @@ class _Problem(ParsedProblem[Trajectory, int], ABC):
 
 class Problem1(_Problem):
     test_solution = 2
-    my_solution = 15593
+    puzzle_solution = 15593
 
     def check(self, h1: Trajectory, h2: Trajectory) -> bool:
         check_range = self.var(
@@ -48,7 +48,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 47
-    my_solution = 757031940316991
+    puzzle_solution = 757031940316991
 
     def solution(self) -> int:
         velo_range = Grid3D(v for _, v in self.parsed_input).size

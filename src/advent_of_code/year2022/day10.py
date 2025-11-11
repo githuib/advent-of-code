@@ -20,7 +20,7 @@ class _Problem[T](MultiLineProblem[T], ABC):
 
 class Problem1(_Problem[int]):
     test_solution = 13140
-    my_solution = 13180
+    puzzle_solution = 13180
 
     def solution(self) -> int:
         return sum(
@@ -40,7 +40,7 @@ class Problem2(_Problem[str]):
 ███████░░░░░░░███████░░░░░░░███████░░░░░
 """
 
-    my_solution = """
+    puzzle_solution = """
 ████░████░████░░██░░█░░█░░░██░░██░░███░░
 █░░░░░░░█░█░░░░█░░█░█░░█░░░░█░█░░█░█░░█░
 ███░░░░█░░███░░█░░░░████░░░░█░█░░█░███░░

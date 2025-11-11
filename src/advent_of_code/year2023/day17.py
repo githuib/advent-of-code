@@ -79,14 +79,14 @@ class _Problem(NumberGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 102
-    my_solution = 953
+    puzzle_solution = 953
 
     segment_range = 0, 3
 
 
 class Problem2(_Problem):
     test_solution = 94
-    my_solution = 1180
+    puzzle_solution = 1180
 
     segment_range = 4, 10
 

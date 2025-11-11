@@ -62,7 +62,7 @@ class _Problem(ParsedProblem[tuple[int, int, int, int, int, int, int], int], ABC
 
 class Problem1(_Problem):
     test_solution = 590784
-    my_solution = 542711
+    puzzle_solution = 542711
 
     def __init__(self) -> None:
         super().__init__()
@@ -75,7 +75,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 2758514936282235
-    my_solution = 1160303042684776
+    puzzle_solution = 1160303042684776
 
     def solution(self) -> int:
         return self.count_on_states()

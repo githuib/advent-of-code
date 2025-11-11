@@ -33,14 +33,14 @@ class _Problem(StringGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 374
-    my_solution = 9522407
+    puzzle_solution = 9522407
 
     empty_factor = 2
 
 
 class Problem2(_Problem):
     test_solution = 82000210  # 10 = 1030, 100 = 8410
-    my_solution = 544723432977
+    puzzle_solution = 544723432977
 
     empty_factor = 1_000_000
 

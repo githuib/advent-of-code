@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from igraph import EdgeSeq, Graph, Layout, plot  # type: ignore[import-untyped]
 from matplotlib import pyplot as plt
 
+from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.geo2d import DOWN, P2, RIGHT, StringGrid2
 
@@ -61,15 +62,14 @@ class _Problem(StringGridProblem[int], ABC):
             ((es, self._path_length(es)) for es in paths), key=lambda p: p[1]
         )
 
-        if self.is_debugged_run:
-            self._plot(edges)
+        log.debug_action(lambda: self._plot(edges))
 
         return length
 
 
 class Problem1(_Problem):
     test_solution = 94
-    my_solution = 2326
+    puzzle_solution = 2326
 
     @cached_property
     def _initial_graph(self) -> Graph:
@@ -102,7 +102,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 154
-    my_solution = 6574
+    puzzle_solution = 6574
 
     def __init__(self) -> None:
         super().__init__()

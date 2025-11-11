@@ -30,14 +30,14 @@ class _Problem[T](IntcodeProblem[T], ABC):
 
 
 class Problem1(_Problem[int]):
-    my_solution = 2129
+    puzzle_solution = 2129
 
     def solution(self) -> int:
         return len(self.paint_panels(starting_color=0))
 
 
 class Problem2(_Problem[str]):
-    my_solution = """
+    puzzle_solution = """
 ░███░░████░░██░░█░░█░███░░░██░░████░█
 ░█░░█░█░░░░█░░█░█░█░░█░░█░█░░█░░░░█░█
 ░█░░█░███░░█░░░░██░░░█░░█░█░░░░░░█░░█

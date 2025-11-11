@@ -45,7 +45,7 @@ class _Problem(ParsedProblem[tuple[int, int, int, int], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 26
-    my_solution = 5144286
+    puzzle_solution = 5144286
 
     def solution(self) -> int:
         merged = merge(
@@ -67,7 +67,7 @@ def intersect(line_1: Line2, line_2: Line2) -> P2 | None:
 
 class Problem2(_Problem):
     test_solution = 56000011
-    my_solution = 10229191267339
+    puzzle_solution = 10229191267339
 
     def solution(self) -> int:
         tuning_frequency = 4_000_000

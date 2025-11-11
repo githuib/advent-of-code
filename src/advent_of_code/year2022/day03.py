@@ -25,7 +25,7 @@ class _Problem(MultiLineProblem[int]):
 
 class Problem1(_Problem):
     test_solution = 157
-    my_solution = 7878
+    puzzle_solution = 7878
 
     def rucksacks(self) -> Iterator[list[set[int]]]:
         def split(nums: list[int]) -> list[set[int]]:
@@ -38,7 +38,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 70
-    my_solution = 2760
+    puzzle_solution = 2760
 
     def rucksacks(self) -> Iterator[list[set[int]]]:
         for n in range(0, self.line_count, 3):

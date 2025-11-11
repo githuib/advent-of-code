@@ -20,7 +20,7 @@ class _Problem(NumberGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 21
-    my_solution = 1543
+    puzzle_solution = 1543
 
     def solution(self) -> int:
         return sum(
@@ -40,7 +40,7 @@ def visible_trees(t: int, trees: Iterable[int]) -> int:
 
 class Problem2(_Problem):
     test_solution = 8
-    my_solution = 595080
+    puzzle_solution = 595080
 
     def solution(self) -> int:
         return max(

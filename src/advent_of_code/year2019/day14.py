@@ -78,7 +78,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 2210736  # 13312 180697
-    my_solution = 1065255
+    puzzle_solution = 1065255
 
     def solution(self) -> int:
         return self.required_ore()
@@ -86,7 +86,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 460664  # 82892753 5586022
-    my_solution = 1766154
+    puzzle_solution = 1766154
 
     def solution(self) -> int:
         available_ore = 1000000000000

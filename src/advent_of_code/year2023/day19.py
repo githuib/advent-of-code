@@ -52,7 +52,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 19114
-    my_solution = 331208
+    puzzle_solution = 331208
 
     def process_ratings(self, ratings: Mapping[str, int], label: str) -> bool:
         state = self.next_state(label)
@@ -77,7 +77,7 @@ def inverse_check(check: Check) -> Check:
 
 class Problem2(_Problem):
     test_solution = 167409079868000
-    my_solution = 121464316215623
+    puzzle_solution = 121464316215623
 
     def solution(self) -> int:
         accepted_paths: list[list[Check]] = []

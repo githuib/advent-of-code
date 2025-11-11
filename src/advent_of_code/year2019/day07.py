@@ -15,7 +15,7 @@ class _Problem(IntcodeProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = 34686
+    puzzle_solution = 34686
 
     def output_for(self, phase_settings: Iterable[int], input_: int = 0) -> int:
         if not phase_settings:
@@ -34,7 +34,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 36384144
+    puzzle_solution = 36384144
 
     def feedback_output_for(self, phase_settings: Iterable[int]) -> int:
         computers = [copy(self.computer) for _ in range(5)]

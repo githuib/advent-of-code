@@ -55,7 +55,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 26397
-    my_solution = 216297
+    puzzle_solution = 216297
 
     def solution(self) -> int:
         return sum(broken_scores[broken] for _, broken in self.parsed_lines())
@@ -63,7 +63,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 288957
-    my_solution = 2165057169
+    puzzle_solution = 2165057169
 
     def solution(self) -> int:
         scores = [

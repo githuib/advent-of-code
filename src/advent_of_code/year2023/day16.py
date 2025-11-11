@@ -50,7 +50,7 @@ class _Problem(StringGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 46
-    my_solution = 6902
+    puzzle_solution = 6902
 
     def solution(self) -> int:
         return self.energized(((-1, 0), RIGHT))
@@ -58,7 +58,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 51
-    my_solution = 7697
+    puzzle_solution = 7697
 
     def solution(self) -> int:
         return max(

@@ -30,7 +30,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 62
-    my_solution = 62365
+    puzzle_solution = 62365
 
     def parse_line(self, line: str) -> tuple[P2, int]:
         d_str, dist_str, _ = line.split()
@@ -39,7 +39,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 952408144115
-    my_solution = 159485361249806
+    puzzle_solution = 159485361249806
 
     def parse_line(self, line: str) -> tuple[P2, int]:
         return DIRS[DIRS_STR[int(line[-2])]], int(line[-7:-2], 16)

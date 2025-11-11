@@ -23,7 +23,7 @@ class _Problem(ParsedProblem[tuple[int, int], int]):
 
 class Problem1(_Problem):
     test_solution = 15
-    my_solution = 11906
+    puzzle_solution = 11906
 
     def play_round(self, o: int, m: int) -> int:
         return m + (m - o + 1) % 3 * 3
@@ -31,7 +31,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 12
-    my_solution = 11186
+    puzzle_solution = 11186
 
     def play_round(self, o: int, m: int) -> int:
         return (m + o) % 3 + m * 3 - 2

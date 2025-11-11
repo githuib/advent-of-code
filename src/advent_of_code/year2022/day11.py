@@ -68,7 +68,7 @@ class _Problem(
 
 class Problem1(_Problem):
     test_solution = 10605
-    my_solution = 112221
+    puzzle_solution = 112221
 
     def solution(self) -> int:
         return self.do_the_monkey(20, lambda w: w // 3)
@@ -76,7 +76,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 2713310158
-    my_solution = 25272176808
+    puzzle_solution = 25272176808
 
     def solution(self) -> int:
         mod = lcm(*[m.div for m in self.monkeys])

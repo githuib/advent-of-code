@@ -55,7 +55,7 @@ class _Problem(StringGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 16
-    my_solution = 3591
+    puzzle_solution = 3591
 
     def solution(self) -> int:
         return self.num_garden_plots(self.var(test=6, puzzle=64))
@@ -63,7 +63,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 598044246091826
+    puzzle_solution = 598044246091826
 
     def infinite_plots(self, steps: int) -> int:
         if self.is_test_run:

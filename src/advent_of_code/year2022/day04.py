@@ -19,7 +19,7 @@ class _Problem(ParsedProblem[tuple[int, int, int, int], int]):
 
 class Problem1(_Problem):
     test_solution = 2
-    my_solution = 515
+    puzzle_solution = 515
 
     def has_overlaps(self, s1: set[int], s2: set[int]) -> bool:
         return s1.issubset(s2) or s2.issubset(s1)
@@ -27,7 +27,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 4
-    my_solution = 883
+    puzzle_solution = 883
 
     def has_overlaps(self, s1: set[int], s2: set[int]) -> bool:
         return len(s1 & s2) > 0

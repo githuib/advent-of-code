@@ -64,7 +64,7 @@ class _Problem(StringGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 110
-    my_solution = 3788
+    puzzle_solution = 3788
 
     def solution(self) -> int:
         elfs = NumberGrid2(dict.fromkeys(nth_or_last(self.dance(), 10), 1))
@@ -74,7 +74,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 20
-    my_solution = 921
+    puzzle_solution = 921
 
     def solution(self) -> int:
         n, elfs = first_duplicate(self.dance())

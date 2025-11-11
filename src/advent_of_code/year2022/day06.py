@@ -24,14 +24,14 @@ class _Problem(OneLineProblem[int]):
 
 class Problem1(_Problem):
     test_solution = 10
-    my_solution = 1356
+    puzzle_solution = 1356
 
     _window_size = 4
 
 
 class Problem2(_Problem):
     test_solution = 29
-    my_solution = 2564
+    puzzle_solution = 2564
 
     _window_size = 14
 

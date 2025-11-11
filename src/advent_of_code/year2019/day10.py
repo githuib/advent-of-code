@@ -33,7 +33,7 @@ class _Problem(StringGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 210
-    my_solution = 299
+    puzzle_solution = 299
 
     def solution(self) -> int:
         return len(self.grouped_by_angle)
@@ -41,7 +41,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 802
-    my_solution = 1419
+    puzzle_solution = 1419
 
     def solution(self) -> int:
         asteroids = sorted(self.grouped_by_angle.items())

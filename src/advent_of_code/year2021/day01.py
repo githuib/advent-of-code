@@ -17,14 +17,14 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 7
-    my_solution = 1832
+    puzzle_solution = 1832
 
     window_size = 1
 
 
 class Problem2(_Problem):
     test_solution = 5
-    my_solution = 1858
+    puzzle_solution = 1858
 
     window_size = 3
 

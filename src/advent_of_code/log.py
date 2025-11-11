@@ -1,6 +1,7 @@
 import logging
 from collections.abc import Callable, Iterator
-from logging import Formatter, Logger, LogRecord, StreamHandler
+from functools import cached_property
+from logging import Formatter, Handler, Logger, LogRecord, StreamHandler
 from os import get_terminal_size
 from pprint import pformat
 
@@ -44,26 +45,23 @@ class LogFormatter(Formatter):
 class AppLogger:
     def __init__(self, logger: Logger) -> None:
         self._logger = logger
+        self._logger.addHandler(self._cli_handler)
 
-    def setup(self, level: LogLevel) -> None:
-        self._logger.setLevel(logging.DEBUG)
-        debug_handler = StreamHandler()
-        debug_handler.addFilter(
-            lambda record: record.name == self._logger.name
-            or record.levelno > logging.DEBUG
-        )
-        debug_handler.setLevel(level)
-        debug_handler.setFormatter(LogFormatter(self._logger.name))
-        self._logger.addHandler(debug_handler)
+    @cached_property
+    def _cli_handler(self) -> Handler:
+        log_name = self._logger.name
 
-    def lazy_debug(self, cb: Callable[[], object]) -> None:
-        self._logger.debug(cb())
+        def log_filter(record: LogRecord) -> bool:
+            """Ignore debug messages from 3rd party packages."""
+            return record.name == log_name or record.levelno > logging.DEBUG
 
-    def lazy_info(self, cb: Callable[[], object]) -> None:
-        self._logger.info(cb())
+        handler = StreamHandler()
+        handler.addFilter(log_filter)
+        handler.setFormatter(LogFormatter(log_name))
+        return handler
 
-    # def __getattr__(self, item: str) -> object:
-    #     return getattr(self._logger, item)
+    def set_level(self, level: LogLevel) -> None:
+        self._logger.setLevel(level)
 
     def debug(self, msg: object) -> None:
         self._logger.debug(msg)
@@ -79,3 +77,13 @@ class AppLogger:
 
     def fatal(self, msg: object) -> None:
         self._logger.fatal(msg)
+
+    def lazy_debug(self, cb: Callable[[], object]) -> None:
+        self._logger.debug(cb())
+
+    def lazy_info(self, cb: Callable[[], object]) -> None:
+        self._logger.info(cb())
+
+    def debug_action(self, cb: Callable[[], None]) -> None:
+        if self._logger.level == logging.DEBUG:
+            cb()

@@ -40,7 +40,7 @@ class _Problem(StringGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 80
-    my_solution = 7107
+    puzzle_solution = 7107
 
     def solution(self) -> int:
         return loop_length(self.vertices()) // 2
@@ -48,7 +48,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 10
-    my_solution = 281
+    puzzle_solution = 281
 
     def solution(self) -> int:
         return grid_area(self.vertices(), include_loop=False)

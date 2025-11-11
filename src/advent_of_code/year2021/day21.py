@@ -70,7 +70,7 @@ class _Problem(ParsedProblem[tuple[int], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 739785
-    my_solution = 432450
+    puzzle_solution = 432450
 
     def solution(self) -> int:
         s1, s2, rolls = turn((self.start_1, self.start_2))
@@ -79,7 +79,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 444356092776315
-    my_solution = 138508043837521
+    puzzle_solution = 138508043837521
 
     def solution(self) -> int:
         s1, s2 = quantum_turn((self.start_1, self.start_2))

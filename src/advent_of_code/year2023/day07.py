@@ -35,7 +35,7 @@ class _Problem(MultiLineProblem[int]):
 
 class Problem1(_Problem):
     test_solution = 6440
-    my_solution = 251121738
+    puzzle_solution = 251121738
 
     def __init__(self) -> None:
         super().__init__()
@@ -44,7 +44,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 5905
-    my_solution = 251421071
+    puzzle_solution = 251421071
 
     def __init__(self) -> None:
         super().__init__()

@@ -33,14 +33,14 @@ class _Problem(MultiLineProblem[str]):
 
 class Problem1(_Problem):
     test_solution = "CMZ"
-    my_solution = "TWSGQHNHL"
+    puzzle_solution = "TWSGQHNHL"
 
     _is_v9001 = False
 
 
 class Problem2(_Problem):
     test_solution = "MCD"
-    my_solution = "JNRSCDWPP"
+    puzzle_solution = "JNRSCDWPP"
 
     _is_v9001 = True
 

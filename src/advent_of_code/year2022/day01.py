@@ -17,7 +17,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 24000
-    my_solution = 72017
+    puzzle_solution = 72017
 
     def solution(self) -> int:
         return max(self.calorie_totals)
@@ -25,7 +25,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 45000
-    my_solution = 212520
+    puzzle_solution = 212520
 
     def solution(self) -> int:
         return sum(sorted(self.calorie_totals)[-3:])

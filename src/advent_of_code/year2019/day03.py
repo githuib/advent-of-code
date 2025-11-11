@@ -41,7 +41,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = 5319
+    puzzle_solution = 5319
 
     with_steps = True
 
@@ -51,7 +51,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 122514
+    puzzle_solution = 122514
 
     with_steps = True
 

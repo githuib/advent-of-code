@@ -45,7 +45,7 @@ def load(rows: Lines) -> int:
 
 class Problem1(_Problem):
     test_solution = 136
-    my_solution = 109596
+    puzzle_solution = 109596
 
     def solution(self) -> int:
         tilted = list(tilt(self.cols))
@@ -59,7 +59,7 @@ def tilt_cycle(c: Lines) -> Lines:
 
 class Problem2(_Problem):
     test_solution = 64
-    my_solution = 96105
+    puzzle_solution = 96105
 
     def solution(self) -> int:
         cycle = detect_cycle(repeat_transform(self.cols, transform=tilt_cycle))

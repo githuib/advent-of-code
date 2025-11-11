@@ -32,7 +32,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 6
-    my_solution = 16343
+    puzzle_solution = 16343
 
     def solution(self) -> int:
         return self.steps_from("AAA", lambda n: n != "ZZZ")
@@ -40,7 +40,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 6
-    my_solution = 15299095336639
+    puzzle_solution = 15299095336639
 
     def solution(self) -> int:
         return lcm(

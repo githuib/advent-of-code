@@ -23,7 +23,7 @@ def fuck_all_up_beyond_repair(normal_situation: int) -> str:
 
 class Problem1(MultiLineProblem[str]):
     test_solution = "2=-1=0"
-    my_solution = "20=022=21--=2--12=-2"
+    puzzle_solution = "20=022=21--=2--12=-2"
 
     def solution(self) -> str:
         return fuck_all_up_beyond_repair(

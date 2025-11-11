@@ -105,7 +105,7 @@ class _Problem(StringGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 18
-    my_solution = 242
+    puzzle_solution = 242
 
     def solution(self) -> int:
         return self.path.length
@@ -113,7 +113,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 54
-    my_solution = 720
+    puzzle_solution = 720
 
     def solution(self) -> int:
         first = self.path.end_state

@@ -12,7 +12,7 @@ class _Problem(OneLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 24176176
-    my_solution = 10189359
+    puzzle_solution = 10189359
 
     def solution(self) -> int:
         input_str = [int(c) for c in self.line]
@@ -33,7 +33,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 84462026
-    my_solution = None
+    puzzle_solution = None
 
     def solution(self) -> int:
         return 0

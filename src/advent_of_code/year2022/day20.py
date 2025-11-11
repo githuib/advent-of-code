@@ -81,7 +81,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 3
-    my_solution = 23321
+    puzzle_solution = 23321
 
     decryption_key = 1
     mixing_amount = 1
@@ -89,7 +89,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 1623178306
-    my_solution = 1428396909280
+    puzzle_solution = 1428396909280
 
     decryption_key = 811589153
     mixing_amount = 10

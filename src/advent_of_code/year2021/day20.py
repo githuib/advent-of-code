@@ -72,14 +72,14 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 35
-    my_solution = 5475
+    puzzle_solution = 5475
 
     padding = 2
 
 
 class Problem2(_Problem):
     test_solution = 3351
-    my_solution = 17548
+    puzzle_solution = 17548
 
     padding = 50
 

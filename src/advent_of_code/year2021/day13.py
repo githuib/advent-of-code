@@ -41,7 +41,7 @@ class _Problem[T](MultiLineProblem[T], ABC):
 
 class Problem1(_Problem[int]):
     test_solution = 17
-    my_solution = 743
+    puzzle_solution = 743
 
     def solution(self) -> int:
         self.fold_next()
@@ -56,7 +56,7 @@ class Problem2(_Problem[str]):
 █░░░█
 █████
 """
-    my_solution = """
+    puzzle_solution = """
 ███░░░██░░███░░█░░░░░██░░█░░█░█░░█░█░░░
 █░░█░█░░█░█░░█░█░░░░█░░█░█░█░░█░░█░█░░░
 █░░█░█░░░░█░░█░█░░░░█░░█░██░░░████░█░░░

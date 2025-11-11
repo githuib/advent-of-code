@@ -50,7 +50,7 @@ class ALU:
 
 class _Problem(MultiLineProblem[int], ABC):
     def solution(self) -> int:
-        n = self.my_solution
+        n = self.puzzle_solution
         alu = ALU()
         alu.run_program(self.lines, [int(d) for d in str(n)])
         log.debug(alu.vars)
@@ -59,12 +59,12 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = 99691891979938
+    puzzle_solution = 99691891979938
 
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 27141191213911
+    puzzle_solution = 27141191213911
 
 
 notes = """

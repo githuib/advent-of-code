@@ -23,7 +23,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 8
-    my_solution = 2600
+    puzzle_solution = 2600
 
     def solution(self) -> int:
         return sum(
@@ -35,7 +35,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 2286
-    my_solution = 86036
+    puzzle_solution = 86036
 
     def solution(self) -> int:
         return sum(prod(d.values()) for d in self.parsed())

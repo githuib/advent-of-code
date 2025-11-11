@@ -27,7 +27,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 288
-    my_solution = 3316275
+    puzzle_solution = 3316275
 
     def solution(self) -> int:
         return prod(ways_to_win(t, d) for t, d in zip(*self.parsed, strict=False))
@@ -35,7 +35,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 71503
-    my_solution = 27102791
+    puzzle_solution = 27102791
 
     def solution(self) -> int:
         return ways_to_win(*[compose_number(line) for line in self.parsed])

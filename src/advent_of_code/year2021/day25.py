@@ -27,7 +27,7 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
 
 class Problem1(StringGridProblem[int]):
     test_solution = 58
-    my_solution = 389
+    puzzle_solution = 389
 
     def __init__(self) -> None:
         self.width = self.grid.width

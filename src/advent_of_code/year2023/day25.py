@@ -7,7 +7,7 @@ from advent_of_code.problems import MultiLineProblem
 
 class Problem1(MultiLineProblem[int]):
     test_solution = 54
-    my_solution = 582590
+    puzzle_solution = 582590
 
     def solution(self) -> int:
         # graph = Graph.ListDict({line[:3]: line[5:].split() for line in self.lines})

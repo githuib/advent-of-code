@@ -53,14 +53,14 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 405
-    my_solution = 35232
+    puzzle_solution = 35232
 
     fix_smudge = False
 
 
 class Problem2(_Problem):
     test_solution = 400
-    my_solution = 37982
+    puzzle_solution = 37982
 
     fix_smudge = True
 

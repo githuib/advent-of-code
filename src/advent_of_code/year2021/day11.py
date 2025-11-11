@@ -78,7 +78,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 1656
-    my_solution = 1749
+    puzzle_solution = 1749
 
     def solution(self) -> int:
         return sum(self.assignment(max_steps=100))
@@ -86,7 +86,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 195
-    my_solution = 285
+    puzzle_solution = 285
 
     def solution(self) -> int:
         return len(self.assignment())

@@ -31,7 +31,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 198
-    my_solution = 1071734
+    puzzle_solution = 1071734
 
     def process_codes_tail_rec(
         self, codes: Sequence[list[bool]], result: list[bool], *, inverse: bool
@@ -48,7 +48,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 230
-    my_solution = 6124992
+    puzzle_solution = 6124992
 
     def process_codes_tail_rec(
         self, codes: Sequence[list[bool]], result: list[bool], *, inverse: bool

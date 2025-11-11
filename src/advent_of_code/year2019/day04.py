@@ -36,7 +36,7 @@ class _Problem(OneLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = 1653
+    puzzle_solution = 1653
 
     def sequence_condition(self, s: str) -> bool:
         return len(s) > len(set(s))
@@ -44,7 +44,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 1133
+    puzzle_solution = 1133
 
     def sequence_condition(self, s: str) -> bool:
         return 2 in Counter(s).values()

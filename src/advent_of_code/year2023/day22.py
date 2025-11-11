@@ -73,7 +73,7 @@ class _Problem(ParsedProblem[tuple[P3D, P3D], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 5
-    my_solution = 409
+    puzzle_solution = 409
 
     def solution(self) -> int:
         return sum(not b.supporting() for b in self.bricks)
@@ -81,7 +81,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 7
-    my_solution = 61097
+    puzzle_solution = 61097
 
     def solution(self) -> int:
         return sum(b.total_supporting() for b in self.bricks)

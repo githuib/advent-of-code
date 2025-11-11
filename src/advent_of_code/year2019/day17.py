@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Problem1(IntcodeProblem[int]):
-    my_solution = 2804
+    puzzle_solution = 2804
 
     def solution(self) -> int:
         grid = "".join(
@@ -52,7 +52,7 @@ def process_output(runner: Iterable[int]) -> Iterator[tuple[P2, int]]:
 
 
 class Problem2(Problem1):
-    my_solution = 833429
+    puzzle_solution = 833429
 
     def solution(self) -> int:
         self.computer.program[0] = 2

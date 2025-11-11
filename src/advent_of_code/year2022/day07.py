@@ -78,7 +78,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 95437
-    my_solution = 1182909
+    puzzle_solution = 1182909
 
     def solution(self) -> int:
         return self._root.total_size_1()
@@ -86,7 +86,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 24933642
-    my_solution = 2832508
+    puzzle_solution = 2832508
 
     def solution(self) -> int:
         return self._root.total_size_2(self._root.size - 40000000) or 0

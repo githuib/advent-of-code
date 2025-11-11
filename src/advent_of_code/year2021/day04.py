@@ -60,14 +60,14 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 4512
-    my_solution = 8136
+    puzzle_solution = 8136
 
     squid_mode = False
 
 
 class Problem2(_Problem):
     test_solution = 1924
-    my_solution = 12738
+    puzzle_solution = 12738
 
     squid_mode = True
 

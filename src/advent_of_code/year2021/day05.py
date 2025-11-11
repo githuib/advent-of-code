@@ -41,14 +41,14 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 5
-    my_solution = 7674
+    puzzle_solution = 7674
 
     include_diagonal_lines = False
 
 
 class Problem2(_Problem):
     test_solution = 12
-    my_solution = 20898
+    puzzle_solution = 20898
 
     include_diagonal_lines = True
 

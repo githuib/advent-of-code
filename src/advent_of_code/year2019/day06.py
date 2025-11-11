@@ -28,7 +28,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = None
-    my_solution = 162439
+    puzzle_solution = 162439
 
     def solution(self) -> int:
         return sum(len(body.ancestors) for body in self.big_bang().values())
@@ -36,7 +36,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 367
+    puzzle_solution = 367
 
     def solution(self) -> int:
         universe = self.big_bang()

@@ -50,7 +50,7 @@ class _Problem(NumberGridProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 4361
-    my_solution = 554003
+    puzzle_solution = 554003
 
     def solution(self) -> int:
         return sum(self.parts.values())
@@ -58,7 +58,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 467835
-    my_solution = 87263515
+    puzzle_solution = 87263515
 
     def solution(self) -> int:
         return sum(

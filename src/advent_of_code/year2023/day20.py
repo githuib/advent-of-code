@@ -83,7 +83,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 11687500  # 32000000
-    my_solution = 791120136
+    puzzle_solution = 791120136
 
     def solution(self) -> int:
         c = Counter(v for _ in range(1000) for v in self.press_button())
@@ -92,7 +92,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = None
-    my_solution = 215252378794009
+    puzzle_solution = 215252378794009
 
     def solution(self) -> int:
         def cycle_lengths() -> Iterator[int]:

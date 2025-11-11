@@ -75,7 +75,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 24
-    my_solution = 964
+    puzzle_solution = 964
 
     def __init__(self) -> None:
         super().__init__()
@@ -90,7 +90,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 93
-    my_solution = 32041
+    puzzle_solution = 32041
 
     def solution(self) -> int:
         y = max(y for (_, y) in self.map) + 2

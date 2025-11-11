@@ -9,7 +9,7 @@ class _Problem(ParsedProblem[tuple[str, int], int], ABC):
 
 class Problem1(_Problem):
     test_solution = 150
-    my_solution = 1480518
+    puzzle_solution = 1480518
 
     def solution(self) -> int:
         pos, depth = 0, 0
@@ -26,7 +26,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 900
-    my_solution = 1282809906
+    puzzle_solution = 1282809906
 
     def solution(self) -> int:
         pos, depth, aim = 0, 0, 0

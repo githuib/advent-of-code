@@ -166,7 +166,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 4140
-    my_solution = 4641
+    puzzle_solution = 4641
 
     def solution(self) -> int:
         return reduce(lambda t, r: t + r, self.roots()).magnitude
@@ -174,7 +174,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 3993
-    my_solution = 4624
+    puzzle_solution = 4624
 
     def solution(self) -> int:
         return max((r1 + r2).magnitude for r1, r2 in permutations(self.roots(), 2))

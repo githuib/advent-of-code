@@ -45,7 +45,7 @@ class _Problem(OneLineProblem[int], ABC):
 
 class Problem1(_Problem):
     test_solution = 45
-    my_solution = 5151
+    puzzle_solution = 5151
 
     def solution(self) -> int:
         return max(self.shoot_that_mofo().values())
@@ -53,7 +53,7 @@ class Problem1(_Problem):
 
 class Problem2(_Problem):
     test_solution = 112
-    my_solution = 968
+    puzzle_solution = 968
 
     def solution(self) -> int:
         return len(self.shoot_that_mofo())

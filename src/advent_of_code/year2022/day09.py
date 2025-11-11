@@ -63,14 +63,14 @@ class _Problem(ParsedProblem[tuple[P2, int], int]):
 
 class Problem1(_Problem):
     test_solution = 88
-    my_solution = 6190
+    puzzle_solution = 6190
 
     tail_size = 1
 
 
 class Problem2(_Problem):
     test_solution = 36
-    my_solution = 2516
+    puzzle_solution = 2516
 
     tail_size = 9
 
