@@ -7,17 +7,19 @@ from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-DIRS = [RIGHT, DOWN, LEFT, UP]
+DIRS_STR = "RDLU"
+DIRS = dict(zip(DIRS_STR, [RIGHT, DOWN, LEFT, UP], strict=True))
 
 
 class _Problem(MultiLineProblem[int], ABC):
     @abstractmethod
-    def parsed(self) -> Iterator[tuple[P2, int]]:
+    def parse_line(self, line: str) -> tuple[P2, int]:
         pass
 
     def loop(self) -> Iterator[P2]:
         x, y = 0, 0
-        for (dx, dy), dist in self.parsed():
+        for line in self.lines:
+            (dx, dy), dist = self.parse_line(line)
             x += dx * dist
             y += dy * dist
             yield x, y
@@ -30,20 +32,17 @@ class Problem1(_Problem):
     test_solution = 62
     my_solution = 62365
 
-    def parsed(self) -> Iterator[tuple[P2, int]]:
-        dirs = dict(zip("RDLU", DIRS, strict=False))
-        for line in self.lines:
-            d_str, dist_str, _ = line.split()
-            yield dirs[d_str], int(dist_str)
+    def parse_line(self, line: str) -> tuple[P2, int]:
+        d_str, dist_str, _ = line.split()
+        return DIRS[d_str], int(dist_str)
 
 
 class Problem2(_Problem):
     test_solution = 952408144115
     my_solution = 159485361249806
 
-    def parsed(self) -> Iterator[tuple[P2, int]]:
-        for line in self.lines:
-            yield DIRS[int(line[-2])], int(line[-7:-2], 16)
+    def parse_line(self, line: str) -> tuple[P2, int]:
+        return DIRS[DIRS_STR[int(line[-2])]], int(line[-7:-2], 16)
 
 
 TEST_INPUT = """

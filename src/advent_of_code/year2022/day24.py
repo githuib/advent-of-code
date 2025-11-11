@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Literal, NamedTuple
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.problems import GridProblem
+from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, manhattan_dist_2
 from advent_of_code.utils.search import AStarState
 
@@ -67,7 +67,7 @@ class ValleyState(AStarState[Constants, Variables]):
         return f"{self.v.pos} - {self.v.cycle}"
 
 
-class _Problem(GridProblem[int], ABC):
+class _Problem(StringGridProblem[int], ABC):
     def __init__(self) -> None:
         self.grouped_tiles = {t: self.grid.points_with_value(t) for t in TILES}
         self.ground = frozenset.union(*self.grouped_tiles.values())
@@ -76,15 +76,20 @@ class _Problem(GridProblem[int], ABC):
         blizzards = list(self.blizzard_states())
         self.constants = Constants(start, end, self.ground, blizzards)
         self.path = ValleyState.find_path(Variables(), self.constants)
-        log.lazy_debug(
-            lambda: self.grid.to_lines(
-                lambda p, _: (
-                    chalk.hex("034").bg_hex("bdf")(self.grid[p])
-                    if (p in [s.v.pos for s in self.path.states])
-                    else chalk.hex("222").bg_hex("888")(self.grid[p])
+
+        def grid_str() -> Iterator[str]:
+            positions = [s.v.pos for s in self.path.states]
+
+            def format_value(p: P2, v: str) -> str:
+                return (
+                    chalk.hex("034").bg_hex("bdf")(v)
+                    if (p in positions)
+                    else chalk.hex("222").bg_hex("888")(v)
                 )
-            )
-        )
+
+            return self.grid.to_lines(format_value=format_value)
+
+        log.lazy_debug(grid_str)
 
     def new_blizzards(self, t: DirectionTile, bs: frozenset[P2]) -> frozenset[P2]:
         dx, dy = DIRECTIONS[t]

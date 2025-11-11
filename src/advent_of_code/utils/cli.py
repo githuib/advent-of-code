@@ -1,6 +1,7 @@
+from enum import Enum
 from itertools import zip_longest
 from time import perf_counter_ns
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from yachalk import chalk
 
@@ -8,6 +9,13 @@ from advent_of_code.utils.strings import pad_with_spaces, strlen
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator
+
+
+class Pixel(Enum):
+    GOOD = chalk.hex("0af").bg_hex("0af")("#")
+    BAD = chalk.hex("654").bg_hex("654")(".")
+    UGLY = chalk.hex("b40").bg_hex("b40")("^")
+    DEAD = " "
 
 
 def timed[T](func: Callable[[], T]) -> tuple[T, int, str]:
@@ -34,22 +42,6 @@ def human_readable_duration(nanoseconds: int) -> str:
     if milliseconds:
         return f"{milliseconds:d}.{microseconds:03d} ms"
     return f"{microseconds:d}.{nanoseconds:03d} µs"
-
-
-def pixel[T](
-    value: T,
-    on: str = chalk.hex("0af").bg_hex("0af")("#"),
-    off: str = chalk.hex("654").bg_hex("654")("."),
-    special: str = chalk.hex("b40").bg_hex("b40")("^"),
-    pixels: dict[T, str] = None,
-) -> str:
-    if isinstance(value, int):
-        int_pixels = cast("dict[int, str]", pixels) or {0: off, 1: on, 2: special}
-        return int_pixels.get(min(cast("int", value), max(int_pixels.keys())), " ")
-    if isinstance(value, str):
-        str_pixels = cast("dict[str, str]", pixels) or {".": off, "#": on, "^": special}
-        return str_pixels.get(cast("str", value), " ")
-    return " "
 
 
 def table_cell_str(s: str, width: int, row: int) -> str:

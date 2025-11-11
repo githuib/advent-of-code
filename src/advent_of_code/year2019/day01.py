@@ -7,7 +7,9 @@ def total_fuel(mass: int) -> int:
 
 
 def total_fuel_advanced(mass: int) -> int:
-    return sum(repeat_transform(mass, total_fuel, while_condition=lambda f: f > 0))
+    return sum(
+        repeat_transform(mass, transform=total_fuel, while_condition=lambda f: f > 0)
+    )
 
 
 class Problem1(MultiLineProblem[int]):

@@ -3,20 +3,20 @@ from abc import ABC
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import GridProblem
+from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.data import repeat_transform
-from advent_of_code.utils.geo2d import Grid2, manhattan_dist_2
+from advent_of_code.utils.geo2d import MutableStringGrid2, StringGrid2, manhattan_dist_2
 
 
-class _Problem(GridProblem[int], ABC):
+class _Problem(StringGridProblem[int], ABC):
     empty_factor: int
 
     def __init__(self) -> None:
-        log.debug(self.grid)
+        log.lazy_debug(self.grid.to_lines)
 
     def solution(self) -> int:
-        def expand(grid: Grid2[str]) -> Grid2[str]:
-            big_grid, offset = Grid2[str](), 0
+        def expand(grid: StringGrid2) -> StringGrid2:
+            big_grid, offset = MutableStringGrid2(), 0
             for cx in range(grid.width):
                 row = {(y, x + offset): v for (x, y), v in grid.items() if x == cx}
                 if "#" in row.values():
@@ -25,9 +25,9 @@ class _Problem(GridProblem[int], ABC):
                     offset += self.empty_factor - 1
             return big_grid
 
-        galaxies = last(repeat_transform(self.grid, expand, times=2)).points_with_value(
-            "#"
-        )
+        galaxies = last(
+            repeat_transform(self.grid, transform=expand, times=2)
+        ).points_with_value("#")
         return sum(manhattan_dist_2(p, q) for p in galaxies for q in galaxies if p < q)
 
 

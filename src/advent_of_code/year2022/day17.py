@@ -8,8 +8,8 @@ from more_itertools import nth_or_last, unzip
 
 from advent_of_code import log
 from advent_of_code.problems import OneLineProblem
-from advent_of_code.utils.cli import pixel
 from advent_of_code.utils.cycle_detection import detect_cycle
+from advent_of_code.utils.geo2d import NumberGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
@@ -31,18 +31,18 @@ def occludes_with(shape: Sequence[int], pattern: Sequence[int], y: int) -> bool:
 
 
 def board_str(shape: Sequence[int], pattern: Sequence[int], y: int) -> Iterator[str]:
-    for i, row in enumerate(pattern):
-        yield "".join(
-            pixel(
-                2
-                if (
-                    0 <= (s := y - min(0, y - len(shape) + 1) - i) < len(shape)
-                    and shape[s] >> j & 1
-                )
-                else row >> j & 1
-            )
-            for j in range(6, -1, -1)
-        )
+    def value(row_: int, r_: int, c_: int) -> int:
+        n = len(shape)
+        s = y - min(0, y - n + 1) - r_
+        if 0 <= s < n and shape[s] >> c_ & 1:
+            return 2
+        return row_ >> c_ & 1
+
+    return NumberGrid2(
+        ((c, r), value(row, r, c))
+        for r, row in enumerate(pattern)
+        for c in range(6, -1, -1)
+    ).to_lines()
 
 
 class _Problem(OneLineProblem[int], ABC):

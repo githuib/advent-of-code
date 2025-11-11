@@ -1,7 +1,7 @@
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import grouped, transposed
+from advent_of_code.utils.data import split_items, transposed_lines
 from advent_of_code.utils.strings import padded, split_at
 
 
@@ -9,12 +9,15 @@ class _Problem(MultiLineProblem[str]):
     _is_v9001: bool
 
     def __init__(self) -> None:
-        input_blocks = grouped(self.lines)
+        input_blocks = split_items(self.lines)
         *rows, nums = (line[1::4] for line in next(input_blocks))
         self._stacks: dict[str, str] = dict(
             zip(
                 nums,
-                (s.strip() for s in transposed(padded(reversed(rows), len(nums)))),
+                (
+                    s.strip()
+                    for s in transposed_lines(padded(reversed(rows), len(nums)))
+                ),
                 strict=False,
             )
         )

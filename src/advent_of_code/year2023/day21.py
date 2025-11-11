@@ -4,18 +4,18 @@ from typing import TYPE_CHECKING, NamedTuple, Self
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import FatalError, GridProblem
+from advent_of_code.problems import FatalError, StringGridProblem
 from advent_of_code.utils.data import repeat_transform
 from advent_of_code.utils.search import BFSState
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-    from advent_of_code.utils.geo2d import P2, Grid2
+    from advent_of_code.utils.geo2d import P2, StringGrid2
 
 
 class Constants(NamedTuple):
-    grid: Grid2[str]
+    grid: StringGrid2
     steps: int
 
 
@@ -36,7 +36,7 @@ class GardenState(BFSState[Constants, Variables]):
                 yield self.move(Variables(pos, count_me=not self.v.count_me))
 
 
-class _Problem(GridProblem[int], ABC):
+class _Problem(StringGridProblem[int], ABC):
     def __init__(self) -> None:
         self.start = self.grid.point_with_value("S")
 
@@ -44,7 +44,7 @@ class _Problem(GridProblem[int], ABC):
         def step(points: set[P2]) -> set[P2]:
             return {n for p in points for n, v in self.grid.neighbors(p) if v != "#"}
 
-        return len(last(repeat_transform({self.start}, step, times=steps)))
+        return len(last(repeat_transform({self.start}, transform=step, times=steps)))
 
     def num_garden_plots(self, steps: int) -> int:
         path = GardenState.find_path(
@@ -77,7 +77,7 @@ class Problem2(_Problem):
         return round(n**2 * a + n * b + c)
 
     def solution(self) -> int:
-        self.grid.infinite = True
+        self.grid.cyclic = True
         if self.is_test_run:
             for i, s in [
                 (6, 16),

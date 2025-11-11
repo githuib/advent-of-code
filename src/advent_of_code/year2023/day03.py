@@ -19,7 +19,7 @@ def cell_str(_p: P2, v: int | None) -> str:
 
 class _Problem(NumberGridProblem[int], ABC):
     def __init__(self) -> None:
-        log.lazy_debug(lambda: self.grid.to_lines(cell_str))
+        log.lazy_debug(lambda: self.grid.to_lines(format_value=cell_str))
 
         self.symbols_parts: dict[P2, list[P2]] = {}
         self.parts: dict[P2, int] = {}

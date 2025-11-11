@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from advent_of_code.problems import GridProblem, NoSolutionFoundError
+from advent_of_code.problems import NoSolutionFoundError, StringGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, grid_area, loop_length
 
 if TYPE_CHECKING:
@@ -19,7 +19,7 @@ CONNECTIONS = {
 }
 
 
-class _Problem(GridProblem[int], ABC):
+class _Problem(StringGridProblem[int], ABC):
     def first_neighbor(self, sx: int, sy: int) -> P2:
         for (x, y), v in self.grid.neighbors((sx, sy)):
             if v != "." and (sx - x, sy - y) in CONNECTIONS[v]:

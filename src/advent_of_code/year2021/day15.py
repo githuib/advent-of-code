@@ -1,13 +1,14 @@
 from typing import NamedTuple
 
+from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.geo2d import P2, Grid2
+from advent_of_code.utils.geo2d import P2, NumberGrid2
 from advent_of_code.utils.math import mods
 from advent_of_code.utils.search import DijkstraState
 
 
 class Constants:
-    def __init__(self, cave: Grid2[int]) -> None:
+    def __init__(self, cave: NumberGrid2) -> None:
         self.cave = cave
         _, self.end_position = cave.span
 
@@ -34,6 +35,8 @@ class Problem1(NumberGridProblem[int]):
     my_solution = 583
 
     def solution(self) -> int:
+        log.lazy_debug(self.grid.to_lines)
+        log.debug(self.grid.span)
         return ChitonState.find_path(Variables(), Constants(self.grid)).length
 
 
@@ -43,10 +46,11 @@ class Problem2(Problem1):
 
     def solution(self) -> int:
         w, h = self.grid.size
+        log.lazy_debug(self.grid.to_lines)
         path = ChitonState.find_path(
             Variables(),
             Constants(
-                Grid2[int](
+                NumberGrid2(
                     {
                         (x + w * i, y + h * j): mods(risk + i + j, 9, 1)
                         for i in range(5)

@@ -5,7 +5,7 @@ from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import grouped
+from advent_of_code.utils.data import split_items
 from advent_of_code.utils.geo3d import P3D, ROTATIONS_3D
 
 if TYPE_CHECKING:
@@ -20,7 +20,7 @@ class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
         scanners = [
             {P3D(*parse("{:d},{:d},{:d}", p)) for p in points[1:]}
-            for points in grouped(self.lines)
+            for points in split_items(self.lines, delimiter="")
         ]
         self.beacons, *self._scanners = scanners
         self.offsets = []

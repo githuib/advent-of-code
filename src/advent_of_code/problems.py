@@ -9,7 +9,7 @@ from yachalk import chalk
 
 from advent_of_code import InputMode, PuzzleData, RunnerState, log
 from advent_of_code.utils.cli import human_readable_duration, timed
-from advent_of_code.utils.geo2d import Grid2
+from advent_of_code.utils.geo2d import NumberGrid2, StringGrid2
 from advent_of_code.utils.geo3d import P3D
 from advent_of_code.utils.strings import strlen
 
@@ -183,22 +183,37 @@ class MultiLineProblem[T](Problem[T], ABC):
 
 
 class _GridProblem[E, T](MultiLineProblem[T], ABC):
-    grid: Grid2[E]
+    # grid: Grid2[E]
+
+    @abstractmethod
+    def convert_element(self, element: str) -> E:
+        pass
 
 
-class GridProblem[T](_GridProblem[str, T], ABC):
+class StringGridProblem[T](_GridProblem[str, T], ABC):
+    grid: StringGrid2
+
+    def convert_element(self, element: str) -> str:
+        return element
+
     def process_input(self) -> None:
         super().process_input()
-        self.grid = Grid2.from_lines(self.lines)
+        self.grid = StringGrid2.from_lines(
+            self.lines, parse_callback=self.convert_element
+        )
 
 
 class NumberGridProblem[T](_GridProblem[int, T], ABC):
-    def process_input(self) -> None:
-        super().process_input()
-        self.grid = Grid2.from_lines(self.lines).converted(self.convert_element)
+    grid: NumberGrid2
 
     def convert_element(self, element: str) -> int:
         return int(element)
+
+    def process_input(self) -> None:
+        super().process_input()
+        self.grid = NumberGrid2.from_lines(
+            self.lines, parse_callback=self.convert_element
+        )
 
 
 class ParsedProblem[R, T](Problem[T], ABC):

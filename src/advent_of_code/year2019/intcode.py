@@ -67,8 +67,7 @@ class IntcodeComputer:
             address = self._relative_base + address
 
         if address < 0:
-            msg = "Cannot read from negative address."
-            raise IndexError(msg)
+            raise IndexError(address)
 
         try:
             return self.memory[address]
@@ -77,14 +76,12 @@ class IntcodeComputer:
 
     def _write(self, address: int, value: int, param_mode: ParamMode) -> None:
         if param_mode == ParamMode.IMMEDIATE:
-            msg = "Invalid param mode for writing."
-            raise ValueError(msg)
+            raise ValueError(param_mode)
         if param_mode == ParamMode.RELATIVE:
             address = self._relative_base + address
 
         if address < 0:
-            msg = "Cannot write to negative address."
-            raise IndexError(msg)
+            raise IndexError(address)
 
         try:
             self.memory[address] = value

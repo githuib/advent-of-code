@@ -1,38 +1,42 @@
 from abc import ABC
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from itertools import groupby
 
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import GridProblem
+from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.cycle_detection import detect_cycle
 from advent_of_code.utils.data import repeat_transform
+from advent_of_code.utils.geo2d import StringGrid2
 
-Lines = Iterable[tuple[str, ...]]
+Line = tuple[str, ...]
+Lines = Iterable[Line]
 
 
-class _Problem(GridProblem[int], ABC):
-    def cols(self) -> Lines:
-        for c in range(self.grid.width):
-            yield tuple(v for (x, _), v in self.grid.items() if x == c)
+def debug_grid(lines: Lines) -> None:
+    log.lazy_debug(StringGrid2.from_lines(["".join(line) for line in lines]).to_lines)
+
+
+class _Problem(StringGridProblem[int], ABC):
+    def __init__(self) -> None:
+        self.cols: Lines = [
+            tuple(v for (x, _), v in self.grid.items() if x == c)
+            for c in range(self.grid.width)
+        ]
+        debug_grid(self.cols)
+
+
+def reordered(col: Line) -> Iterator[str]:
+    for k, g in groupby(reversed(col), lambda v: v == "#"):
+        if k:
+            yield from g
+        else:
+            yield from sorted(g)
 
 
 def tilt(cols: Lines) -> Lines:
-    return zip(
-        *(
-            [
-                p
-                for part in (
-                    g if k else sorted(g)
-                    for k, g in groupby(reversed(col), lambda v: v == "#")
-                )
-                for p in part
-            ]
-            for col in cols
-        ),
-        strict=False,
-    )
+    return zip(*(reordered(col) for col in cols), strict=True)
 
 
 def load(rows: Lines) -> int:
@@ -44,12 +48,13 @@ class Problem1(_Problem):
     my_solution = 109596
 
     def solution(self) -> int:
-        log.debug(self.grid)
-        return load(tilt(self.cols()))
+        tilted = list(tilt(self.cols))
+        debug_grid(tilted)
+        return load(tilted)
 
 
 def tilt_cycle(c: Lines) -> Lines:
-    return last(repeat_transform(c, transform=tilt, times=4))
+    return list(last(repeat_transform(c, transform=tilt, times=4)))
 
 
 class Problem2(_Problem):
@@ -57,27 +62,16 @@ class Problem2(_Problem):
     my_solution = 96105
 
     def solution(self) -> int:
-        cycle = detect_cycle(
-            repeat_transform(self.cols(), transform=lambda c: list(tilt_cycle(c)))
+        cycle = detect_cycle(repeat_transform(self.cols, transform=tilt_cycle))
+        tilt_sequence = repeat_transform(
+            self.cols,
+            transform=tilt_cycle,
+            times=cycle.start + (1_000_000_000 - cycle.start) % cycle.length,
         )
+        result = list(reversed(list(zip(*last(tilt_sequence), strict=True))))
+        debug_grid(result)
         log.debug(cycle)
-        return load(
-            reversed(
-                list(
-                    zip(
-                        *last(
-                            repeat_transform(
-                                self.cols(),
-                                transform=tilt_cycle,
-                                times=cycle.start
-                                + (1_000_000_000 - cycle.start) % cycle.length,
-                            )
-                        ),
-                        strict=False,
-                    )
-                )
-            )
-        )
+        return load(result)
 
 
 TEST_INPUT = """

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from more_itertools import nth_or_last
 
 from advent_of_code import log
-from advent_of_code.problems import GridProblem
+from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.data import first_duplicate
 from advent_of_code.utils.geo2d import (
     DOWN,
@@ -18,7 +18,7 @@ from advent_of_code.utils.geo2d import (
     RIGHT_DOWN,
     RIGHT_UP,
     UP,
-    Grid2,
+    NumberGrid2,
     all_directions,
 )
 
@@ -43,9 +43,9 @@ def next_pos(x: int, y: int, step: int, occupied: Set[P2]) -> P2 | None:
     return None
 
 
-class _Problem(GridProblem[int], ABC):
+class _Problem(StringGridProblem[int], ABC):
     def __init__(self) -> None:
-        log.lazy_debug(lambda: self.grid)
+        log.lazy_debug(self.grid.to_lines)
 
     def dance(self) -> Iterator[frozenset[P2]]:
         occupied = frozenset(p for p, v in self.grid.items() if v == "#")
@@ -67,7 +67,7 @@ class Problem1(_Problem):
     my_solution = 3788
 
     def solution(self) -> int:
-        elfs = Grid2.from_points(nth_or_last(self.dance(), 10), 1)
+        elfs = NumberGrid2(dict.fromkeys(nth_or_last(self.dance(), 10), 1))
         log.lazy_debug(elfs.to_lines)
         return elfs.area - len(elfs)
 
@@ -78,7 +78,7 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         n, elfs = first_duplicate(self.dance())
-        log.lazy_debug(Grid2.from_points(elfs, 1).to_lines)
+        log.lazy_debug(NumberGrid2(dict.fromkeys(elfs, 1)).to_lines)
         return n
 
 

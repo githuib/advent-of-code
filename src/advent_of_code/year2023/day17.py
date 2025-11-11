@@ -1,8 +1,11 @@
 from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
+from yachalk import chalk
+
+from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, Grid2, Range
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, NumberGrid2, Range
 from advent_of_code.utils.search import DijkstraState
 
 if TYPE_CHECKING:
@@ -10,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Constants:
-    def __init__(self, grid: Grid2, segment_range: Range) -> None:
+    def __init__(self, grid: NumberGrid2, segment_range: Range) -> None:
         self.grid = grid
         self.min_segment, self.max_segment = segment_range
         self.end = grid.width - 1, grid.height - 1
@@ -60,9 +63,18 @@ class _Problem(NumberGridProblem[int], ABC):
     segment_range: Range
 
     def solution(self) -> int:
-        return LavaState.find_path(
+        path = LavaState.find_path(
             Variables(), Constants(self.grid, self.segment_range)
-        ).length
+        )
+
+        def format_value(p: P2, v: int) -> str:
+            s = chalk.rgb(0, 37 + v * 10, 0)(v)
+            if p in {s.v.pos for s in path.states}:
+                return chalk.bg_rgb(0, 165 + v * 10, 0)(s)
+            return s
+
+        log.lazy_debug(lambda: self.grid.to_lines(format_value=format_value))
+        return path.length
 
 
 class Problem1(_Problem):

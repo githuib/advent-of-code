@@ -7,7 +7,7 @@ from yachalk import chalk
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
 from advent_of_code.utils.cli import table_lines, timed
-from advent_of_code.utils.geo2d import P2, Grid2
+from advent_of_code.utils.geo2d import P2, NumberGrid2
 from advent_of_code.utils.search import AStarState, BFSState, DijkstraState, State
 from advent_of_code.utils.strings import PRE_a
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class Constants:
-    hill: Grid2[int]
+    hill: NumberGrid2
     goal: int
     reverse: bool
 
@@ -132,7 +132,7 @@ class _Problem(NumberGridProblem[int], ABC):
                     else Styles.none(v)
                 )
 
-            yield from self.grid.to_lines(grid_cell_str)
+            yield from self.grid.to_lines(format_value=grid_cell_str)
             yield ""
             yield from table_lines(
                 ("Legend", "Algorithm", "Visited", "Path found in"),

@@ -6,16 +6,16 @@ from typing import TYPE_CHECKING
 from igraph import EdgeSeq, Graph, Layout, plot  # type: ignore[import-untyped]
 from matplotlib import pyplot as plt
 
-from advent_of_code.problems import GridProblem
-from advent_of_code.utils.geo2d import DOWN, P2, RIGHT, Grid2
+from advent_of_code.problems import StringGridProblem
+from advent_of_code.utils.geo2d import DOWN, P2, RIGHT, StringGrid2
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
 
 
-class _Problem(GridProblem[int], ABC):
+class _Problem(StringGridProblem[int], ABC):
     def __init__(self) -> None:
-        self.road = Grid2[str]({p: v for p, v in self.grid.items() if v != "#"})
+        self.road = StringGrid2({p: v for p, v in self.grid.items() if v != "#"})
         self.ps = list(self.road.keys())
         ids: dict[P2, int] = {p: i for i, p in enumerate(self.road)}
         self.start, *_, self.end = self.road.keys()

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.utils.geo2d import P2, Grid2
+from advent_of_code.utils.geo2d import P2, NumberGrid2
 
 from .intcode import IntcodeProblem
 
@@ -60,8 +60,8 @@ class Problem2(Problem1):
         runner = self.computer.run_to_next_output()
 
         # stage 1: Constructed path from first output
-        grid = Grid2(process_output(runner))
-        log.debug(grid.to_lines)
+        processed = process_output(runner)
+        log.lazy_debug(lambda: NumberGrid2(processed).to_lines())
 
         # Stage 2: Patterns derived manually after looking at path
         self.computer.inputs = [

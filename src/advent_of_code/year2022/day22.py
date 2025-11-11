@@ -1,12 +1,11 @@
 from abc import ABC
-from itertools import batched
 from typing import TYPE_CHECKING
 
 from more_itertools import split_when
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem, NoSolutionFoundError
-from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, StringGrid2
 from advent_of_code.utils.geo3d import P3D, Dir3D, Rotation90deg3D, Trans3
 
 if TYPE_CHECKING:
@@ -17,28 +16,12 @@ DIRECTIONS = [RIGHT, DOWN, LEFT, UP]
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
-        self.map_2d: dict[P2, str] = {
-            (u, v): c
-            for v, line in enumerate(self.lines[:-2])
-            for u, c in enumerate(line)
-            if c != " "
-        }
+        self.map_2d = StringGrid2.from_lines(self.lines[:-2])
+        log.lazy_debug(self.map_2d.to_lines)
         self.route = [
-            (d[0], int("".join(n)))
-            for d, n in batched(
-                split_when(
-                    "R" + self.lines[-1],
-                    lambda x, y: (x in "LR" and y not in "LR")
-                    or (x not in "LR" and y in "LR"),
-                ),
-                2,
-                strict=True,
-            )
+            (s[0], int("".join(s[1:])))
+            for s in split_when("R" + self.lines[-1], lambda _, r: r in "LR")
         ]
-        for y_ in range(12):
-            log.debug("".join(self.map_2d.get((x, y_), " ") for x in range(16)))
-        log.debug(" ")
-        log.debug(self.route)
 
 
 class Problem1(_Problem):
@@ -46,7 +29,7 @@ class Problem1(_Problem):
     my_solution = 189140
 
     def solution(self) -> int:
-        walls = {p for p, c in self.map_2d.items() if c == "#"}
+        walls = self.map_2d.points_with_value("#")
         x, y = (min(x for x, y in self.map_2d if y == 0), 0)
         curr_dir = 3
         for direction, steps in self.route:

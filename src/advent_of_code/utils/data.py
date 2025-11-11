@@ -1,6 +1,9 @@
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
+from functools import cached_property
 from itertools import chain, pairwise, repeat, takewhile, tee
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, Self, runtime_checkable
+
+from more_itertools import before_and_after
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Mapping
@@ -11,20 +14,28 @@ Predicate = Callable[..., bool]
 
 @runtime_checkable
 class Sortable(Protocol):
-    def __lt__(self, other: object) -> bool: ...
+    def __lt__(self, other: Self) -> bool: ...
 
 
 class Unique:
-    def __init__(self, data: object) -> None:
+    def __init__(self, data: Sortable) -> None:
         self.data = data
 
-    def __lt__(self, other: object) -> bool:
-        if isinstance(other, Unique) and isinstance(self.data, Sortable):
-            return self.data < other.data
-        return NotImplemented
+    def __lt__(self, other: Self) -> bool:
+        return self.data < other.data
 
     def __repr__(self) -> str:
         return repr(self.data)
+
+
+class WithClearablePropertyCache:
+    def clear_property_cache(self) -> None:
+        """Invalidate all cached properties (so they will be recomputed the first time they're accessed again)."""
+        cls = self.__class__
+        cache = self.__dict__
+        for attr in list(cache.keys()):
+            if isinstance(getattr(cls, attr, None), cached_property):
+                del cache[attr]
 
 
 def contains[T](this: Iterable[T], that: Iterable[T]) -> bool:
@@ -47,12 +58,15 @@ def tripletwise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T, T]]:
 
 def repeat_transform[T](
     value: T,
+    *,
     transform: Callable[[T], T],
     times: int = None,
     while_condition: Callable[[T], bool] = None,
 ) -> Iterator[T]:
     if while_condition:
-        yield from takewhile(while_condition, repeat_transform(value, transform, times))
+        yield from takewhile(
+            while_condition, repeat_transform(value, transform=transform, times=times)
+        )
     else:
         for _ in repeat(None) if times is None else repeat(None, times):
             value = transform(value)
@@ -77,58 +91,86 @@ def smart_range(start: int, stop: int, *, inclusive: bool = False) -> Iterable[i
     direction = 1 if start <= stop else -1
     if inclusive:
         stop += direction
-    # print(start, stop, direction)
     return range(start, stop, direction)
 
 
-def grouped[T](input_values: Iterable[T], delimeter: T = None) -> Iterator[list[T]]:
-    group: list[T] = []
-    for value in input_values:
-        if (delimeter and value == delimeter) or not value:
-            yield group
-            group = []
-        else:
-            group.append(value)
-    yield group
-
-
-def group_tuples[K, V](items: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
+def split_items[T](items: Iterable[T], *, delimiter: T = None) -> Iterator[list[T]]:
     """
-    Group items in a dict by key(item).
+    Split any iterable (not just string).
 
-    >>> group_tuples(
+    >>> list(split_items([]))
+    [[]]
+    >>> list(split_items([1]))
+    [[1]]
+    >>> list(split_items([None]))
+    [[], []]
+    >>> list(split_items([1, 2, None]))
+    [[1, 2], []]
+    >>> list(split_items([None, 1, 2]))
+    [[], [1, 2]]
+    >>> list(split_items([1, None, 2]))
+    [[1], [2]]
+    >>> list(split_items([None, 1, None, 2, 3, None]))
+    [[], [1], [2, 3], []]
+    >>> list(split_items([1, None, None, 2, 3]))
+    [[1], [], [2, 3]]
+    >>> list(split_items([1, None, 2, 3, None, None, 4, 5, 6, None, None, None]))
+    [[1], [2, 3], [], [4, 5, 6], [], [], []]
+    >>> list(
+    ...     split_items(
+    ...         [1, 2, 3, 1, 1, 2, 2, 3, 3, 1, 1, 1, 2, 2, 2, 3, 3, 3], delimiter=3
+    ...     )
+    ... )
+    [[1, 2], [1, 1, 2, 2], [], [1, 1, 1, 2, 2, 2], [], [], []]
+    """
+    it = iter(items)
+    while True:
+        segment, it = before_and_after(lambda i: i != delimiter, it)
+        yield list(segment)
+        try:
+            next(it)
+        except StopIteration:
+            break
+
+
+def grouped_pairs[K, V](pairs: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
+    """
+    Group items by key(item).
+
+    >>> grouped_pairs(
     ...     [
-    ...         ("m", "Arnold"),
-    ...         ("f", "Billie"),
-    ...         ("m", "Charles"),
-    ...         ("m", "Dirk"),
-    ...         ("f", "Emma"),
+    ...         ("Alice", 3),
+    ...         ("Bob", 6),
+    ...         ("Charles", 4),
+    ...         ("Alice", 8),
+    ...         ("Charles", 5),
+    ...         ("Bob", 2),
+    ...         ("Charles", 7),
+    ...         ("Alice", 9),
+    ...         ("Charles", 1),
     ...     ]
     ... )
-    {'m': ['Arnold', 'Charles', 'Dirk'], 'f': ['Billie', 'Emma']}
+    {'Alice': [3, 8, 9], 'Bob': [6, 2], 'Charles': [4, 5, 7, 1]}
     """
     result: dict[K, list[V]] = {}
-    for key, value in items:
-        result.setdefault(key, []).append(value)
+    for k, v in pairs:
+        result.setdefault(k, []).append(v)
     return result
 
 
-def group_by[K, V](items: Iterable[V], key: Callable[[V], K]) -> dict[K, list[V]]:
-    """
-    Group items in a dict by key(item).
-
-    >>> group_by(
-    ...     ["Alice", "Bill", "Bob", "Charles", "Arnold", "Chuck"], key=lambda s: s[0]
-    ... )
-    {'A': ['Alice', 'Arnold'], 'B': ['Bill', 'Bob'], 'C': ['Charles', 'Chuck']}
-    """
-    result: dict[K, list[V]] = {}
-    for value in items:
-        result.setdefault(key(value), []).append(value)
-    return result
+def transposed[T](lines: Iterable[Iterable[T]]) -> Iterator[tuple[T, ...]]:
+    return zip(*lines, strict=False)
 
 
-def transposed(lines: Iterable[str]) -> Iterator[str]:
+def rotated_cw[T](lines: Sequence[Iterable[T]]) -> Iterator[tuple[T, ...]]:
+    return reversed(list(transposed(lines)))
+
+
+def rotated_ccw[T](lines: Sequence[Iterable[T]]) -> Iterator[tuple[T, ...]]:
+    return transposed(reversed(lines))
+
+
+def transposed_lines(lines: Iterable[str]) -> Iterator[str]:
     for col in zip(*lines, strict=False):
         yield "".join(col)
 

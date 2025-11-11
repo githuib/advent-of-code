@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING, Self
 from yachalk import chalk
 
 from advent_of_code import log
-from advent_of_code.problems import GridProblem, MultiLineProblem
+from advent_of_code.problems import MultiLineProblem, StringGridProblem
 from advent_of_code.utils.data import first_duplicate
-from advent_of_code.utils.geo2d import P2, Grid2
+from advent_of_code.utils.geo2d import P2, StringGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -16,17 +16,16 @@ SeaCucumbers = tuple[Set[P2], Set[P2]]
 
 def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     east, south = sea_cucumbers
-    board = Grid2[str](dict.fromkeys(east, ">") | dict.fromkeys(south, "v"))
+    board = StringGrid2(
+        dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
+    )
+    colors = {".": "0af", ">": "888", "v": "666"}
     return board.to_lines(
-        lambda _, v: {
-            None: chalk.hex("0af").bg_hex("0af")("."),
-            ">": chalk.hex("888").bg_hex("888")(">"),
-            "v": chalk.hex("666").bg_hex("666")("v"),
-        }[v]
+        format_value=lambda _, v: chalk.hex(colors[v]).bg_hex(colors[v])(v)
     )
 
 
-class Problem1(GridProblem[int]):
+class Problem1(StringGridProblem[int]):
     test_solution = 58
     my_solution = 389
 
@@ -34,8 +33,8 @@ class Problem1(GridProblem[int]):
         self.width = self.grid.width
         self.height = self.grid.height
         self.sea_cucumbers = (
-            self.grid.points_with_values(">"),
-            self.grid.points_with_values("v"),
+            self.grid.points_with_value(">"),
+            self.grid.points_with_value("v"),
         )
 
     def __iter__(self) -> Self:

@@ -1,14 +1,20 @@
+from abc import ABC, abstractmethod
+from collections.abc import Mapping, MutableMapping
 from dataclasses import dataclass
 from functools import cached_property
 from math import hypot
 from os import get_terminal_size
-from typing import TYPE_CHECKING, Literal, overload
+from typing import TYPE_CHECKING, Literal, Self
 
-from advent_of_code.utils.cli import pixel
-from advent_of_code.utils.data import pairwise_circular, tripletwise_circular
+from advent_of_code.utils.cli import Pixel
+from advent_of_code.utils.data import (
+    WithClearablePropertyCache,
+    pairwise_circular,
+    tripletwise_circular,
+)
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable, Iterator, Mapping
+    from collections.abc import Callable, Iterable, Iterator
 
 P2 = tuple[int, int]
 Range = tuple[int, int]
@@ -164,61 +170,80 @@ def intersect_segments_2(line_1: Line2, line_2: Line2) -> tuple[float, float] | 
     return intersect_2(line_1, line_2, segments=True)
 
 
-class Grid2[E](dict[P2, E]):
+class _Grid2[T](Mapping[P2, T], ABC):
+    _default_value: T
+
+    class NoDefaultError(Exception):
+        def __init__(self) -> None:
+            super().__init__("Default value needs to be provided")
+
     def __init__(
         self,
-        d: Mapping[P2, E] | Iterable[tuple[P2, E]] | None = None,
-        # default: E = None,
+        items: Mapping[P2, T] | Iterable[tuple[P2, T]] | None = None,
         *,
-        infinite: bool = False,
+        default_value: T = None,
+        cyclic: bool = False,
     ) -> None:
-        # if isinstance(d, Mapping | Iterable):
-        #     super().__init__(d)
-        # # elif isinstance(d, Iterable) and default is not None:
-        # #     # super().__init__(dict.fromkeys(d, default))
-        # #     super().__init__(dict.fromkeys(d, default))
-        # else:
-        #     super().__init__({})
-        super().__init__(d or {})
-        self.infinite = infinite
-        if infinite:
-            # make sure current width & height are cached
-            _ = self.size
+        if default_value is not None:
+            self._default_value = default_value
 
-    @classmethod
-    def from_points(cls, points: Iterable[P2], value: E) -> Grid2[E]:
-        return Grid2(dict.fromkeys(points, value))
+        self._grid: dict[P2, T] = dict(items or {})
 
-    @classmethod
-    def from_lines(cls: type[Grid2], lines: list[str]) -> Grid2[str]:
-        return Grid2(
-            ((x, y), element)
-            for y, line in enumerate(lines)
-            for x, element in enumerate(line)
-        )
+        self.cyclic = cyclic
 
-    def converted[C](self: Grid2[E], converter: Callable[[E], C]) -> Grid2[C]:
-        return Grid2((p, converter(v)) for p, v in self.items())
+    def __len__(self) -> int:
+        return len(self._grid)
 
-    def __getitem__(self, key: P2) -> E:
-        if self.infinite:
-            x, y = key
-            return super().__getitem__((x % self.width, y % self.height))
-        return super().__getitem__(key)
+    def __iter__(self) -> Iterator[P2]:
+        return iter(self._grid)
 
-    @property
+    def __getitem__(self, pos: P2) -> T:
+        if not self._grid:
+            raise KeyError(pos)
+
+        x, y = pos
+        if self.cyclic:
+            x, y = x % self.width, y % self.height
+        else:
+            (x_min, y_min), (x_max, y_max) = self.span
+            if not (x_min <= x <= x_max and y_min <= y <= y_max):
+                raise KeyError(pos)
+
+        try:
+            return self._grid[x, y]
+        except KeyError:
+            return self._default_value
+
+    def __contains__(self, pos: object) -> bool:
+        return pos in self._grid
+
+    def __or__(self, other: Mapping[P2, T]) -> Self:
+        return self.__class__(self._grid | dict(other))
+
+    @cached_property
+    def x_range(self) -> tuple[int, int]:
+        xs = [x for x, _ in self.keys()]
+        return min(xs), max(xs)
+
+    @cached_property
+    def y_range(self) -> tuple[int, int]:
+        ys = [y for _, y in self.keys()]
+        return min(ys), max(ys)
+
+    @cached_property
     def span(self) -> tuple[P2, P2]:
-        xs, ys = zip(*self.keys(), strict=False)
-        return (min(xs), min(ys)), (max(xs), max(ys))
+        x_min, x_max = self.x_range
+        y_min, y_max = self.y_range
+        return (x_min, y_min), (x_max, y_max)
 
     @cached_property
     def width(self) -> int:
-        (x_min, _), (x_max, _) = self.span
+        x_min, x_max = self.x_range
         return x_max - x_min + 1
 
     @cached_property
     def height(self) -> int:
-        (_, y_min), (_, y_max) = self.span
+        y_min, y_max = self.y_range
         return y_max - y_min + 1
 
     @cached_property
@@ -229,31 +254,19 @@ class Grid2[E](dict[P2, E]):
     def area(self) -> int:
         return self.width * self.height
 
-    @overload
-    def neighbors(
-        self,
-        pos: P2,
-        *,
-        include_values: Literal[False],
-        directions: Iterable[P2] = None,
-    ) -> Iterator[P2]: ...
+    @property
+    def rows(self) -> Iterator[list[T]]:
+        (x_min, y_min), (x_max, y_max) = self.span
+        for y in range(y_min, y_max + 1):
+            yield [self[x, y] for x in range(x_min, x_max + 1)]
 
-    @overload
-    def neighbors(
-        self,
-        pos: P2,
-        directions: Iterable[P2] = None,
-        *,
-        include_values: Literal[True] = True,
-    ) -> Iterator[tuple[P2, E]]: ...
+    @property
+    def columns(self) -> Iterator[list[T]]:
+        (x_min, y_min), (x_max, y_max) = self.span
+        for x in range(x_min, x_max + 1):
+            yield [self[x, y] for y in range(y_min, y_max + 1)]
 
-    def neighbors(
-        self, pos: P2, directions: Iterable[P2] = None, *, include_values: bool = True
-    ) -> Iterator[P2 | tuple[P2, E]]:
-        for n in neighbors_2(pos, None if self.infinite else self, directions):
-            yield (n, self[n]) if include_values else n
-
-    def point_with_value(self, value: E) -> P2:
+    def point_with_value(self, value: T) -> P2:
         try:
             point, *_ = self.points_with_value(value)
         except ValueError as e:
@@ -261,77 +274,192 @@ class Grid2[E](dict[P2, E]):
         else:
             return point
 
-    def points_with_value(self, *value: E) -> frozenset[P2]:
-        return self.points_with_values(value)
-
-    def points_with_values(self, values: Iterable[E]) -> frozenset[P2]:
+    def points_with_value(self, *values: T) -> frozenset[P2]:
         return frozenset(p for p, v in self.items() if v in values)
+
+    def neighbors(
+        self, pos: P2, directions: Iterable[P2] = None
+    ) -> Iterator[tuple[P2, T]]:
+        for n in neighbors_2(pos, None if self.cyclic else self, directions):
+            yield n, self[n]
+
+    @classmethod
+    @abstractmethod
+    def _parse_value(cls, value_str: str) -> T:
+        pass
+
+    @classmethod
+    def from_lines(
+        cls: type[Self],
+        lines: Iterable[str],
+        *,
+        parse_callback: Callable[[str], T] = None,
+        ignore: str = " ",
+    ) -> Self:
+        return cls(
+            ((x, y), (parse_callback or cls._parse_value)(element))
+            for y, line in enumerate(lines)
+            for x, element in enumerate(line)
+            if element not in ignore
+        )
+
+    @abstractmethod
+    def _format_value(self, pos: P2, value: T) -> str:
+        pass
 
     def to_lines(
         self,
-        value_func: Callable[[P2, E | None], str] = None,
-        min_x: int = None,
-        max_x: int = None,
-        min_y: int = None,
-        max_y: int = None,
+        *,
+        format_value: Callable[[P2, T], str] = None,
+        crop_x: tuple[int, int] = None,
+        crop_y: tuple[int, int] = None,
     ) -> Iterator[str]:
         (x_min, y_min), (x_max, y_max) = self.span
-        xl, yl = min_x or x_min, min_y or y_min
-        xh, yh = max_x or x_max, max_y or y_max
-        max_width = get_terminal_size()[0]
+
+        if crop_x:
+            crop_x_min, crop_x_max = crop_x
+            xl, xh = max(x_min, crop_x_min), min(x_max, crop_x_max)
+        else:
+            xl, xh = x_min, x_max
+
+        if crop_y:
+            crop_y_min, crop_y_may = crop_y
+            yl, yh = max(y_min, crop_y_min), min(y_max, crop_y_may)
+        else:
+            yl, yh = y_min, y_max
+
+        max_width, _max_height = get_terminal_size()
+        xh = min(xh, xl + max_width - 1)
+
         for y in range(yl, yh + 1):
             yield "".join(
-                value_func((x, y), self.get((x, y)))
-                if value_func
-                else pixel(self.get((x, y)))
-                for x in range(xl, min(xl + max_width, xh + 1))
+                (format_value or self._format_value)((x, y), self[x, y])
+                for x in range(xl, xh + 1)
             )
 
-    # def __repr__(self) -> str:
-    #     return "\n".join(self.to_lines())
+
+class StringGrid2(_Grid2[str]):
+    _default_value = ""
+
+    @classmethod
+    def _parse_value(cls, value_str: str) -> str:
+        return value_str
+
+    def _format_value(self, _pos: P2, value: str) -> str:
+        pixels = {".": Pixel.BAD, "#": Pixel.GOOD, "^": Pixel.UGLY}
+        return pixels.get(value, Pixel.DEAD).value
 
 
-# class NumberMat2(Mat2[int]):
-#     # def __init__(self, d: Mapping[P2, int] = None):
-#     #     super().__init__(d)
-#     #     # # elif isinstance(d, Iterable):
-#     #     # #     super().__init__({p: 1 for p in d})
-#     #     # else:
-#     #     #     super().__init__({})
-#
-#     # @classmethod
-#     # def from_lines(
-#     #     cls: type[Mat2],
-#     #     lines: Iterable[Iterable[E]],
-#     #     # convert_element: Callable[[str], int] = None,
-#     # ) -> Mat2[int]:
-#     #     # if convert_element is None:
-#     #     #     def convert_element(element):
-#     #     #         return 1 if element == '#' else 0
-#     #     # converted_lines = [[convert_element(c) for c in line] for line in lines]
-#     #     return Mat2({
-#     #         (x, y): element
-#     #         for y, line in enumerate(converted_lines)
-#     #         for x, element in enumerate(line)
-#     #     })
-#
-#     def to_str(
-#         self,
-#         value_func: Callable[[P2, E], E] = None,
-#         min_x: int = None,
-#         max_x: int = None,
-#         min_y: int = None,
-#         max_y: int = None,
-#     ) -> str:
-#         (x_min, y_min), (x_max, y_max) = self.span
-#         xl, yl = min_x or x_min, min_y or y_min
-#         xh, yh = max_x or x_max, max_y or y_max
-#         max_width = get_terminal_size()[0]
-#         foo = self[3, 4]
-#         return '\n'.join(''.join(
-#             value_func((x, y), self[x, y]) if value_func else pixel(self[x, y])
-#             for x in range(xl, min(xl + max_width, xh + 1))
-#         ) for y in range(yl, yh + 1)) + '\n'
+class NumberGrid2(_Grid2[int]):
+    _default_value = 0
+
+    @classmethod
+    def _parse_value(cls, value_str: str) -> int:
+        return int(value_str)
+
+    def _format_value(self, _pos: P2, value: int) -> str:
+        pixels = {0: Pixel.BAD, 1: Pixel.GOOD, 2: Pixel.UGLY}
+        return pixels.get(min(value, max(pixels.keys())), Pixel.DEAD).value
+
+
+class BitGrid2(_Grid2[bool]):
+    _default_value = False
+
+    @classmethod
+    def _parse_value(cls, value_str: str) -> bool:
+        return value_str == "#"
+
+    def _format_value(self, _pos: P2, value: bool) -> str:  # noqa: FBT001
+        return Pixel.GOOD.value if value else Pixel.BAD.value
+
+
+class _MutableGrid2[T](
+    _Grid2[T], MutableMapping[P2, T], WithClearablePropertyCache, ABC
+):
+    def __init__(
+        self,
+        items: Mapping[P2, T] | Iterable[tuple[P2, T]] | None = None,
+        *,
+        default_value: T = None,
+        cyclic: bool = False,
+        allow_extention: bool = False,
+    ) -> None:
+        super().__init__(items, default_value=default_value, cyclic=cyclic)
+        self._allow_extention = allow_extention or not items
+
+    def __setitem__(self, pos: P2, value: T, /) -> None:
+        """
+        Update the value at the given position.
+
+        >>> class MNG(NumberGrid2, _MutableGrid2[int]):
+        ...     pass
+        >>> grid = MNG({(0, 0): 1, (1, 2): 1, (2, 1): 1}, default_value=2)
+        >>> list(grid.rows)
+        [[1, 2, 2], [2, 2, 1], [2, 1, 2]]
+        >>> grid[0, 2] = 3
+        >>> list(grid.rows)
+        [[1, 2, 2], [2, 2, 1], [3, 1, 2]]
+        >>> grid[2, 3] = 3
+        Traceback (most recent call last):
+            ...
+        KeyError: (2, 3)
+        >>> grid.update({(0, 1): 3, (3, 0): 3, (3, 2): 3})
+        Traceback (most recent call last):
+            ...
+        KeyError: (3, 0)
+        >>> grid_2 = MNG(
+        ...     {(0, 0): 1, (1, 2): 1, (2, 1): 1}, default_value=2, allow_extention=True
+        ... )
+        >>> list(grid_2.rows)
+        [[1, 2, 2], [2, 2, 1], [2, 1, 2]]
+        >>> grid_2[0, 2] = 3
+        >>> grid_2[2, 3] = 3
+        >>> list(grid_2.rows)
+        [[1, 2, 2], [2, 2, 1], [3, 1, 2], [2, 2, 3]]
+        >>> grid_2.update({(0, 1): 3, (3, 0): 3, (3, 2): 3})
+        >>> list(grid_2.rows)
+        [[1, 2, 2, 3], [3, 2, 1, 2], [3, 1, 2, 3], [2, 2, 3, 2]]
+        >>> grid_3 = MNG(default_value=2)
+        >>> grid_3[0, 2] = 3
+        >>> grid_3[2, 3] = 3
+        >>> list(grid_3.rows)
+        [[3, 2, 2], [2, 2, 3]]
+        >>> grid_3.update({(0, 1): 3, (3, 0): 3, (3, 2): 3})
+        >>> list(grid_3.rows)
+        [[2, 2, 2, 3], [3, 2, 2, 2], [3, 2, 2, 3], [2, 2, 3, 2]]
+        """
+        try:
+            _ = self[pos]
+        except KeyError:
+            will_extend = True
+        else:
+            will_extend = False
+
+        if will_extend:
+            if not self._allow_extention:
+                # We're not allowed to set an item we can't access
+                # (or: only allowed to "update", not to extend the grid).
+                raise KeyError(pos)
+            # Clear cached properties so they will be recalculated based on the extended grid.
+            self.clear_property_cache()
+
+        self._grid[pos] = value
+
+    def __delitem__(self, pos: P2, /) -> None:
+        del self._grid[pos]
+
+    def __or__(self, other: Mapping[P2, T]) -> Self:
+        return self.__class__(
+            self._grid | dict(other), allow_extention=self._allow_extention
+        )
+
+
+class MutableStringGrid2(StringGrid2, _MutableGrid2[str]):
+    pass
+
+
+class MutableNumberGrid2(NumberGrid2, _MutableGrid2[int]):
+    pass
 
 
 @dataclass(frozen=True)
@@ -494,7 +622,7 @@ class P2D:
 #
 #     def to_str(
 #         self,
-#         value_func: Callable[[P2D], str] = None,
+#         format_value: Callable[[P2D], str] = None,
 #         min_x: int = None,
 #         max_x: int = None,
 #         min_y: int = None,
@@ -505,7 +633,7 @@ class P2D:
 #         xh, yh = max_x or p_max.x, max_y or p_max.y
 #         max_width = get_terminal_size()[0]
 #         return '\n'.join(''.join(
-#             value_func(P2D(x, y)) if value_func else pixel(self.get(P2D(x, y)))
+#             format_value(P2D(x, y)) if format_value else pixel(self.get(P2D(x, y)))
 #             for x in range(xl, min(xl + max_width, xh + 1))
 #         ) for y in range(yl, yh + 1)) + '\n'
 #

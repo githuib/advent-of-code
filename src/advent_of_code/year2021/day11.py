@@ -61,7 +61,7 @@ class _Problem(MultiLineProblem[int], ABC):
         while not max_steps or steps < max_steps:
             steps += 1
 
-            log.debug(self.octopi_str)
+            log.lazy_debug(self.octopi_str)
 
             for octopus in octopi.values():
                 octopus.energy += 1

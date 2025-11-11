@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Self
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
 from advent_of_code.utils.conversion import bits_to_int
-from advent_of_code.utils.geo2d import Grid2
+from advent_of_code.utils.geo2d import BitGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -16,21 +16,15 @@ class Image:
         self._enhancement = [c == "#" for c in enhance_line]
         self._padding = padding + 1
         self._size = len(image_lines) + self._padding * 2
-        grid = Grid2.from_lines(image_lines).converted(lambda c: c == "#")
+        grid = BitGrid2.from_lines(image_lines)
         log.lazy_debug(grid.to_lines)
-        self._image = [
+        self._image: list[list[bool]] = [
             [
                 grid.get((x - self._padding, y - self._padding), False)
                 for x in range(self._size)
             ]
             for y in range(self._size)
         ]
-        # self.grid = Mat2({
-        #     (x, y): mat.get((x - self._padding, y - self._padding), False)
-        #     for x in range(self._size)
-        #     for y in range(self._size)
-        # })
-        # log.debug(self.grid)
 
     def _is_in_image(self, x: int, y: int) -> bool:
         min_v, max_v = self._padding, self._size - self._padding

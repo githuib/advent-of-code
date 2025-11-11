@@ -4,21 +4,21 @@ from math import prod
 from typing import TYPE_CHECKING
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import group_tuples
+from advent_of_code.utils.data import grouped_pairs
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
+def parsed_line(line: str) -> Iterator[tuple[str, int]]:
+    for a, c in re.findall(r"(\d+) (\w)", line):
+        yield c, int(a)
+
+
 class _Problem(MultiLineProblem[int], ABC):
     def parsed(self) -> Iterator[dict[str, int]]:
         for line in self.lines:
-            yield {
-                k: max(v)
-                for k, v in group_tuples(
-                    (c, int(a)) for a, c in re.findall(r"(\d+) (\w)", line)
-                ).items()
-            }
+            yield {k: max(vs) for k, vs in grouped_pairs(parsed_line(line)).items()}
 
 
 class Problem1(_Problem):
