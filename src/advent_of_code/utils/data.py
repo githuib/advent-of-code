@@ -158,17 +158,24 @@ def grouped_pairs[K, V](pairs: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
     return result
 
 
-def transposed[T](lines: Iterable[Iterable[T]]) -> Iterator[list[T]]:
-    for col in zip(*lines, strict=True):
+def filled_empty[T](rows: Iterable[Iterable[T]], value: T) -> Iterator[list[T]]:
+    rows_seq = [list(row) for row in rows]
+    max_width = max(len(row) for row in rows_seq)
+    for row in rows_seq:
+        yield [*row, *([value] * (max_width - len(row)))]
+
+
+def transposed[T](rows: Iterable[Iterable[T]]) -> Iterator[list[T]]:
+    for col in zip(*rows, strict=True):
         yield list(col)
 
 
-def rotated_cw[T](lines: Iterable[Iterable[T]]) -> Iterator[list[T]]:
-    return reversed(list(transposed(lines)))
+def rotated_cw[T](rows: Iterable[Iterable[T]]) -> Iterator[list[T]]:
+    return reversed(list(transposed(rows)))
 
 
-def rotated_ccw[T](lines: Iterable[Iterable[T]]) -> Iterator[list[T]]:
-    return transposed(reversed(list(lines)))
+def rotated_ccw[T](rows: Iterable[Iterable[T]]) -> Iterator[list[T]]:
+    return transposed(reversed(list(rows)))
 
 
 def transposed_lines(lines: Iterable[str]) -> Iterator[str]:

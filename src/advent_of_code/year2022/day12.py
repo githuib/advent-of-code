@@ -6,7 +6,7 @@ from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.cli import table_lines, timed
+from advent_of_code.utils.cli import format_table, timed
 from advent_of_code.utils.geo2d import P2, NumberGrid2
 from advent_of_code.utils.search import AStarState, BFSState, DijkstraState, State
 from advent_of_code.utils.strings import PRE_a
@@ -134,9 +134,8 @@ class _Problem(NumberGridProblem[int], ABC):
 
             yield from self.grid.to_lines(format_value=grid_cell_str)
             yield ""
-            yield from table_lines(
+            yield from format_table(
                 ("Legend", "Algorithm", "Visited", "Path found in"),
-                ("",),
                 (f"{Styles.bfs('x')} visited by BFS", "BFS", len(p_bfs.visited), t_bfs),
                 (
                     f"{Styles.dijkstra('y')} visited by Dijkstra & BFS",

@@ -2,7 +2,6 @@ import argparse
 import logging
 import sys
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
 
 from yachalk import chalk
 
@@ -13,11 +12,11 @@ from advent_of_code.problems import (
     Problem,
     PuzzleData,
 )
-from advent_of_code.utils.cli import human_readable_duration, timed
-from advent_of_code.utils.strings import strlen
-
-if TYPE_CHECKING:
-    from collections.abc import Iterable, Iterator
+from advent_of_code.utils.cli import (
+    human_readable_duration,
+    text_block_from_lines,
+    timed,
+)
 
 
 def solution_lines[T](my_solution: T, actual_solution: T) -> list[str]:
@@ -53,43 +52,24 @@ def solution_lines[T](my_solution: T, actual_solution: T) -> list[str]:
     )
 
 
-def duration_emoji(duration_str: str) -> str:
-    if duration_str.endswith("minutes"):
-        return "🦥"
-    if duration_str.endswith("seconds"):
-        return "🐢"
-    if duration_str.endswith("ms"):
-        return "🐇"
-    return "🚀"
-
-
 def duration_lines(duration: int) -> list[str]:
     duration_str = human_readable_duration(duration)
-    return [f"Solved in {duration_str} {duration_emoji(duration_str)} "]
-
-
-def formatted_lines(lines: Iterable[str]) -> Iterator[str]:
-    width = max(strlen(line) for line in lines)
-    edge = " " * (width + 4)
-
-    def formatted_line(line: str) -> str:
-        padding = " " * (width - strlen(line))
-        colored = f" {line}{padding} "
-        return f" {chalk.bg_hex('332')(colored)} "
-
-    yield edge
-    yield formatted_line("")
-    for line in lines:
-        yield formatted_line(line)
-    yield formatted_line("")
-    yield edge
+    if duration_str.endswith("minutes"):
+        emoji = "🦥"
+    elif duration_str.endswith("seconds"):
+        emoji = "🐢"
+    elif duration_str.endswith("ms"):
+        emoji = "🐇"
+    else:
+        emoji = "🚀"
+    return [f"Solved in {duration_str} {emoji} "]
 
 
 def solve[T](problem_cls: type[Problem[T]]) -> bool:
-    problem, duration_init, _dur_init_str = timed(problem_cls)
-    actual_solution = problem.actual_solution
+    problem, dur_init, _dur_init_str = timed(problem_cls)
+    answer = problem.actual_solution
     try:
-        solution, duration_solution, _dur_solution_str = timed(problem.solution)
+        attempt, dur_solution, _dur_solution_str = timed(problem.solution)
 
     except NoSolutionFoundError:
         success = False
@@ -101,16 +81,16 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
         output_lines = ["The process died before a solution could be found. 💀‍️"]
 
     else:
-        if solution is None:
+        if attempt is None:
             return problem.has_no_input
 
-        success = solution == actual_solution
-        solution_output = solution_lines(solution, actual_solution)
+        success = attempt == answer
+        solution_output = solution_lines(attempt, answer)
         # TODO: Might be interesting to show input loading time separately.
-        duration_output = duration_lines(duration_init + duration_solution)
+        duration_output = duration_lines(dur_init + dur_solution)
         output_lines = [*solution_output, "", *duration_output]
 
-    log.info(formatted_lines(output_lines))
+    log.info(text_block_from_lines(output_lines))
     return success
 
 
