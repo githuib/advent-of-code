@@ -1,4 +1,4 @@
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from functools import cached_property
 from itertools import chain, pairwise, repeat, takewhile, tee
 from typing import TYPE_CHECKING, Protocol, Self, runtime_checkable
@@ -48,12 +48,12 @@ def invert_dict[K, V](d: Mapping[K, V]) -> dict[V, K]:
 
 def pairwise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T]]:
     a, b = tee(it)
-    return zip(a, chain(b, (next(b),)), strict=False)
+    return zip(a, chain(b, (next(b),)), strict=True)
 
 
 def tripletwise_circular[T](it: Iterable[T]) -> Iterator[tuple[T, T, T]]:
     a, b, c = tee(it, 3)
-    return zip(a, chain(b, (next(b),)), chain(c, (next(c), next(c))), strict=False)
+    return zip(a, chain(b, (next(b),)), chain(c, (next(c), next(c))), strict=True)
 
 
 def repeat_transform[T](
@@ -158,20 +158,21 @@ def grouped_pairs[K, V](pairs: Iterable[tuple[K, V]]) -> dict[K, list[V]]:
     return result
 
 
-def transposed[T](lines: Iterable[Iterable[T]]) -> Iterator[tuple[T, ...]]:
-    return zip(*lines, strict=False)
+def transposed[T](lines: Iterable[Iterable[T]]) -> Iterator[list[T]]:
+    for col in zip(*lines, strict=True):
+        yield list(col)
 
 
-def rotated_cw[T](lines: Sequence[Iterable[T]]) -> Iterator[tuple[T, ...]]:
+def rotated_cw[T](lines: Iterable[Iterable[T]]) -> Iterator[list[T]]:
     return reversed(list(transposed(lines)))
 
 
-def rotated_ccw[T](lines: Sequence[Iterable[T]]) -> Iterator[tuple[T, ...]]:
-    return transposed(reversed(lines))
+def rotated_ccw[T](lines: Iterable[Iterable[T]]) -> Iterator[list[T]]:
+    return transposed(reversed(list(lines)))
 
 
 def transposed_lines(lines: Iterable[str]) -> Iterator[str]:
-    for col in zip(*lines, strict=False):
+    for col in zip(*lines, strict=True):
         yield "".join(col)
 
 

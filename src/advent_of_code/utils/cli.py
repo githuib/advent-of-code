@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 from yachalk import chalk
 
+from advent_of_code.utils.data import transposed
 from advent_of_code.utils.strings import pad_with_spaces, strlen
 
 if TYPE_CHECKING:
@@ -71,8 +72,7 @@ def table_lines(
         ):
             yield max(col_width, min_width)
 
-    rows: Iterator[tuple[str, ...]] = zip(*cols, strict=True)
-    for r, row in enumerate(rows):
+    for r, row in enumerate(transposed(cols)):
         yield column_sep.join(
             table_cell_str(s, w, r) for s, w in zip(row, column_widths(), strict=True)
         )

@@ -42,7 +42,7 @@ class Problem2(_Problem):
         states = {}
         is_running = True
         while is_running:
-            for computer, phase_setting in zip(computers, phase_settings, strict=False):
+            for computer, phase_setting in zip(computers, phase_settings, strict=True):
                 if computer in states:
                     computer.inputs += [output]
                 else:

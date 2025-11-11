@@ -77,7 +77,7 @@ class Problem2(_Problem):
             log.warning(
                 f"Multiple possible velocity matches found:\n{
                     '\n'.join(
-                        f'{c}: {v}' for c, v in zip('xyz', potential_v, strict=False)
+                        f'{c}: {v}' for c, v in zip('xyz', potential_v, strict=True)
                     )
                 }"
             )

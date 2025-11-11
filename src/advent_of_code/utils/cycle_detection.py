@@ -23,13 +23,13 @@ def _floyd[T](it: Iterator[T]) -> Cycle:
     👉 https://en.wikipedia.org/wiki/Cycle_detection#Floyd's_tortoise_and_hare
     """
     it_tortoise, it_cousin, it_hare = tee(it, 3)
-    for tortoise, hare in zip(it_tortoise, islice(it_hare, 1, None, 2), strict=False):
+    for tortoise, hare in zip(it_tortoise, islice(it_hare, 1, None, 2), strict=True):
         # 🐇 goes like a complete maniac, twice as fast as 🐢. When they meet again,
         # this means 🐇 has walked a full cycle more and 🐢 has walked exactly one cycle length from the start.
         if tortoise == hare:
             break
     for cycle_start, (tortoise, cousin) in enumerate(
-        zip(it_tortoise, it_cousin, strict=False)
+        zip(it_tortoise, it_cousin, strict=True)
     ):
         # 🐢's cousin leaves from the beginning as well, while the other 🐢 keeps on going.
         # They should meet as soon as the cycle starts, since the part of the cycle 🐢 didn't
@@ -64,7 +64,7 @@ def _brent[T](it: Iterator[T]) -> Cycle:
     # 🐢's cousin leaves from the beginning as well, walking exactly the length of one cycle.
     # After that, they both move at same speed until they meet exactly at the start of the cycle.
     for cycle_start, (tortoise, cousin) in enumerate(
-        zip(it_tortoise, islice(it_cousin, cycle_length, None), strict=False)
+        zip(it_tortoise, islice(it_cousin, cycle_length, None), strict=True)
     ):
         if tortoise == cousin:
             return Cycle(cycle_start, cycle_length)

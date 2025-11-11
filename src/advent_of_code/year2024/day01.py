@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from advent_of_code.problems import ParsedProblem
+from advent_of_code.utils.data import transposed
 
 
 class _Problem(ParsedProblem[tuple[int, int], int], ABC):
@@ -13,10 +14,7 @@ class _Problem(ParsedProblem[tuple[int, int], int], ABC):
     def solution(self) -> int:
         return sum(
             self._compare(n1, n2)
-            for n1, n2 in zip(
-                *(sorted(ns) for ns in zip(*self.parsed_input, strict=True)),
-                strict=True,
-            )
+            for n1, n2 in transposed(sorted(ns) for ns in transposed(self.parsed_input))
         )
 
 

@@ -30,7 +30,7 @@ class _Problem(MultiLineProblem[int], ABC):
                     zip(
                         range(x1, x2 + dir_x, dir_x),
                         range(y1, y2 + dir_y, dir_y),
-                        strict=False,
+                        strict=True,
                     )
                 )
 

@@ -78,7 +78,7 @@ class Problem2(_Problem):
                 if all(
                     moon.is_equal_on_axis(original_moon, axis)
                     for moon, original_moon in zip(
-                        self.moons, original_moons, strict=False
+                        self.moons, original_moons, strict=True
                     )
                 ):
                     steps_list[axis] = steps

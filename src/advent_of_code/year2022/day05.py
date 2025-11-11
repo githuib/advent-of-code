@@ -9,8 +9,8 @@ class _Problem(MultiLineProblem[str]):
     _is_v9001: bool
 
     def __init__(self) -> None:
-        input_blocks = split_items(self.lines)
-        *rows, nums = (line[1::4] for line in next(input_blocks))
+        stacks, self._moves_input = split_items(self.lines, delimiter="")
+        *rows, nums = (line[1::4] for line in stacks)
         self._stacks: dict[str, str] = dict(
             zip(
                 nums,
@@ -18,10 +18,9 @@ class _Problem(MultiLineProblem[str]):
                     s.strip()
                     for s in transposed_lines(padded(reversed(rows), len(nums)))
                 ),
-                strict=False,
+                strict=True,
             )
         )
-        self._moves_input = next(input_blocks)
 
     def solution(self) -> str:
         for line in self._moves_input:

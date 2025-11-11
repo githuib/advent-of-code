@@ -5,6 +5,7 @@ from math import ceil, prod, sqrt
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
 from advent_of_code.utils.conversion import compose_number
+from advent_of_code.utils.data import transposed
 
 
 def ways_to_win(time: int, dist: int) -> int:
@@ -30,7 +31,7 @@ class Problem1(_Problem):
     puzzle_solution = 3316275
 
     def solution(self) -> int:
-        return prod(ways_to_win(t, d) for t, d in zip(*self.parsed, strict=False))
+        return prod(ways_to_win(t, d) for t, d in transposed(self.parsed))
 
 
 class Problem2(_Problem):

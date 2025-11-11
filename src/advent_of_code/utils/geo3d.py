@@ -2,6 +2,8 @@ from collections.abc import Iterable, Iterator, Mapping
 from functools import cached_property
 from typing import NamedTuple
 
+from advent_of_code.utils.data import transposed
+
 P3 = tuple[int, int, int]
 
 
@@ -203,6 +205,7 @@ class Span3D:
                     yield P3D(x, y, z)
 
 
+# TODO: inherit from Mapping / make similar to Grid2
 class Grid3D(dict[P3D, int]):
     def __init__(
         self, d: Mapping[P3D, int] | Iterable[P3D] | None = None, default: int = 1
@@ -216,7 +219,7 @@ class Grid3D(dict[P3D, int]):
 
     @property
     def span(self) -> tuple[P3D, P3D]:
-        xs, ys, zs = zip(*self.keys(), strict=False)
+        xs, ys, zs = transposed(self.keys())
         return P3D(min(xs), min(ys), min(zs)), P3D(max(xs), max(ys), max(zs))
 
     @cached_property
