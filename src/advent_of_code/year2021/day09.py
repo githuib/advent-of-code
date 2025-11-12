@@ -18,6 +18,9 @@ class _Problem(MultiLineProblem[int], ABC):
 
 
 class Problem1(_Problem):
+    test_solution = 15
+    puzzle_solution = 591
+
     def solution(self) -> int:
         return sum(
             val + 1
@@ -32,6 +35,9 @@ class Problem1(_Problem):
 
 
 class Problem2(_Problem):
+    test_solution = 1134
+    puzzle_solution = 1113424
+
     def solution(self) -> int:
         merged: dict[int, set[int]] = defaultdict(set)
         basin_id = 0

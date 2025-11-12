@@ -5,7 +5,9 @@ from advent_of_code.problems import ParsedProblem
 
 class _Problem(ParsedProblem[tuple[int, ...], int], ABC):
     # _line_pattern = 'Valve AA has flow rate=0; tunnel(s) lead(s) to valve(s) DD, II, BB'
-    # _line_pattern = 'Valve {} has flow rate={:d}; tunnel(s) lead(s) to valve(s) DD, II, BB'
+    _line_pattern = (
+        "Valve {} has flow rate={:d}; tunnel(s) lead(s) to valve(s) DD, II, BB"
+    )
     # _regex_pattern = r'Valve (\w+) has flow rate=(\d+); tunnel[s]? lead[s]? to valve[s]? (?P<valves>.*)'
     # _regex_converters = [str, int, lambda s: s.split(', ')]
 

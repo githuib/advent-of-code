@@ -2,6 +2,7 @@ from math import prod
 
 from igraph import Graph  # type: ignore[import-untyped]
 
+from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
 
 
@@ -25,6 +26,30 @@ class Problem1(MultiLineProblem[int]):
             .mincut()
             .partition
         )
+
+
+class Problem2(MultiLineProblem[None]):
+    def solution(self) -> None:
+        log.info(r"""
+        _----_    _________       /\
+       /      \  /         \/\ __///
+      (        \/          / > /   \
+       \        |      --/_>_/    /
+         \_ ____|          \ /\ _/
+           /               ///        __\
+          (               // \       /  \\
+           \      \     ///    \    /    \\
+            (      \   //       \  /\  _  \\
+             \   ___|///    _    \/  \/ \__)\
+              ( / _ //\    ( \       /
+               /_ /// /     \ \ _   /
+               (__)  ) \_    \   --~
+               ///--/    \____\
+              //        __)    \
+            ///        (________)
+ _________///          ===========
+//|_____|///
+""")
 
 
 TEST_INPUT = """

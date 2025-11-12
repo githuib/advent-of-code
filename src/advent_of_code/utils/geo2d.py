@@ -41,6 +41,7 @@ cardinal_directions: list[P2] = [UP, DOWN, *sides]
 
 # OrdinalDirection = Literal[LEFT_UP, RIGHT_UP, LEFT_DOWN, RIGHT_DOWN]
 ordinal_directions: list[P2] = [LEFT_UP, RIGHT_UP, LEFT_DOWN, RIGHT_DOWN]
+# ordinal_directions: list[P2] = [LEFT_DOWN, RIGHT_UP, LEFT_UP, RIGHT_DOWN] # <-- Order in 2022/15
 
 # Direction = CardinalDirection | OrdinalDirection
 all_directions: list[P2] = [*cardinal_directions, *ordinal_directions]

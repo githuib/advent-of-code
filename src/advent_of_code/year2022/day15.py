@@ -1,13 +1,19 @@
 from abc import ABC
 
+from advent_of_code import log
 from advent_of_code.problems import ParsedProblem
 from advent_of_code.utils.geo2d import (
+    LEFT_DOWN,
+    LEFT_UP,
     P2,
+    RIGHT_DOWN,
+    RIGHT_UP,
     Line2,
     intersect_segments_2,
     manhattan_dist_2,
-    ordinal_directions,
 )
+
+ORDINAL_DIRECTIONS = [LEFT_DOWN, RIGHT_UP, LEFT_UP, RIGHT_DOWN]
 
 
 def coverage(sensor: P2, beacon: P2, y: int) -> P2 | None:
@@ -70,9 +76,6 @@ class Problem2(_Problem):
     puzzle_solution = 10229191267339
 
     def solution(self) -> int:
-        tuning_frequency = 4_000_000
-        # size = 20 if self.input_mode == InputMode.TEST else tuning_frequency
-
         sensor_coverage = [(s, manhattan_dist_2(s, b)) for s, b in self.locations]
         edges = [
             [
@@ -84,7 +87,7 @@ class Problem2(_Problem):
                 )
                 for (sx, sy), c in sensor_coverage
             ]
-            for dx, dy in ordinal_directions
+            for dx, dy in ORDINAL_DIRECTIONS
         ]
 
         uncovered_gaps = {
@@ -111,8 +114,10 @@ class Problem2(_Problem):
             # and 0 <= p.x <= size and 0 <= p.y <= size
         }
 
+        log.debug(uncovered_gaps)
         assert len(uncovered_gaps) == 1
         x, y = uncovered_gaps.pop()
+        tuning_frequency = 4_000_000
         return int(x) * tuning_frequency + int(y)
 
 

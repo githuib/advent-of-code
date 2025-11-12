@@ -17,6 +17,7 @@ dependencies = [
 dev = [
   "matplotlib-stubs",
   "mypy",
+  "powerchord",
   "pre-commit",
   "pytest",
   "ruff",
@@ -28,6 +29,9 @@ aoc_solve = "advent_of_code.cli:main"
 [build-system]
 requires = ["uv_build>=0.9.3,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.powerchord]
+tasks = ["uv run mypy", "uv run ruff check", "uv run pytest", "uv run ruff format"]
 
 [tool.mypy]
 files = ["src"] #, "tests"]

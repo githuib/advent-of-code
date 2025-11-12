@@ -1,6 +1,7 @@
 from abc import ABC
 from functools import reduce
 
+from advent_of_code import log
 from advent_of_code.problems import OneLineProblem
 
 
@@ -16,7 +17,7 @@ def hash_(s: str) -> int:
 
 class _Problem(OneLineProblem[int], ABC):
     def __init__(self) -> None:
-        self.operations = self.input.split(",")
+        self.operations = self.line.split(",")
 
 
 class Problem1(_Problem):
@@ -33,6 +34,7 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         boxes: dict[int, dict[str, int]] = {}
+        log.debug(self.operations)
         for op in self.operations:
             label, focal_length = (
                 (op[:-1], 0) if op[-1] == "-" else (op[:-2], int(op[-1]))

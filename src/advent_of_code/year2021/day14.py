@@ -29,11 +29,17 @@ class _Problem(MultiLineProblem[int], ABC):
 
 
 class Problem1(_Problem):
+    test_solution = 1588
+    puzzle_solution = 2068
+
     def solution(self) -> int:
         return self._solution(10)
 
 
 class Problem2(_Problem):
+    test_solution = 2188189693529
+    puzzle_solution = 2158894777814
+
     def solution(self) -> int:
         return self._solution(40)
 

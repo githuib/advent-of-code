@@ -85,11 +85,17 @@ class _Problem(MultiLineProblem[int], ABC):
 
 
 class Problem1(_Problem):
+    # test_solution =
+    puzzle_solution = 947
+
     def solution(self) -> int:
         return self.packet.version_sum
 
 
 class Problem2(_Problem):
+    # test_solution =
+    puzzle_solution = 660797830937
+
     def solution(self) -> int:
         return self.packet.value
 

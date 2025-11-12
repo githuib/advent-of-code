@@ -49,7 +49,7 @@ class _Problem(OneLineProblem[int], ABC):
     def play(self) -> Iterator[tuple[int, list[int]]]:
         pattern: deque[int] = deque([0b1111111] * MAX_HEIGHT, maxlen=MAX_HEIGHT)
         height = 0
-        directions = cycle(self.input)
+        directions = cycle(self.line)
         shapes = cycle(SHAPES)
         while True:
             curr_shape = next(shapes)
