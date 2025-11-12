@@ -180,7 +180,8 @@ uv run powerchord -t \
   "y23 d24 p1"="uv run aoc_solve --year 2023 --day 24 --part 1 -q" \
   "y23 d24 p2"="uv run aoc_solve --year 2023 --day 24 --part 2 -q" \
   "y23 d25 p1"="uv run aoc_solve --year 2023 --day 25 --part 1 -q" \
-  "y23 d25 p2"="uv run aoc_solve --year 2023 --day 25 --part 2 -q"
+  "y23 d25 p2"="uv run aoc_solve --year 2023 --day 25 --part 2 -q" \
+  "y24 d01 p1"="uv run aoc_solve --year 2023 --day 1 --part 1 -q"
 
 
 
