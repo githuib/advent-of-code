@@ -2,7 +2,7 @@ from abc import ABC
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, NamedTuple
 
-from based_utils.utils.cli import human_readable_duration, timed
+from based_utils.cli import human_readable_duration, timed
 from yachalk import chalk
 
 from advent_of_code import log
