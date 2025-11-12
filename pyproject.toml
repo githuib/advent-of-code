@@ -5,11 +5,13 @@ description = "Advent of Code"
 authors = [{ name = "Huib Piguillet", email = "huib@proton.me" }]
 requires-python = ">=3.14"
 dependencies = [
+  "based-utils",
   "cairocffi",
   "igraph",
   "matplotlib",
   "more-itertools",
   "parse",
+  "pytest>=9.0.0",
   "yachalk",
 ]
 
@@ -31,7 +33,7 @@ requires = ["uv_build>=0.9.3,<0.10.0"]
 build-backend = "uv_build"
 
 [tool.powerchord]
-tasks = ["uv run mypy", "uv run ruff check", "uv run pytest", "uv run ruff format"]
+tasks = ["mypy", "pytest", "ruff check", "ruff format"]
 
 [tool.mypy]
 files = ["src"] #, "tests"]

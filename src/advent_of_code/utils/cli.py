@@ -1,6 +1,5 @@
 from enum import Enum
 from itertools import zip_longest
-from time import perf_counter_ns
 from typing import TYPE_CHECKING
 
 from yachalk import chalk
@@ -9,7 +8,7 @@ from advent_of_code.utils.data import filled_empty, transposed
 from advent_of_code.utils.strings import pad_with_spaces, strlen
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable, Iterator
+    from collections.abc import Iterable, Iterator
 
 
 class Pixel(Enum):
@@ -17,33 +16,6 @@ class Pixel(Enum):
     BAD = chalk.hex("654").bg_hex("654")(".")
     UGLY = chalk.hex("b40").bg_hex("b40")("^")
     DEAD = " "
-
-
-def timed[T](func: Callable[[], T]) -> tuple[T, int, str]:
-    """Return the function result along with its run duration (both in nanoseconds and human-readable format)."""
-    start = perf_counter_ns()
-    result = func()
-    end = perf_counter_ns()
-    nanoseconds = end - start
-    return result, nanoseconds, human_readable_duration(nanoseconds)
-
-
-def human_readable_duration(nanoseconds: int) -> str:
-    minutes = int(nanoseconds // 60_000_000_000)
-    nanoseconds %= 60_000_000_000
-    seconds = int(nanoseconds // 1_000_000_000)
-    nanoseconds %= 1_000_000_000
-    milliseconds = int(nanoseconds // 1_000_000)
-    nanoseconds %= 1_000_000
-    microseconds = int(nanoseconds // 1_000)
-    nanoseconds %= 1_000
-    if minutes:
-        return f"{minutes:d}:{seconds:02d}.{milliseconds:03d} minutes"
-    if seconds:
-        return f"{seconds:d}.{milliseconds:03d} seconds"
-    if milliseconds:
-        return f"{milliseconds:d}.{microseconds:03d} ms"
-    return f"{microseconds:d}.{nanoseconds:03d} µs"
 
 
 def table_cell_str(s: str, width: int, row: int) -> str:

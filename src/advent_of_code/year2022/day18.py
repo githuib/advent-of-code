@@ -2,9 +2,10 @@ from abc import ABC
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
+from based_utils.cli import human_readable_duration, timed
+
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.cli import timed
 from advent_of_code.utils.geo3d import P3D, Dir3D, Grid3D, Span3D
 
 if TYPE_CHECKING:
@@ -32,6 +33,10 @@ class Problem1(_Problem):
 
     def solution(self) -> int:
         return exposed_sides(self.lava)
+
+
+def best_solution_str(sol: int, other: int) -> str:
+    return f"Runtime solution A: {human_readable_duration(sol)}{' <-- congrats! 🍻' if sol <= other else ''}"
 
 
 class Problem2(_Problem):
@@ -69,11 +74,11 @@ class Problem2(_Problem):
         )
 
     def solution(self) -> int:
-        solution_a, ta, ta_str = timed(self.solution_a)
-        solution_b, tb, tb_str = timed(self.solution_b)
+        solution_a, ta = timed(self.solution_a)
+        solution_b, tb = timed(self.solution_b)
         assert solution_a == solution_b
-        log.info(f"Runtime solution A: {ta_str}{' <-- congrats!' if ta <= tb else ''}")
-        log.info(f"Runtime solution B: {tb_str}{' <-- congrats!' if tb <= ta else ''}")
+        log.info(best_solution_str(ta, tb))
+        log.info(best_solution_str(tb, ta))
         return solution_a
 
 

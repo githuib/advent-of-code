@@ -3,6 +3,7 @@ import logging
 import sys
 from datetime import UTC, datetime
 
+from based_utils.cli import human_readable_duration, timed
 from yachalk import chalk
 
 from advent_of_code import load_problem, log
@@ -12,11 +13,7 @@ from advent_of_code.problems import (
     Problem,
     PuzzleData,
 )
-from advent_of_code.utils.cli import (
-    human_readable_duration,
-    text_block_from_lines,
-    timed,
-)
+from advent_of_code.utils.cli import text_block_from_lines
 
 
 def solution_lines[T](my_solution: T, actual_solution: T | None) -> list[str]:
@@ -64,33 +61,33 @@ def duration_lines(duration: int) -> list[str]:
 
 
 def solve[T](problem_cls: type[Problem[T]]) -> bool:
-    problem, dur_init, _dur_init_str = timed(problem_cls)
-    actual = problem.actual_solution
+    problem, dur_init = timed(problem_cls)
+    sol_actual = problem.actual_solution
     try:
-        mine, dur_solution, _dur_solution_str = timed(problem.solution)
+        sol_mine, dur_solution = timed(problem.solution)
 
     except NoSolutionFoundError:
-        success = False
+        is_correct_solution = False
         output_lines = ["No solution found!? 🤷‍️"]
 
     except FatalError as exc:
         log.fatal(exc.message)
-        success = False
+        is_correct_solution = False
         output_lines = ["The process died before a solution could be found. 💀‍️"]
 
     else:
-        if mine is None:
-            return actual is None
+        if sol_mine is None:
+            return sol_actual is None
 
-        m = mine.strip() if isinstance(mine, str) else mine
-        a = actual.strip() if isinstance(actual, str) else actual
-        success = m == a
+        mine = sol_mine.strip() if isinstance(sol_mine, str) else sol_mine
+        actual = sol_actual.strip() if isinstance(sol_actual, str) else sol_actual
+        is_correct_solution = mine == actual
         # TODO: Might be interesting to show input loading time separately.
         dur = dur_init + dur_solution
-        output_lines = [*solution_lines(m, a), "", *duration_lines(dur)]
+        output_lines = [*solution_lines(mine, actual), "", *duration_lines(dur)]
 
     log.info(text_block_from_lines(output_lines))
-    return success
+    return is_correct_solution
 
 
 def main() -> None:

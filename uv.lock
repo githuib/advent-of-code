@@ -7,11 +7,13 @@ name = "advent-of-code"
 version = "808.303"
 source = { editable = "." }
 dependencies = [
+    { name = "based-utils" },
     { name = "cairocffi" },
     { name = "igraph" },
     { name = "matplotlib" },
     { name = "more-itertools" },
     { name = "parse" },
+    { name = "pytest" },
     { name = "yachalk" },
 ]
 
@@ -27,11 +29,13 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "based-utils" },
     { name = "cairocffi" },
     { name = "igraph" },
     { name = "matplotlib" },
     { name = "more-itertools" },
     { name = "parse" },
+    { name = "pytest", specifier = ">=9.0.0" },
     { name = "yachalk" },
 ]
 
@@ -43,6 +47,15 @@ dev = [
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "ruff" },
+]
+
+[[package]]
+name = "based-utils"
+version = "0.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/a8/5f97863ead5cfdd01764b0a7d3754dd196f7ece287116ad601645465260b/based_utils-0.2.0.tar.gz", hash = "sha256:bdfa6c28f8e2788f7665e7204b69235df26313e491849b129ec8dd984458fbe1", size = 3796, upload-time = "2025-11-12T20:27:02.266Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0e/cb/4567afcd0fadaf96449d09cbae6841ae6a406d9482cb7bbe2c67e042f287/based_utils-0.2.0-py3-none-any.whl", hash = "sha256:eb849db640c811cf2508f2293b18f51008d18f1a2e9d95222ba1e42e1ed1d0fa", size = 3788, upload-time = "2025-11-12T20:27:01.114Z" },
 ]
 
 [[package]]
@@ -527,15 +540,15 @@ wheels = [
 
 [[package]]
 name = "powerchord"
-version = "0.2.9"
+version = "0.2.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "chili" },
     { name = "gaffe" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ee/24/0e09001df9e6236814418d788d66f4e99ef61d1c78a35f6e7c03f9128020/powerchord-0.2.9.tar.gz", hash = "sha256:879c97242fccd35710413bb1732065f30b6534f704b7c3f80799043c98d72ba7", size = 7859, upload-time = "2025-10-17T17:27:03.472Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/dd/c3e15c248a3567ceab2fbca2cdddc34564380d33bdb2c0b87f36f09fc337/powerchord-0.2.11.tar.gz", hash = "sha256:63ebf0a605ecd165d6fa0c5365c3417ed1aa5dd2fc5e80f74054af97efc806cb", size = 6987, upload-time = "2025-11-12T17:44:38.994Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/78/5cfce435f94851cd41326fab0c03401f51915398994546c4a92667f25c23/powerchord-0.2.9-py3-none-any.whl", hash = "sha256:79351e56bc4b3a9dc0dd8bd339a08395d8db12325137d78ea632a862e35796d4", size = 9074, upload-time = "2025-10-17T17:27:02.013Z" },
+    { url = "https://files.pythonhosted.org/packages/54/0c/471de4ec9fc83e87144adf913aaeded005b8a002f75af6d2b99e21a6ea31/powerchord-0.2.11-py3-none-any.whl", hash = "sha256:19f6d111d1476c0cf9ae96c70920a6cbb3e08330133d79dd55c44064fb831445", size = 8518, upload-time = "2025-11-12T17:44:37.534Z" },
 ]
 
 [[package]]
@@ -583,7 +596,7 @@ wheels = [
 
 [[package]]
 name = "pytest"
-version = "9.0.0"
+version = "9.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama", marker = "sys_platform == 'win32'" },
@@ -592,9 +605,9 @@ dependencies = [
     { name = "pluggy" },
     { name = "pygments" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/da/1d/eb34f286b164c5e431a810a38697409cca1112cee04b287bb56ac486730b/pytest-9.0.0.tar.gz", hash = "sha256:8f44522eafe4137b0f35c9ce3072931a788a21ee40a2ed279e817d3cc16ed21e", size = 1562764, upload-time = "2025-11-08T17:25:33.34Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/56/f013048ac4bc4c1d9be45afd4ab209ea62822fb1598f40687e6bf45dcea4/pytest-9.0.1.tar.gz", hash = "sha256:3e9c069ea73583e255c3b21cf46b8d3c56f6e3a1a8f6da94ccb0fcf57b9d73c8", size = 1564125, upload-time = "2025-11-12T13:05:09.333Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/99/cafef234114a3b6d9f3aaed0723b437c40c57bdb7b3e4c3a575bc4890052/pytest-9.0.0-py3-none-any.whl", hash = "sha256:e5ccdf10b0bac554970ee88fc1a4ad0ee5d221f8ef22321f9b7e4584e19d7f96", size = 373364, upload-time = "2025-11-08T17:25:31.811Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/8b/6300fb80f858cda1c51ffa17075df5d846757081d11ab4aa35cef9e6258b/pytest-9.0.1-py3-none-any.whl", hash = "sha256:67be0030d194df2dfa7b556f2e56fb3c3315bd5c8822c6951162b92b32ce7dad", size = 373668, upload-time = "2025-11-12T13:05:07.379Z" },
 ]
 
 [[package]]
