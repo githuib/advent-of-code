@@ -2,6 +2,8 @@ from abc import ABC
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, NamedTuple
 
+from based_utils.algo import AStarState, BFSState, DijkstraState
+from based_utils.algo.paths import State
 from based_utils.cli import human_readable_duration, timed
 from yachalk import chalk
 
@@ -9,7 +11,6 @@ from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
 from advent_of_code.utils.cli import format_table
 from advent_of_code.utils.geo2d import P2, NumberGrid2
-from advent_of_code.utils.search import AStarState, BFSState, DijkstraState, State
 from advent_of_code.utils.strings import PRE_a
 
 if TYPE_CHECKING:
@@ -29,7 +30,7 @@ class Variables(NamedTuple):
 
 class _State[C: Constants](State[C, Variables], ABC):
     @property
-    def is_finished(self) -> bool:
+    def is_end_state(self) -> bool:
         return self.c.hill[self.v.pos] == self.c.goal
 
     @property
@@ -80,12 +81,14 @@ class _Problem(NumberGridProblem[int], ABC):
         p_bfs, t_bfs = timed(lambda: _BFSState.find_path(Variables(start_pos), c))
 
         def _debug_str() -> Iterator[str]:
-            visited_points_bfs: set[P2] = {s.v.pos for s in p_bfs.visited}
+            visited_points_bfs: set[P2] = {s.v.pos for s in p_bfs.visited_states}
 
             p_dijkstra, t_dijkstra = timed(
                 lambda: _DijkstraState.find_path(Variables(start_pos), c)
             )
-            visited_points_dijkstra: set[P2] = {s.v.pos for s in p_dijkstra.visited}
+            visited_points_dijkstra: set[P2] = {
+                s.v.pos for s in p_dijkstra.visited_states
+            }
 
             if len(ep) == 1:
                 reverse = end_val < start_val
@@ -94,7 +97,9 @@ class _Problem(NumberGridProblem[int], ABC):
                 p_a_star, t_a_star = timed(
                     lambda: _AStarState.find_path(Variables(start_pos), ac)
                 )
-                visited_points_a_star: set[P2] = {s.v.pos for s in p_a_star.visited}
+                visited_points_a_star: set[P2] = {
+                    s.v.pos for s in p_a_star.visited_states
+                }
             else:
                 p_a_star = None
                 t_a_star = 0
@@ -140,19 +145,19 @@ class _Problem(NumberGridProblem[int], ABC):
                 (
                     f"{Styles.bfs('x')} visited by BFS",
                     "BFS",
-                    len(p_bfs.visited),
+                    len(visited_points_bfs),
                     human_readable_duration(t_bfs),
                 ),
                 (
                     f"{Styles.dijkstra('y')} visited by Dijkstra & BFS",
                     "Dijkstra",
-                    len(p_dijkstra.visited),
+                    len(visited_points_dijkstra),
                     human_readable_duration(t_dijkstra),
                 ),
                 (
                     f"{Styles.a_star('z')} visited by A*, Dijkstra & BFS",
                     "A*",
-                    len(p_a_star.visited),
+                    len(visited_points_a_star),
                     human_readable_duration(t_a_star),
                 )
                 if p_a_star

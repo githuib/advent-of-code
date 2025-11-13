@@ -4,11 +4,11 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from typing import TYPE_CHECKING, NamedTuple
 
+from based_utils.algo import DijkstraState
 from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.search import DijkstraState
 from advent_of_code.utils.strings import PRE_A
 
 if TYPE_CHECKING:
@@ -78,7 +78,7 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         return hash(f"{self.v.rooms}{self.v.hallway}")
 
     @property
-    def is_finished(self) -> bool:
+    def is_end_state(self) -> bool:
         return bool(self.cost and not sum(self.v.hallway))
 
     def _can_move(self, room: int, hall: int) -> bool:

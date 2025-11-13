@@ -1,10 +1,14 @@
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
+
+from based_utils.algo import DijkstraState
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
 from advent_of_code.utils.geo2d import P2, NumberGrid2
 from advent_of_code.utils.math import mods
-from advent_of_code.utils.search import DijkstraState
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 class Constants:
@@ -19,15 +23,13 @@ class Variables(NamedTuple):
 
 class ChitonState(DijkstraState[Constants, Variables]):
     @property
-    def is_finished(self) -> bool:
+    def is_end_state(self) -> bool:
         return self.v.position == self.c.end_position
 
     @property
-    def next_states(self) -> list[ChitonState]:
-        return [
-            self.move(Variables(pos), distance=dist)
-            for pos, dist in self.c.cave.neighbors(self.v.position)
-        ]
+    def next_states(self) -> Iterator[ChitonState]:
+        for pos, dist in self.c.cave.neighbors(self.v.position):
+            yield self.move(Variables(pos), distance=dist)
 
 
 class Problem1(NumberGridProblem[int]):

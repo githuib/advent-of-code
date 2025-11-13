@@ -2,11 +2,11 @@ from abc import ABC
 from collections.abc import Iterable, Iterator
 from itertools import groupby
 
+from based_utils.algo import detect_cycle
 from more_itertools import last
 
 from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
-from advent_of_code.utils.cycle_detection import detect_cycle
 from advent_of_code.utils.data import repeat_transform, rotated_cw
 from advent_of_code.utils.geo2d import StringGrid2
 

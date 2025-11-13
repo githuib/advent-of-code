@@ -1,12 +1,12 @@
 from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
+from based_utils.algo import DijkstraState
 from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, NumberGrid2, Range
-from advent_of_code.utils.search import DijkstraState
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -36,7 +36,7 @@ DIRS: dict[P2 | None, list[P2]] = {
 
 class LavaState(DijkstraState[Constants, Variables]):
     @property
-    def is_finished(self) -> bool:
+    def is_end_state(self) -> bool:
         return (
             self.v.pos == self.c.end and not 0 < self.v.seg_length < self.c.min_segment
         )

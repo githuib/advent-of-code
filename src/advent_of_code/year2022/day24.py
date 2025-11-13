@@ -4,15 +4,15 @@ from functools import cached_property
 from math import lcm
 from typing import TYPE_CHECKING, Literal, NamedTuple
 
+from based_utils.algo import AStarState
 from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, manhattan_dist_2
-from advent_of_code.utils.search import AStarState
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable, Iterator
+    from collections.abc import Iterator
 
 DirectionTile = Literal["^", "v", "<", ">"]
 
@@ -43,11 +43,11 @@ class Variables(NamedTuple):
 
 class ValleyState(AStarState[Constants, Variables]):
     @property
-    def is_finished(self) -> bool:
+    def is_end_state(self) -> bool:
         return self.v.pos == self.c.end
 
     @property
-    def next_states(self) -> Iterable[ValleyState]:
+    def next_states(self) -> Iterator[ValleyState]:
         def neighbors() -> Iterator[P2]:
             x, y = self.v.pos
             for dx, dy in DIRECTIONS.values():

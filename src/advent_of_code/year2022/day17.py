@@ -4,11 +4,11 @@ from functools import partial
 from itertools import count, cycle
 from typing import TYPE_CHECKING
 
+from based_utils.algo import detect_cycle
 from more_itertools import nth_or_last, unzip
 
 from advent_of_code import log
 from advent_of_code.problems import OneLineProblem
-from advent_of_code.utils.cycle_detection import detect_cycle
 from advent_of_code.utils.geo2d import NumberGrid2
 
 if TYPE_CHECKING:

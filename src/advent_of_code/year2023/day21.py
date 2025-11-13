@@ -1,15 +1,15 @@
 from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
+from based_utils.algo import BFSState
 from more_itertools import last
 
 from advent_of_code import log
 from advent_of_code.problems import FatalError, StringGridProblem
 from advent_of_code.utils.data import repeat_transform
-from advent_of_code.utils.search import BFSState
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Iterator
 
     from advent_of_code.utils.geo2d import P2, StringGrid2
 
@@ -26,11 +26,11 @@ class Variables(NamedTuple):
 
 class GardenState(BFSState[Constants, Variables]):
     @property
-    def is_finished(self) -> bool:
+    def is_end_state(self) -> bool:
         return self.cost > self.c.steps
 
     @property
-    def next_states(self: Self) -> Iterable[Self]:
+    def next_states(self: Self) -> Iterator[Self]:
         for pos, v in self.c.grid.neighbors(self.v.pos):
             if v != "#":
                 yield self.move(Variables(pos, count_me=not self.v.count_me))
@@ -50,7 +50,7 @@ class _Problem(StringGridProblem[int], ABC):
         path = GardenState.find_path(
             Variables(self.start, steps % 2 == 0), Constants(self.grid, steps)
         )
-        return sum(s.v.count_me for s in path.visited)
+        return sum(s.v.count_me for s in path.visited_states)
 
 
 class Problem1(_Problem):
