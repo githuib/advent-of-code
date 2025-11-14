@@ -46,11 +46,11 @@ class AppLogger(LogMeister):
         main_name = self._main_name
         stdout_handler, stderr_handler = super()._console_handlers
 
-        def log_filter(record: LogRecord) -> bool:
-            """Ignore debug messages from 3rd party packages."""
-            return record.name.startswith(main_name) or record.levelno > LogLevel.DEBUG
+        def ignore_3rd_party_debug(record: LogRecord) -> bool:
+            """Don't handle DEBUG messages unless they came from this codebase."""
+            return record.levelno > LogLevel.DEBUG or record.name.startswith(main_name)
 
-        stdout_handler.addFilter(log_filter)
+        stdout_handler.addFilter(ignore_3rd_party_debug)
 
         formatter = LogFormatter(main_name)
         stdout_handler.setFormatter(formatter)

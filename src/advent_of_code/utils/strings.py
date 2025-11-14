@@ -22,8 +22,8 @@ def strlen(s: str) -> int:
     )
 
 
-def pad_with_spaces(s: str, width: int) -> str:
-    return s + " " * max(width - strlen(s), 0)
+def right_justified(s: str, width: int, char: str = " ") -> str:
+    return s + char * max(width - strlen(s), 0)
 
 
 def padded(lines: Iterable[str], max_length: int = None) -> Iterator[str]:

@@ -5,9 +5,10 @@ from datetime import UTC, datetime
 from based_utils.cli import LogLevel, human_readable_duration, timed
 from based_utils.cli.formats import FAIL, OK
 
+from advent_of_code.utils.cli import format_table
+
 from . import load_problem, log
 from .problems import FatalError, NoSolutionFoundError, Problem, PuzzleData
-from .utils.cli import text_block_from_lines
 
 
 def solution_lines[T](my_solution: T, actual_solution: T | None) -> list[str]:
@@ -27,10 +28,10 @@ def solution_lines[T](my_solution: T, actual_solution: T | None) -> list[str]:
         actual = ["", *actual]
 
     if not actual_solution:
-        return ["Attempted solution... 👾 ", "", *mine]
+        return ["Attempted solution... 👾 ", *mine]
 
     if my_solution == actual_solution:
-        return ["Correct solution! 🍻 ", "", *mine]
+        return ["Correct solution! 🍻 ", *mine]
 
     my_answer = f"{FAIL} Your answer:"
     actual_answer = f"{OK} Correct answer:"
@@ -51,7 +52,7 @@ def duration_lines(duration: int) -> list[str]:
         emoji = "🐇"
     else:
         emoji = "🚀"
-    return [f"Solved in {duration_str} {emoji} "]
+    return [f"Solved in {duration_str} {emoji}"]
 
 
 def solve[T](problem_cls: type[Problem[T]]) -> bool:
@@ -80,7 +81,7 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
         dur = dur_init + dur_solution
         output_lines = [*solution_lines(mine, actual), "", *duration_lines(dur)]
 
-    log.info(text_block_from_lines(output_lines))
+    log.info(format_table(*[[line] for line in output_lines]))
     return is_correct_solution
 
 
