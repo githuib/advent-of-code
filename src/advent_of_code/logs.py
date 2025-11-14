@@ -1,13 +1,11 @@
-import logging
 from collections.abc import Callable, Iterator
 from functools import cached_property
-from logging import Formatter, Handler, Logger, LogRecord, StreamHandler
+from logging import Formatter, LogRecord
 from os import get_terminal_size
 from pprint import pformat
 
+from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister
 from yachalk import chalk
-
-LogLevel = int  # Literal[10, 20]  # DEBUG, INFO
 
 
 class LogFormatter(Formatter):
@@ -18,7 +16,7 @@ class LogFormatter(Formatter):
     def format(self, record: LogRecord) -> str:
         from_internal_code = record.name == self.app_logger_name
 
-        if from_internal_code and record.levelno < logging.WARNING:
+        if from_internal_code and record.levelno < LogLevel.WARNING:
             # Debugging & info: just print the raw message (which could already be formatted)
             if isinstance(record.msg, Iterator):
                 record.msg = "".join(f"{line}\n" for line in record.msg)
@@ -33,57 +31,54 @@ class LogFormatter(Formatter):
         msg = msg.replace("\n", "\n" + prefix)
         return chalk.hex(
             {
-                logging.DEBUG: "888",
-                logging.INFO: "ccc",
-                logging.WARNING: "f80",
-                logging.ERROR: "f30",
-                logging.CRITICAL: "f30",
-            }[record.levelno]
+                LogLevel.DEBUG: "888",
+                LogLevel.INFO: "ccc",
+                LogLevel.WARNING: "f80",
+                LogLevel.ERROR: "f30",
+                LogLevel.CRITICAL: "f30",
+            }[LogLevel(record.levelno)]
         )(msg)
 
 
-class AppLogger:
-    def __init__(self, logger: Logger) -> None:
-        self._logger = logger
-        self._logger.addHandler(self._cli_handler)
-
+class AppLogger(LogMeister):
     @cached_property
-    def _cli_handler(self) -> Handler:
-        log_name = self._logger.name
+    def _console_handlers(self) -> ConsoleHandlers:
+        main_name = self._main_name
+        stdout_handler, stderr_handler = super()._console_handlers
 
         def log_filter(record: LogRecord) -> bool:
             """Ignore debug messages from 3rd party packages."""
-            return record.name == log_name or record.levelno > logging.DEBUG
+            return record.name.startswith(main_name) or record.levelno > LogLevel.DEBUG
 
-        handler = StreamHandler()
-        handler.addFilter(log_filter)
-        handler.setFormatter(LogFormatter(log_name))
-        return handler
+        stdout_handler.addFilter(log_filter)
 
-    def set_level(self, level: LogLevel) -> None:
-        self._logger.setLevel(level)
+        formatter = LogFormatter(main_name)
+        stdout_handler.setFormatter(formatter)
+        stderr_handler.setFormatter(formatter)
+
+        return stdout_handler, stderr_handler
 
     def debug(self, msg: object) -> None:
-        self._logger.debug(msg)
+        self._main_logger.debug(msg)
 
     def info(self, msg: object) -> None:
-        self._logger.info(msg)
+        self._main_logger.info(msg)
 
     def warning(self, msg: object) -> None:
-        self._logger.warning(msg)
+        self._main_logger.warning(msg)
 
     def error(self, msg: object) -> None:
-        self._logger.error(msg)
+        self._main_logger.error(msg)
 
     def fatal(self, msg: object) -> None:
-        self._logger.fatal(msg)
+        self._main_logger.fatal(msg)
 
     def lazy_debug(self, cb: Callable[[], object]) -> None:
-        self._logger.debug(cb())
+        self._main_logger.debug(cb())
 
     def lazy_info(self, cb: Callable[[], object]) -> None:
-        self._logger.info(cb())
+        self._main_logger.info(cb())
 
     def debug_action(self, cb: Callable[[], None]) -> None:
-        if self._logger.level == logging.DEBUG:
+        if self._main_logger.level == LogLevel.DEBUG:
             cb()

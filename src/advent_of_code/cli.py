@@ -1,19 +1,13 @@
 import argparse
-import logging
 import sys
 from datetime import UTC, datetime
 
-from based_utils.cli import human_readable_duration, timed
+from based_utils.cli import LogLevel, human_readable_duration, timed
 from yachalk import chalk
 
-from advent_of_code import load_problem, log
-from advent_of_code.problems import (
-    FatalError,
-    NoSolutionFoundError,
-    Problem,
-    PuzzleData,
-)
-from advent_of_code.utils.cli import text_block_from_lines
+from . import load_problem, log
+from .problems import FatalError, NoSolutionFoundError, Problem, PuzzleData
+from .utils.cli import text_block_from_lines
 
 
 def solution_lines[T](my_solution: T, actual_solution: T | None) -> list[str]:
@@ -114,21 +108,22 @@ def main() -> None:
     # parser.add_argument("-p", "--pycharm", dest="pycharm", action="store_true")
     args = parser.parse_args()
 
-    log.set_level(
-        logging.DEBUG
+    with log.context(
+        LogLevel.DEBUG
         if args.debugging
-        else logging.ERROR
+        else LogLevel.ERROR
         if args.quiet
-        else logging.INFO
-    )
+        else LogLevel.INFO
+    ):
+        data = PuzzleData(
+            args.year,
+            args.day,
+            args.part,
+            "none" if args.no_input else "test" if args.test else "puzzle",
+        )
+        success = solve(load_problem(data))
 
-    data = PuzzleData(
-        args.year,
-        args.day,
-        args.part,
-        "none" if args.no_input else "test" if args.test else "puzzle",
-    )
-    sys.exit(not solve(load_problem(data)))
+    sys.exit(not success)
 
 
 if __name__ == "__main__":

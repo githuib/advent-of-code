@@ -7,8 +7,8 @@ from typing import ClassVar, Literal, Self
 from more_itertools import strip
 from parse import findall  # type: ignore[import-untyped]
 
-from advent_of_code.utils.geo2d import NumberGrid2, StringGrid2
-from advent_of_code.utils.geo3d import P3D
+from .utils.geo2d import NumberGrid2, StringGrid2
+from .utils.geo3d import P3D
 
 
 class NoSolutionFoundError(Exception):

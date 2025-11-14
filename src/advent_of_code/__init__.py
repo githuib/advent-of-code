@@ -1,13 +1,12 @@
 from importlib import import_module
-from logging import getLogger
 from typing import TYPE_CHECKING
 
-from advent_of_code.log import AppLogger
+from .logs import AppLogger
 
 if TYPE_CHECKING:
-    from advent_of_code.problems import Problem, PuzzleData
+    from .problems import Problem, PuzzleData
 
-log = AppLogger(getLogger(__name__))
+log = AppLogger(__name__)
 
 
 def load_problem[T](data: PuzzleData) -> type[Problem[T]]:
