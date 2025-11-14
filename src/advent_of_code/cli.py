@@ -3,7 +3,7 @@ import sys
 from datetime import UTC, datetime
 
 from based_utils.cli import LogLevel, human_readable_duration, timed
-from yachalk import chalk
+from based_utils.cli.formats import FAIL, OK
 
 from . import load_problem, log
 from .problems import FatalError, NoSolutionFoundError, Problem, PuzzleData
@@ -32,8 +32,8 @@ def solution_lines[T](my_solution: T, actual_solution: T | None) -> list[str]:
     if my_solution == actual_solution:
         return ["Correct solution! 🍻 ", "", *mine]
 
-    my_answer = f"{chalk.red_bright('✘')} Your answer:"
-    actual_answer = f"{chalk.green_bright('✔')} Correct answer:"
+    my_answer = f"{FAIL} Your answer:"
+    actual_answer = f"{OK} Correct answer:"
     return ["Wrong solution! 💀"] + (
         [f"{my_answer}    {mine[0]}", f"{actual_answer} {actual[0]}"]
         if (len(mine) == 1 and len(actual) == 1)

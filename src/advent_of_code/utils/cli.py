@@ -48,13 +48,16 @@ def format_table(
 
 
 def text_block_from_lines(lines: Iterable[str]) -> Iterator[str]:
+    def with_bg(s: str) -> str:
+        return chalk.bg_hex("af0")(s)
+
     width = max(strlen(line) for line in lines)
-    edge = " " * (width + 4)
+    edge = with_bg(" " * (width + 4))
 
     def formatted_line(line: str) -> str:
         padding = " " * (width - strlen(line))
         colored = f" {line}{padding} "
-        return f" {chalk.bg_hex('332')(colored)} "
+        return f"{with_bg(' ')}{colored}{with_bg(' ')}"
 
     yield edge
     yield formatted_line("")
