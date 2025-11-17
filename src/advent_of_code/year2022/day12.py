@@ -167,6 +167,7 @@ class _Problem(NumberGridProblem[int], ABC):
                 (f"{Styles.path('p')} path",),
                 (f"{Styles.a('a')} possible starting points (including un-escapable)",),
                 (f"{Styles.none('w')} wild, unexplored terrain",),
+                column_splits=[1],
             )
 
         log.lazy_debug(_debug_str)

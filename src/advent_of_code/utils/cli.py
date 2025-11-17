@@ -19,7 +19,9 @@ class Pixel(Enum):
 
 
 def format_table(
-    *table_rows: Iterable[str | int], min_columns_widths: Iterable[int] = None
+    *table_rows: Iterable[str | int],
+    min_columns_widths: Iterable[int] = None,
+    column_splits: Iterable[int] = None,
 ) -> Iterator[str]:
     first, *rest = table_rows
     trs: list[Iterable[str | int]] = [[], first, [], *rest, []]
@@ -36,12 +38,28 @@ def format_table(
             yield max(col_width, min_width)
 
     b = len(rows) - 1
-    for r, row in enumerate(rows):
+
+    def left(r: int) -> str:
+        return "╔" if r == 0 else "╠" if r == 2 else "╚" if r == b else "║"
+
+    def right(r: int) -> str:
+        return "╗" if r == 0 else "╣" if r == 2 else "╝" if r == b else "║"
+
+    def center(r: int) -> str:
+        return "╦" if r == 0 else "╬" if r == 2 else "╩" if r == b else "║"
+
+    for r_, row in enumerate(rows):
         yield (
-            ("╔" if r == 0 else "╠" if r == 2 else "╚" if r == b else "║")
-            + ("╦" if r == 0 else "╬" if r == 2 else "╩" if r == b else "║").join(
-                ("═" * (w + 2) if r in (0, 2, b) else f" {right_justified(s, w)} ")
-                for s, w in zip(row, column_widths(), strict=True)
+            left(r_)
+            + "".join(
+                ("═" * (w + 2) if r_ in (0, 2, b) else f" {right_justified(s, w)} ")
+                + (
+                    f"{right(r_)}  {left(r_)}"
+                    if c in (column_splits or [])
+                    else right(r_)
+                    if c == len(row)
+                    else center(r_)
+                )
+                for c, (s, w) in enumerate(zip(row, column_widths(), strict=True), 1)
             )
-            + ("╗" if r == 0 else "╣" if r == 2 else "╝" if r == b else "║")
         )

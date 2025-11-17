@@ -2,6 +2,7 @@ from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
 from based_utils.algo import DijkstraState
+from based_utils.colors import HSLuv
 from yachalk import chalk
 
 from advent_of_code import log
@@ -68,9 +69,13 @@ class _Problem(NumberGridProblem[int], ABC):
         )
 
         def format_value(p: P2, v: int) -> str:
-            s = chalk.rgb(0, 37 + v * 10, 0)(v)
+            base_color = HSLuv.from_hex("0f0")
+            c = HSLuv(10 + v * 5, base_color.saturation, base_color.hue)
+            rgb = c.rgb
+            s = chalk.rgb(rgb.red, rgb.green, rgb.blue)(v)
             if p in {s.v.pos for s in path.states}:
-                return chalk.bg_rgb(0, 165 + v * 10, 0)(s)
+                rgb = c.contrasting_shade.rgb
+                return chalk.bg_rgb(rgb.red, rgb.green, rgb.blue)(s)
             return s
 
         log.lazy_debug(lambda: self.grid.to_lines(format_value=format_value))

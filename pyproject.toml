@@ -27,7 +27,7 @@ dev = [
 
 #[tool.uv.sources]
 #based-utils = { path = "../based-utils", editable = true }
-#
+
 [project.scripts]
 aoc_solve = "advent_of_code.cli:main"
 

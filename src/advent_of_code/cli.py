@@ -125,7 +125,3 @@ def main() -> None:
         success = solve(load_problem(data))
 
     sys.exit(not success)
-
-
-if __name__ == "__main__":
-    main()
