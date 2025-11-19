@@ -1,11 +1,7 @@
-from dataclasses import dataclass
-from functools import cached_property
 from itertools import zip_longest
 from typing import TYPE_CHECKING
 
-from based_utils.calx import fractions
-from based_utils.colors import Color, color_names
-from yachalk import chalk
+from based_utils.cli import Colored
 
 from advent_of_code.utils.data import filled_empty, transposed
 from advent_of_code.utils.strings import right_justified, strlen
@@ -13,50 +9,7 @@ from advent_of_code.utils.strings import right_justified, strlen
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
-
-@dataclass(frozen=True)
-class Colored:
-    value: object
-    color: Color | None = None
-    background: Color | None = None
-
-    def with_color(self, color: Color) -> Colored:
-        return Colored(self.value, color, self.background)
-
-    def with_background(self, background: Color) -> Colored:
-        return Colored(self.value, self.color, background)
-
-    @cached_property
-    def formatted(self) -> str:
-        s = str(self.value)
-        if self.color:
-            s = chalk.hex(self.color.hex)(s)
-        if self.background:
-            s = chalk.bg_hex(self.background.hex)(s)
-        return s
-
-    def __repr__(self) -> str:
-        return self.formatted
-
-    def __str__(self) -> str:
-        return self.formatted
-
-
-def color_shades(c: Color) -> Iterator[str]:
-    for f in fractions(9):
-        s = c.shade(f)
-        yield Colored(f" {f * 100:.0f}% ", s.contrasting_shade, s).formatted
-
-
-def color_line(c: Color, n: str = "") -> str:
-    h = "   " if n == "grey" else f"{c.hue * 360:03.0f}"
-    return "".join(color_shades(c)) + Colored(f" {h} {n}", c).formatted
-
-
-def color_lines() -> Iterator[str]:
-    yield color_line(Color.grey(), "grey")
-    for n in color_names:
-        yield color_line(Color.from_name(n), n)
+    from based_utils.colors import Color
 
 
 def format_table(
