@@ -27,9 +27,10 @@ dev = [
 
 #[tool.uv.sources]
 #based-utils = { path = "../based-utils", editable = true }
-
+#
 [project.scripts]
 aoc_solve = "advent_of_code.cli:main"
+colors = "advent_of_code.cli:print_colors"
 
 [build-system]
 requires = ["uv_build>=0.9.3,<0.10.0"]

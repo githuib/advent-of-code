@@ -111,20 +111,37 @@ class _Problem(NumberGridProblem[int], ABC):
                 for p, h in self.grid.items()
             }
 
+            c_path = Color.from_name("pink", lightness=0.35)
+            c_start = Color.from_name("blue", lightness=0.4)
+            c_end = Color.from_name("poison")
+            c_searched = Color.from_name("orange", saturation=0.35)
+
             class Styles:
-                start_end = Color.from_hex("034"), Color.from_hex("bdf")
-                a = Color.from_hex("222"), Color.from_hex("333")
-                a_star = Color.from_hex("535"), Color.from_hex("848")
-                path = Color.from_hex("068"), Color.from_hex("0af")
-                dijkstra = Color.from_hex("424"), Color.from_hex("636")
-                bfs = Color.from_hex("212"), Color.from_hex("424")
-                none = Color.from_hex("222"), Color.from_hex("000")
+                start = c_start, c_start.with_changed(lightness=1.75)
+                end = c_end, c_end.with_changed(lightness=1.75)
+                path = c_path, c_path.with_changed(lightness=1.75)
+                a = Color.grey(0.15), Color.grey(0.25)
+                a_star = (
+                    c_searched.with_changed(lightness=0.65),
+                    c_searched.with_changed(lightness=0.9),
+                )
+                dijkstra = (
+                    c_searched.with_changed(lightness=0.45),
+                    c_searched.with_changed(lightness=0.7),
+                )
+                bfs = (
+                    c_searched.with_changed(lightness=0.25),
+                    c_searched.with_changed(lightness=0.5),
+                )
+                none = Color.grey(0.15), Color.grey(0)
 
             def grid_cell_str(p: P2, default_val: int, _colored: Colored) -> Colored:
                 v = hill_chars.get(p, default_val)
                 return (
-                    Colored(v, *Styles.start_end)
-                    if (p in {start_pos, *ep})
+                    Colored(v, *Styles.end)
+                    if (p == start_pos)
+                    else Colored(v, *Styles.start)
+                    if (p in ep)
                     else Colored(v, *Styles.path)
                     if (p in p_points)
                     else Colored(v, *Styles.a_star)
@@ -162,14 +179,15 @@ class _Problem(NumberGridProblem[int], ABC):
                 )
                 if p_a_star
                 else (),
-                (f"{Colored('S', *Styles.start_end).formatted} start",),
-                (f"{Colored('E', *Styles.start_end).formatted} end",),
+                (f"{Colored('S', *Styles.start).formatted} start",),
+                (f"{Colored('E', *Styles.end).formatted} end",),
                 (f"{Colored('p', *Styles.path).formatted} path",),
                 (
                     f"{Colored('a', *Styles.a).formatted} possible starting points (including un-escapable)",
                 ),
                 (f"{Colored('w', *Styles.none).formatted} wild, unexplored terrain",),
                 column_splits=[1],
+                color=c_searched.with_changed(lightness=0.75),
             )
 
         log.lazy_debug(_debug_str)

@@ -4,8 +4,9 @@ from datetime import UTC, datetime
 
 from based_utils.cli import LogLevel, human_readable_duration, timed
 from based_utils.cli.formats import FAIL, OK
+from based_utils.colors import Color
 
-from advent_of_code.utils.cli import format_table
+from advent_of_code.utils.cli import color_lines, format_table
 
 from . import load_problem, log
 from .problems import FatalError, NoSolutionFoundError, Problem, PuzzleData
@@ -81,7 +82,8 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
         dur = dur_init + dur_solution
         output_lines = [*solution_lines(mine, actual), "", *duration_lines(dur)]
 
-    log.info(format_table(*[[line] for line in output_lines]))
+    color = Color.from_name("blue", lightness=0.35)
+    log.info(format_table(*[[line] for line in output_lines], color=color))
     return is_correct_solution
 
 
@@ -125,3 +127,8 @@ def main() -> None:
         success = solve(load_problem(data))
 
     sys.exit(not success)
+
+
+def print_colors() -> None:
+    with log.context(LogLevel.INFO):
+        log.get_logger().info(color_lines())
