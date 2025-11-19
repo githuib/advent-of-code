@@ -1,4 +1,5 @@
-from enum import Enum
+from dataclasses import dataclass
+from functools import cached_property
 from itertools import zip_longest
 from typing import TYPE_CHECKING
 
@@ -10,12 +11,29 @@ from advent_of_code.utils.strings import right_justified, strlen
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
+    from based_utils.colors import Color
 
-class Pixel(Enum):
-    GOOD = chalk.hex("0af").bg_hex("0af")("#")
-    BAD = chalk.hex("654").bg_hex("654")(".")
-    UGLY = chalk.hex("b40").bg_hex("b40")("^")
-    DEAD = " "
+
+@dataclass(frozen=True)
+class Colored:
+    value: object
+    color: Color | None = None
+    background: Color | None = None
+
+    def with_color(self, color: Color) -> Colored:
+        return Colored(self.value, color, self.background)
+
+    def with_background(self, background: Color) -> Colored:
+        return Colored(self.value, self.color, background)
+
+    @cached_property
+    def formatted(self) -> str:
+        s = str(self.value)
+        if self.color:
+            s = chalk.hex(self.color.hex)(s)
+        if self.background:
+            s = chalk.bg_hex(self.background.hex)(s)
+        return s
 
 
 def format_table(

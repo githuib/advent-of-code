@@ -1,25 +1,25 @@
 from abc import ABC
 
-from yachalk import chalk
+from based_utils.colors import Color
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
+from advent_of_code.utils.cli import Colored
 from advent_of_code.utils.geo2d import P2, all_directions
 
 
-def cell_str(_p: P2, v: int | None) -> str:
-    return (
-        chalk.hex("332").bg_hex("111")(".")
-        if (v == 10 or v is None)
-        else chalk.hex("111").bg_hex("0af")(chr(v))
-        if (v > 10)
-        else chalk.hex("eee").bg_hex("848")(v)
-    )
+def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
+    if v == 10:
+        return Colored(".", Color.from_name("blue", lightness=0.33, saturation=0.66))
+    if v > 10:
+        c_special = Color.from_name("red", lightness=0.66)
+        return Colored(chr(v), c_special, c_special.contrasting_shade)
+    return Colored(v, Color.from_name("green", lightness=0.66))
 
 
 class _Problem(NumberGridProblem[int], ABC):
     def __init__(self) -> None:
-        log.lazy_debug(lambda: self.grid.to_lines(format_value=cell_str))
+        log.lazy_debug(lambda: self.grid.to_lines(format_value=format_value))
 
         self.symbols_parts: dict[P2, list[P2]] = {}
         self.parts: dict[P2, int] = {}

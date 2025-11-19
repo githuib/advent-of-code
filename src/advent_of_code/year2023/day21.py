@@ -30,7 +30,7 @@ class GardenState(BFSState[Constants, Variables]):
         return self.cost > self.c.steps
 
     @property
-    def next_states(self: Self) -> Iterator[Self]:
+    def next_states(self) -> Iterator[Self]:
         for pos, v in self.c.grid.neighbors(self.v.pos):
             if v != "#":
                 yield self.move(Variables(pos, count_me=not self.v.count_me))

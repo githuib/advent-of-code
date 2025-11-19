@@ -1,12 +1,15 @@
 from abc import ABC, abstractmethod
-from collections.abc import Mapping, MutableMapping
+from collections.abc import Mapping, MutableMapping, Set
 from dataclasses import dataclass
-from functools import cached_property
+from functools import cache, cached_property
 from math import hypot
 from os import get_terminal_size
 from typing import TYPE_CHECKING, Literal, Self
 
-from advent_of_code.utils.cli import Pixel
+from based_utils.calx import randf
+from based_utils.colors import Color
+
+from advent_of_code.utils.cli import Colored
 from advent_of_code.utils.data import (
     WithClearablePropertyCache,
     pairwise_circular,
@@ -286,8 +289,7 @@ class _Grid2[T](Mapping[P2, T], ABC):
 
     @classmethod
     @abstractmethod
-    def _parse_value(cls, value_str: str) -> T:
-        pass
+    def _parse_value(cls, value_str: str) -> T: ...
 
     @classmethod
     def from_lines(
@@ -305,15 +307,15 @@ class _Grid2[T](Mapping[P2, T], ABC):
         )
 
     @abstractmethod
-    def _format_value(self, pos: P2, value: T) -> str:
-        pass
+    def _format_value(self, pos: P2, value: T) -> Colored: ...
 
     def to_lines(
         self,
         *,
-        format_value: Callable[[P2, T], str] = None,
+        format_value: Callable[[P2, T, Colored], Colored] = None,
         crop_x: tuple[int, int] = None,
         crop_y: tuple[int, int] = None,
+        highlighted: Set[P2] = None,
     ) -> Iterator[str]:
         (x_min, y_min), (x_max, y_max) = self.span
 
@@ -332,11 +334,30 @@ class _Grid2[T](Mapping[P2, T], ABC):
         max_width, _max_height = get_terminal_size()
         xh = min(xh, xl + max_width - 1)
 
+        def fmt(pos: P2, value: T) -> Colored:
+            s = self._format_value(pos, value)
+            if format_value:
+                s = format_value(pos, value, s)
+            if pos in (highlighted or {}):
+                c = (s.color or Color.from_name("green")).but_with(
+                    lightness=0.8, saturation=1
+                )
+                s = s.with_color(c).with_background(c.with_changed(lightness=0.5))
+            return s
+
         for y in range(yl, yh + 1):
-            yield "".join(
-                (format_value or self._format_value)((x, y), self[x, y])
-                for x in range(xl, xh + 1)
-            )
+            yield "".join(fmt((x, y), self[x, y]).formatted for x in range(xl, xh + 1))
+
+
+@cache
+def _colors() -> list[Color]:
+    h = randf()
+    return [
+        Color.from_fields(
+            lightness=i * 0.25, saturation=((i - 1) * 2 / 3) % 1 or 1, hue=h + i / 3
+        )
+        for i in range(3)
+    ]
 
 
 class StringGrid2(_Grid2[str]):
@@ -346,9 +367,12 @@ class StringGrid2(_Grid2[str]):
     def _parse_value(cls, value_str: str) -> str:
         return value_str
 
-    def _format_value(self, _pos: P2, value: str) -> str:
-        pixels = {".": Pixel.BAD, "#": Pixel.GOOD, "^": Pixel.UGLY}
-        return pixels.get(value, Pixel.DEAD).value
+    def _format_value(self, _pos: P2, value: str) -> Colored:
+        values = ".#^"
+        if value not in values:
+            return Colored(value, Color.from_name("indigo"))
+        color = _colors()[values.index(value)]
+        return Colored(value, color, color.with_changed(lightness=0.75))
 
 
 class NumberGrid2(_Grid2[int]):
@@ -358,9 +382,13 @@ class NumberGrid2(_Grid2[int]):
     def _parse_value(cls, value_str: str) -> int:
         return int(value_str)
 
-    def _format_value(self, _pos: P2, value: int) -> str:
-        pixels = {0: Pixel.BAD, 1: Pixel.GOOD, 2: Pixel.UGLY}
-        return pixels.get(min(value, max(pixels.keys())), Pixel.DEAD).value
+    def _format_value(self, _pos: P2, value: int) -> Colored:
+        if value < 0:
+            return Colored(" ")
+        return Colored(
+            str(value) if value < 10 else "+",
+            Color.from_name("yellow").shade(0.15 + min(value, 10) * 0.035),
+        )
 
 
 class BitGrid2(_Grid2[bool]):
@@ -370,8 +398,14 @@ class BitGrid2(_Grid2[bool]):
     def _parse_value(cls, value_str: str) -> bool:
         return value_str == "#"
 
-    def _format_value(self, _pos: P2, value: bool) -> str:  # noqa: FBT001
-        return Pixel.GOOD.value if value else Pixel.BAD.value
+    def _format_value(
+        self,
+        _pos: P2,
+        value: bool,  # noqa: FBT001
+    ) -> Colored:
+        c_bad, c_good, _ = _colors()
+        color = c_good if value else c_bad
+        return Colored("#" if value else ".", color, color.with_changed(lightness=0.75))
 
 
 class _MutableGrid2[T](

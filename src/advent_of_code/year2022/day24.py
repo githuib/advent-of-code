@@ -2,23 +2,22 @@ from abc import ABC
 from dataclasses import dataclass
 from functools import cached_property
 from math import lcm
-from typing import TYPE_CHECKING, Literal, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import AStarState
-from yachalk import chalk
+from based_utils.colors import Color
 
 from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
+from advent_of_code.utils.cli import Colored
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, manhattan_dist_2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-DirectionTile = Literal["^", "v", "<", ">"]
-
-DIRECTION_TILES: list[DirectionTile] = ["^", "v", "<", ">"]
+DIRECTION_TILES: list[str] = ["^", "v", "<", ">"]
 TILES = [*DIRECTION_TILES, "."]
-DIRECTIONS: dict[DirectionTile, P2] = {"^": UP, "v": DOWN, "<": LEFT, ">": RIGHT}
+DIRECTIONS: dict[str, P2] = {"^": UP, "v": DOWN, "<": LEFT, ">": RIGHT}
 
 
 @dataclass
@@ -78,20 +77,33 @@ class _Problem(StringGridProblem[int], ABC):
         self.path = ValleyState.find_path(Variables(), self.constants)
 
         def grid_str() -> Iterator[str]:
-            positions = [s.v.pos for s in self.path.states]
+            positions = {s.v.pos for s in self.path.states}
 
-            def format_value(p: P2, v: str) -> str:
-                return (
-                    chalk.hex("034").bg_hex("bdf")(v)
-                    if (p in positions)
-                    else chalk.hex("222").bg_hex("888")(v)
-                )
+            def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
+                if v in DIRECTION_TILES:
+                    c = Color.from_name("yellow", lightness=0.45, saturation=0.75)
+                    color = {
+                        s: c.with_changed(hue=i / 36)
+                        for i, s in enumerate(DIRECTION_TILES)
+                    }[v]
+                elif v == ".":
+                    color = Color.from_name("indigo")
+                else:
+                    color = Color.from_name("pink")
+                background = color.with_changed(lightness=0.5)
+                return Colored(v, color, background)
+                # on_path = p in positions
+                # return Colored(
+                #     v,
+                #     c_fg_on if on_path else c_fg_off,
+                #     c_bg_on if on_path else c_bg_off,
+                # )
 
-            return self.grid.to_lines(format_value=format_value)
+            return self.grid.to_lines(format_value=format_value, highlighted=positions)
 
         log.lazy_debug(grid_str)
 
-    def new_blizzards(self, t: DirectionTile, bs: frozenset[P2]) -> frozenset[P2]:
+    def new_blizzards(self, t: str, bs: frozenset[P2]) -> frozenset[P2]:
         dx, dy = DIRECTIONS[t]
         w, h = self.size
         return frozenset(((x + dx - 1) % w + 1, (y + dy - 1) % h + 1) for (x, y) in bs)

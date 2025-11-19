@@ -2,8 +2,9 @@ from abc import ABC
 from functools import cache
 from itertools import product
 
+from based_utils.calx import mods
+
 from advent_of_code.problems import ParsedProblem
-from advent_of_code.utils.math import mods
 
 
 def update_score(pos: int, score: int, roll: int) -> tuple[int, int]:

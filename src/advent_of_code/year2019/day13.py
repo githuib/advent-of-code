@@ -1,7 +1,7 @@
 from enum import IntEnum
 from itertools import batched
 
-from advent_of_code.utils.math import compare
+from based_utils.calx import compare
 
 from .intcode import IntcodeProblem
 

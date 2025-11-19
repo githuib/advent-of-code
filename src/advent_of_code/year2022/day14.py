@@ -3,11 +3,12 @@ from enum import IntEnum
 from itertools import pairwise
 from typing import TYPE_CHECKING
 
+from based_utils.colors import Color
 from parse import parse  # type: ignore[import-untyped]
-from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
+from advent_of_code.utils.cli import Colored
 from advent_of_code.utils.data import smart_range
 from advent_of_code.utils.geo2d import P2, MutableNumberGrid2
 
@@ -57,18 +58,21 @@ class _Problem(MultiLineProblem[int], ABC):
     def map_str(self) -> Iterator[str]:
         sx, _ = START
 
-        def format_value(_p: P2, v: int) -> str:
-            match v:
-                case Material.AIR:
-                    return chalk.hex("111").bg_hex("111")(".")
-                case Material.ROCK:
-                    return chalk.hex("654").bg_hex("654")("#")
-                case Material.SAND:
-                    return chalk.hex("fdb").bg_hex("fdb")("o")
-                case Material.SOURCE:
-                    return chalk.hex("0af").bg_hex("0af")("+")
-                case _:
-                    return NotImplemented
+        def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
+            air = Color.grey(lightness=0.15)
+            sand = Color.from_name("orange", lightness=0.9, saturation=0.25)
+            rock = sand.with_changed(lightness=0.5)
+            source = Color.from_name("blue")
+            if 0 <= v < 4:
+                c, s = {
+                    Material.AIR: (air, "."),
+                    Material.ROCK: (rock, "#"),
+                    Material.SAND: (sand, "o"),
+                    Material.SOURCE: (source, "+"),
+                }[Material(v)]
+            else:
+                return NotImplemented
+            return Colored(s, c, c.with_changed(lightness=0.8))
 
         return self.map.to_lines(format_value=format_value, crop_x=(sx - 18, sx + 81))
 

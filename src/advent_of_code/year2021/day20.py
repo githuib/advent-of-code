@@ -30,7 +30,7 @@ class Image:
         min_v, max_v = self._padding, self._size - self._padding
         return min_v <= x < max_v and min_v <= y < max_v
 
-    def enhanced(self: Self) -> Self:
+    def enhanced(self) -> Self:
         edge_bit = False
         while self._padding > 1:
             self._padding -= 1

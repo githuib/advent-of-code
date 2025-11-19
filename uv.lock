@@ -51,15 +51,15 @@ dev = [
 
 [[package]]
 name = "based-utils"
-version = "0.4.1"
+version = "0.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gaffe" },
     { name = "hsluv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/0d/d159e2ac83a6d0f30cbeffc148b6b5526fcba3edcb7a995137ee1d8ce008/based_utils-0.4.1.tar.gz", hash = "sha256:4a29360142076bc10f57673a7dd1b8d30f5c065d0735801f79ada2c3b44c8de2", size = 9533, upload-time = "2025-11-17T15:51:36.249Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/db/6d/38af376cf383b5f6b2cd2ce6da29ee37738ba2851ccd604e0ec2b4a9a5a6/based_utils-0.5.0.tar.gz", hash = "sha256:872060b79813d41282449fdd9ea0b78d9bf4702a4861b3d0eb5c3bbf0156ef72", size = 11879, upload-time = "2025-11-19T04:22:01.854Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fe/5d/08ce0db6fcf678f0db34579dd95fc6cb813b7c5894881a2e359d7517d49c/based_utils-0.4.1-py3-none-any.whl", hash = "sha256:1406a574c63b6e2caa88e654f3a28b9e981e11d0f78bee8515d0b775ea4202e8", size = 11645, upload-time = "2025-11-17T15:51:34.922Z" },
+    { url = "https://files.pythonhosted.org/packages/af/f8/7371ba090ea9e71e340074929619f2c15a2282f40ee1e20d40a6a804d58e/based_utils-0.5.0-py3-none-any.whl", hash = "sha256:0b5d4a472f411713fc529a50ec80fc51cca4d6141e4d2c857e77af4799cf59cf", size = 14583, upload-time = "2025-11-19T04:22:00.509Z" },
 ]
 
 [[package]]

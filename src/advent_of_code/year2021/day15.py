@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import DijkstraState
+from based_utils.calx import mods
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
 from advent_of_code.utils.geo2d import P2, NumberGrid2
-from advent_of_code.utils.math import mods
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -37,9 +37,11 @@ class Problem1(NumberGridProblem[int]):
     puzzle_solution = 583
 
     def solution(self) -> int:
-        log.lazy_debug(self.grid.to_lines)
-        log.debug(self.grid.span)
-        return ChitonState.find_path(Variables(), Constants(self.grid)).length
+        path = ChitonState.find_path(Variables(), Constants(self.grid))
+        log.lazy_debug(
+            lambda: self.grid.to_lines(highlighted={s.v.position for s in path.states})
+        )
+        return path.length
 
 
 class Problem2(Problem1):
@@ -48,22 +50,18 @@ class Problem2(Problem1):
 
     def solution(self) -> int:
         w, h = self.grid.size
-        log.lazy_debug(self.grid.to_lines)
-        path = ChitonState.find_path(
-            Variables(),
-            Constants(
-                NumberGrid2(
-                    {
-                        (x + w * i, y + h * j): mods(risk + i + j, 9, 1)
-                        for i in range(5)
-                        for j in range(5)
-                        for (x, y), risk in self.grid.items()
-                    }
-                )
-            ),
+        grid = NumberGrid2(
+            {
+                (x + w * i, y + h * j): mods(risk + i + j, 9, 1)
+                for i in range(5)
+                for j in range(5)
+                for (x, y), risk in self.grid.items()
+            }
         )
-        # path_points: set[P2] = {s.position for s in path.states}
-        # print(cave.to_str(lambda p: pixel(p in path_points)))
+        path = ChitonState.find_path(Variables(), Constants(grid))
+        log.lazy_debug(
+            lambda: grid.to_lines(highlighted={s.v.position for s in path.states})
+        )
         return path.length
 
 

@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import AStarState, BFSState, DijkstraState
 from based_utils.algo.paths import State
 from based_utils.cli import human_readable_duration, timed
-from yachalk import chalk
+from based_utils.colors import Color
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.cli import format_table
+from advent_of_code.utils.cli import Colored, format_table
 from advent_of_code.utils.geo2d import P2, NumberGrid2
 from advent_of_code.utils.strings import PRE_a
 
@@ -112,30 +112,30 @@ class _Problem(NumberGridProblem[int], ABC):
             }
 
             class Styles:
-                start_end = chalk.hex("034").bg_hex("bdf")
-                a = chalk.hex("222").bg_hex("333")
-                a_star = chalk.hex("535").bg_hex("848")
-                path = chalk.hex("068").bg_hex("0af")
-                dijkstra = chalk.hex("424").bg_hex("636")
-                bfs = chalk.hex("212").bg_hex("424")
-                none = chalk.hex("222").bg_hex("000")
+                start_end = Color.from_hex("034"), Color.from_hex("bdf")
+                a = Color.from_hex("222"), Color.from_hex("333")
+                a_star = Color.from_hex("535"), Color.from_hex("848")
+                path = Color.from_hex("068"), Color.from_hex("0af")
+                dijkstra = Color.from_hex("424"), Color.from_hex("636")
+                bfs = Color.from_hex("212"), Color.from_hex("424")
+                none = Color.from_hex("222"), Color.from_hex("000")
 
-            def grid_cell_str(p: P2, default_val: int | None) -> str:
+            def grid_cell_str(p: P2, default_val: int, _colored: Colored) -> Colored:
                 v = hill_chars.get(p, default_val)
                 return (
-                    Styles.start_end(v)
+                    Colored(v, *Styles.start_end)
                     if (p in {start_pos, *ep})
-                    else Styles.path(v)
+                    else Colored(v, *Styles.path)
                     if (p in p_points)
-                    else Styles.a_star(v)
+                    else Colored(v, *Styles.a_star)
                     if (p in visited_points_a_star)
-                    else Styles.dijkstra(v)
+                    else Colored(v, *Styles.dijkstra)
                     if (p in visited_points_dijkstra)
-                    else Styles.bfs(v)
+                    else Colored(v, *Styles.bfs)
                     if (p in visited_points_bfs)
-                    else Styles.a(v)
+                    else Colored(v, *Styles.a)
                     if (v == end_val)
-                    else Styles.none(v)
+                    else Colored(v, *Styles.none)
                 )
 
             yield from self.grid.to_lines(format_value=grid_cell_str)
@@ -143,30 +143,32 @@ class _Problem(NumberGridProblem[int], ABC):
             yield from format_table(
                 ("Legend", "Algorithm", "Visited", "Path found in"),
                 (
-                    f"{Styles.bfs('x')} visited by BFS",
+                    f"{Colored('x', *Styles.bfs).formatted} visited by BFS",
                     "BFS",
                     len(visited_points_bfs),
                     human_readable_duration(t_bfs),
                 ),
                 (
-                    f"{Styles.dijkstra('y')} visited by Dijkstra & BFS",
+                    f"{Colored('y', *Styles.dijkstra).formatted} visited by Dijkstra & BFS",
                     "Dijkstra",
                     len(visited_points_dijkstra),
                     human_readable_duration(t_dijkstra),
                 ),
                 (
-                    f"{Styles.a_star('z')} visited by A*, Dijkstra & BFS",
+                    f"{Colored('z', *Styles.a_star).formatted} visited by A*, Dijkstra & BFS",
                     "A*",
                     len(visited_points_a_star),
                     human_readable_duration(t_a_star),
                 )
                 if p_a_star
                 else (),
-                (f"{Styles.start_end('S')} start",),
-                (f"{Styles.start_end('E')} end",),
-                (f"{Styles.path('p')} path",),
-                (f"{Styles.a('a')} possible starting points (including un-escapable)",),
-                (f"{Styles.none('w')} wild, unexplored terrain",),
+                (f"{Colored('S', *Styles.start_end).formatted} start",),
+                (f"{Colored('E', *Styles.start_end).formatted} end",),
+                (f"{Colored('p', *Styles.path).formatted} path",),
+                (
+                    f"{Colored('a', *Styles.a).formatted} possible starting points (including un-escapable)",
+                ),
+                (f"{Colored('w', *Styles.none).formatted} wild, unexplored terrain",),
                 column_splits=[1],
             )
 

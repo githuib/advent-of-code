@@ -2,8 +2,6 @@ from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
 from based_utils.algo import DijkstraState
-from based_utils.colors import HSLuv
-from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
@@ -43,7 +41,7 @@ class LavaState(DijkstraState[Constants, Variables]):
         )
 
     @property
-    def next_states(self: Self) -> Iterator[Self]:
+    def next_states(self) -> Iterator[Self]:
         x, y = self.v.pos
         for dx, dy in DIRS[self.v.from_dir]:
             pos = x + dx, y + dy
@@ -67,18 +65,9 @@ class _Problem(NumberGridProblem[int], ABC):
         path = LavaState.find_path(
             Variables(), Constants(self.grid, self.segment_range)
         )
-
-        def format_value(p: P2, v: int) -> str:
-            base_color = HSLuv.from_hex("0f0")
-            c = HSLuv(10 + v * 5, base_color.saturation, base_color.hue)
-            rgb = c.rgb
-            s = chalk.rgb(rgb.red, rgb.green, rgb.blue)(v)
-            if p in {s.v.pos for s in path.states}:
-                rgb = c.contrasting_shade.rgb
-                return chalk.bg_rgb(rgb.red, rgb.green, rgb.blue)(s)
-            return s
-
-        log.lazy_debug(lambda: self.grid.to_lines(format_value=format_value))
+        log.lazy_debug(
+            lambda: self.grid.to_lines(highlighted={s.v.pos for s in path.states})
+        )
         return path.length
 
 

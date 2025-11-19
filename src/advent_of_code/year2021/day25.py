@@ -1,10 +1,12 @@
 from collections.abc import Set
 from typing import TYPE_CHECKING, Self
 
+from based_utils.colors import Color
 from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem, StringGridProblem
+from advent_of_code.utils.cli import Colored
 from advent_of_code.utils.data import first_duplicate
 from advent_of_code.utils.geo2d import P2, StringGrid2
 
@@ -19,10 +21,17 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     board = StringGrid2(
         dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
     )
-    colors = {".": "0af", ">": "888", "v": "666"}
-    return board.to_lines(
-        format_value=lambda _, v: chalk.hex(colors[v]).bg_hex(colors[v])(v)
-    )
+    colors = {
+        ".": Color.from_name("turquoise").with_changed(hue=0.03),
+        ">": Color.grey(0.5),
+        "v": Color.grey(0.25),
+    }
+
+    def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
+        c = colors[v]
+        return Colored(v, c, c.with_changed(lightness=0.9))
+
+    return board.to_lines(format_value=format_value)
 
 
 class Problem1(StringGridProblem[int]):

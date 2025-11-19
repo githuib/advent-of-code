@@ -3,9 +3,10 @@ from collections.abc import Iterable
 from copy import deepcopy
 from math import lcm
 
+from based_utils.calx import compare
+
 from advent_of_code.problems import ParsedProblem
 from advent_of_code.utils.geo3d import P3D
-from advent_of_code.utils.math import compare
 
 
 class Moon:

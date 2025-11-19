@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
 
 from advent_of_code import log
 from advent_of_code.problems import ParsedProblem
@@ -24,7 +24,7 @@ class Brick:
         self.p_min += diff
         self.p_max += diff
 
-    def supporting(self: Self, foundation: set[Brick] = None) -> set[Brick]:
+    def supporting(self, foundation: set[Brick] = None) -> set[Brick]:
         return {
             bt
             for bt in self.connected_top

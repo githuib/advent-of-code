@@ -1,15 +1,17 @@
 from abc import ABC
 from collections import deque
-
-from yachalk import chalk
+from typing import TYPE_CHECKING
 
 from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP
 
+if TYPE_CHECKING:
+    from collections.abc import Set
+
 
 class _Problem(StringGridProblem[int], ABC):
-    def energized(self, start: tuple[P2, P2]) -> int:
+    def energized(self, start: tuple[P2, P2]) -> Set[P2]:
         beams = deque([start])
         visited = set()
         while beams:
@@ -35,17 +37,7 @@ class _Problem(StringGridProblem[int], ABC):
             new_beams = {(p, nd) for nd in new_dirs if (p, nd) not in visited}
             beams.extend(new_beams)
             visited |= new_beams
-        points = {p for p, _ in visited}
-
-        log.lazy_debug(
-            lambda: self.grid.to_lines(
-                format_value=lambda q, c: chalk.hex("034").bg_hex("bdf")(c)
-                if q in points
-                else chalk.hex("222").bg_hex("888")(c)
-            )
-        )
-
-        return len(points)
+        return {p for p, _ in visited}
 
 
 class Problem1(_Problem):
@@ -53,7 +45,9 @@ class Problem1(_Problem):
     puzzle_solution = 6902
 
     def solution(self) -> int:
-        return self.energized(((-1, 0), RIGHT))
+        points = self.energized(((-1, 0), RIGHT))
+        log.lazy_debug(lambda: self.grid.to_lines(highlighted=points))
+        return len(points)
 
 
 class Problem2(_Problem):
@@ -61,7 +55,7 @@ class Problem2(_Problem):
     puzzle_solution = 7697
 
     def solution(self) -> int:
-        return max(
+        pointses = [
             self.energized((p, d))
             for p, d in [
                 ((x, y), d)
@@ -73,7 +67,10 @@ class Problem2(_Problem):
                 for x, d in ((-1, RIGHT), (self.grid.width, LEFT))
                 for y in range(self.grid.height)
             ]
-        )
+        ]
+        ret, points = max((len(pts), pts) for pts in pointses)
+        log.lazy_debug(lambda: self.grid.to_lines(highlighted=points))
+        return ret
 
 
 TEST_INPUT = r"""
