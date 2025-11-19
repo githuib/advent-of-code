@@ -22,9 +22,9 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
         dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
     )
     colors = {
-        ".": Color.from_name("turquoise").with_changed(hue=0.03),
-        ">": Color.grey(0.5),
-        "v": Color.grey(0.25),
+        ".": Color.from_name("ocean", lightness=0.8),
+        ">": Color.from_name("pink", lightness=0.4, saturation=0.5),
+        "v": Color.from_name("purple", lightness=0.22, saturation=0.5),
     }
 
     def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
