@@ -1,4 +1,3 @@
-import sys
 import time
 from collections.abc import Callable, Iterable, Iterator
 from functools import cached_property
@@ -8,6 +7,8 @@ from pprint import pformat
 
 from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister
 from based_utils.colors import Color
+
+from advent_of_code.utils.cli import clear_lines, print_lines
 
 
 class LogFormatter(Formatter):
@@ -80,10 +81,10 @@ class AppLogger(LogMeister):
     def lazy_info(self, cb: Callable[[], object]) -> None:
         self._main_logger.info(cb())
 
-    def debug_action(self, cb: Callable[[], None]) -> None:
+    def debug_action[T](self, cb: Callable[[], T]) -> T | None:
         if self._main_logger.level > LogLevel.DEBUG:
-            return
-        cb()
+            return None
+        return cb()
 
     def debug_animated[T](
         self,
@@ -91,26 +92,23 @@ class AppLogger(LogMeister):
         format_item: Callable[[T], Iterable[str]],
         *,
         frame_rate: int = 60,
-        keep_last: bool = False,
+        keep_last: bool = True,
+        only_every_nth: int = 1,
     ) -> Iterator[T]:
         if self._main_logger.level > LogLevel.DEBUG:
             yield from items
             return
 
-        block: list[str] = []
-        for item in items:
-            block = list(format_item(item))
+        last_item: T | None = None
+        for i, item in enumerate(items):
             yield item
-
-            for line in block:
-                sys.stdout.write(line + "\n")
-
+            last_item = item
+            if i % only_every_nth != 0:
+                continue
+            lines = list(format_item(item))
+            print_lines(lines)
             time.sleep(1 / frame_rate)
-            for _ in block:
-                # \033[1A <-- LINE UP
-                # \x1b[2K <-- LINE CLEAR
-                sys.stdout.write("\033[1A\x1b[2K")
+            clear_lines(lines)
 
-        if keep_last:
-            for line in block:
-                sys.stdout.write(line + "\n")
+        if keep_last and last_item is not None:
+            print_lines(list(format_item(last_item)))

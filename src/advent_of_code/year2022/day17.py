@@ -74,7 +74,7 @@ class _Problem(OneLineProblem[int], ABC):
                     else:
                         pattern[py] |= row
 
-                yield height, y, pattern, curr_shape
+                yield height, y, list(pattern), curr_shape
                 break
 
     def height_at_t(self, t: int) -> int:
@@ -117,10 +117,10 @@ class Problem2(_Problem):
         _heights, _ys, patterns, _shapes = unzip(self.play())
         cycle_ = detect_cycle(patterns)
         n = 1_000_000_000_000 - cycle_.start
-        return (
-            self.height_at_t(cycle_.start + cycle_.length)
-            - self.height_at_t(cycle_.start)
-        ) * (n // cycle_.length) + self.height_at_t(cycle_.start + n % cycle_.length)
+        h_cycle = self.height_at_t(cycle_.start + cycle_.length)
+        h_start = self.height_at_t(cycle_.start)
+        h_trillion = self.height_at_t(cycle_.start + n % cycle_.length)
+        return (h_cycle - h_start) * (n // cycle_.length) + h_trillion
 
 
 TEST_INPUT = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>"

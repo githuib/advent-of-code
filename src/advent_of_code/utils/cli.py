@@ -1,3 +1,4 @@
+import sys
 from itertools import zip_longest
 from typing import TYPE_CHECKING
 
@@ -10,6 +11,18 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
     from based_utils.colors import Color
+
+
+def print_lines(lines: Iterable[str]) -> None:
+    for line in lines:
+        sys.stdout.write(line + "\n")
+
+
+def clear_lines(lines: Iterable[str]) -> None:
+    for _ in lines:
+        # \033[1A <-- LINE UP
+        # \x1b[2K <-- LINE CLEAR
+        sys.stdout.write("\033[1A\x1b[2K")
 
 
 def format_table(

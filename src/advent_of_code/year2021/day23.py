@@ -211,7 +211,7 @@ class _Problem(MultiLineProblem[int], ABC):
             yield ""
 
         states = enumerate(path.states)
-        consume(log.debug_animated(states, fmt, keep_last=True, frame_rate=8))
+        consume(log.debug_animated(states, fmt, frame_rate=10))
         return path.length
 
 

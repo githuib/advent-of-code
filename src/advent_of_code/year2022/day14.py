@@ -4,6 +4,7 @@ from itertools import pairwise
 from typing import TYPE_CHECKING
 
 from based_utils.colors import Color
+from more_itertools import consume
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
@@ -23,7 +24,24 @@ class Material(IntEnum):
     SOURCE = 3
 
 
-START = 500, 0
+START = START_X, START_Y = 500, 0
+
+
+def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
+    air = Color.grey(lightness=0.15)
+    sand = Color.from_name("orange", lightness=0.9, saturation=0.25)
+    rock = sand.with_changed(lightness=0.5)
+    source = Color.from_name("blue")
+    if 0 <= v < 4:
+        c, s = {
+            Material.AIR: (air, "."),
+            Material.ROCK: (rock, "#"),
+            Material.SAND: (sand, "o"),
+            Material.SOURCE: (source, "+"),
+        }[Material(v)]
+    else:
+        return NotImplemented
+    return Colored(s, c, c.with_changed(lightness=0.8))
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -48,33 +66,15 @@ class _Problem(MultiLineProblem[int], ABC):
                 return np
         return START
 
-    def go(self, keep_going: Callable[[int, int], bool]) -> None:
+    def go(self, keep_going: Callable[[int, int], bool]) -> Iterator[Iterator[str]]:
         x, y = START
         while keep_going(x, y):
             if (np := self.next_pos(x, y)) == START:
                 self.map[x, y] = Material.SAND
+                yield self.map.to_lines(
+                    format_value=format_map_value, crop_x=(START_X - 18, START_X + 81)
+                )
             x, y = np
-
-    def map_str(self) -> Iterator[str]:
-        sx, _ = START
-
-        def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
-            air = Color.grey(lightness=0.15)
-            sand = Color.from_name("orange", lightness=0.9, saturation=0.25)
-            rock = sand.with_changed(lightness=0.5)
-            source = Color.from_name("blue")
-            if 0 <= v < 4:
-                c, s = {
-                    Material.AIR: (air, "."),
-                    Material.ROCK: (rock, "#"),
-                    Material.SAND: (sand, "o"),
-                    Material.SOURCE: (source, "+"),
-                }[Material(v)]
-            else:
-                return NotImplemented
-            return Colored(s, c, c.with_changed(lightness=0.8))
-
-        return self.map.to_lines(format_value=format_value, crop_x=(sx - 18, sx + 81))
 
 
 class Problem1(_Problem):
@@ -87,8 +87,8 @@ class Problem1(_Problem):
 
     def solution(self) -> int:
         (min_x, _), (max_x, max_y) = self.p_min, self.p_max
-        self.go(lambda x, y: min_x <= x <= max_x and y < max_y)
-        log.lazy_debug(self.map_str)
+        maps = self.go(lambda x, y: min_x <= x <= max_x and y < max_y)
+        consume(log.debug_animated(maps, lambda item: item, only_every_nth=50))
         return sum(m == Material.SAND for m in self.map.values())
 
 
@@ -101,8 +101,8 @@ class Problem2(_Problem):
         sx, _ = START
         for x in range(-y, y + 1):
             self.map[sx + x, y] = Material.ROCK
-        self.go(lambda _x, _y: self.map[START] == Material.SOURCE)
-        log.lazy_debug(self.map_str)
+        maps = self.go(lambda _x, _y: self.map[START] == Material.SOURCE)
+        consume(log.debug_animated(maps, lambda item: item, only_every_nth=5000))
         return sum(m == Material.SAND for m in self.map.values())
 
 
