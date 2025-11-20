@@ -2,7 +2,6 @@ from collections.abc import Set
 from typing import TYPE_CHECKING, Self
 
 from based_utils.colors import Color
-from yachalk import chalk
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem, StringGridProblem
@@ -22,7 +21,7 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
         dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
     )
     colors = {
-        ".": Color.from_name("ocean", lightness=0.8),
+        ".": Color.from_name("ocean", lightness=0.9),
         ">": Color.from_name("pink", lightness=0.4, saturation=0.5),
         "v": Color.from_name("purple", lightness=0.22, saturation=0.5),
     }
@@ -72,15 +71,16 @@ class Problem1(StringGridProblem[int]):
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-        log.info(
-            chalk.bg_hex("0df").hex("df0")("""
+        s = """
                                                .
                     __  |__                    .
                   __L L_|L L__                 .
             ...[+(____________)                .
                    C_________/                 .
-                                               .""")
-        )
+                                               ."""
+        sub = Color.from_name("poison", lightness=0.9)
+        ocean = Color.from_name("ocean", lightness=0.7, saturation=0.9)
+        log.info(Colored(s, sub, ocean).formatted)
 
 
 TEST_INPUT = """

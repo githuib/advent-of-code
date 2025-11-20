@@ -4,8 +4,8 @@ from logging import Formatter, LogRecord
 from os import get_terminal_size
 from pprint import pformat
 
-from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister
-from yachalk import chalk
+from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister
+from based_utils.colors import Color
 
 
 class LogFormatter(Formatter):
@@ -29,15 +29,14 @@ class LogFormatter(Formatter):
         msg = Formatter(fmt).format(record)
         prefix, *_ = msg.split(record.message)
         msg = msg.replace("\n", "\n" + prefix)
-        return chalk.hex(
-            {
-                LogLevel.DEBUG: "888",
-                LogLevel.INFO: "ccc",
-                LogLevel.WARNING: "f80",
-                LogLevel.ERROR: "f30",
-                LogLevel.CRITICAL: "f30",
-            }[LogLevel(record.levelno)]
-        )(msg)
+        color = {
+            LogLevel.DEBUG: Color.grey(0.5),
+            LogLevel.INFO: Color.grey(0.75),
+            LogLevel.WARNING: Color.from_name("orange"),
+            LogLevel.ERROR: Color.from_name("red"),
+            LogLevel.CRITICAL: Color.from_name("red"),
+        }[LogLevel(record.levelno)]
+        return Colored(msg, color).formatted
 
 
 class AppLogger(LogMeister):

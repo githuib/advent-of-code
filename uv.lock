@@ -13,8 +13,6 @@ dependencies = [
     { name = "matplotlib" },
     { name = "more-itertools" },
     { name = "parse" },
-    { name = "pytest" },
-    { name = "yachalk" },
 ]
 
 [package.dev-dependencies]
@@ -35,8 +33,6 @@ requires-dist = [
     { name = "matplotlib" },
     { name = "more-itertools" },
     { name = "parse" },
-    { name = "pytest", specifier = ">=9.0.0" },
-    { name = "yachalk" },
 ]
 
 [package.metadata.requires-dev]

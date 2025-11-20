@@ -11,8 +11,6 @@ dependencies = [
   "matplotlib",
   "more-itertools",
   "parse",
-  "pytest>=9.0.0",
-  "yachalk",
 ]
 
 [dependency-groups]

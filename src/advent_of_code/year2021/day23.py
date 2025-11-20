@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
+from collections.abc import Hashable
 from copy import copy
 from dataclasses import dataclass, field
 from functools import cached_property
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import DijkstraState
-from yachalk import chalk
+from based_utils.cli import Colored
+from based_utils.colors import Color
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
@@ -16,13 +18,16 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class Room:
+class Room(Hashable):
     _amphipod_type: int
     _size: int
     _content: list[int]
 
     def __repr__(self) -> str:
         return f"{self._content}"
+
+    def __hash__(self) -> int:
+        return hash((self._amphipod_type, self._size, *self._content))
 
     def __copy__(self) -> Room:
         return Room(self._amphipod_type, self._size, self._content[:])
@@ -68,9 +73,12 @@ class Constants(NamedTuple):
 
 
 @dataclass
-class Variables:
+class Variables(Hashable):
     rooms: list[Room]
     hallway: list[int] = field(default_factory=lambda: [0] * 7)
+
+    def __hash__(self) -> int:
+        return hash((*[hash(r) for r in self.rooms], *self.hallway))
 
 
 class AmphipodState(DijkstraState[Constants, Variables]):
@@ -140,13 +148,18 @@ class AmphipodState(DijkstraState[Constants, Variables]):
           #A#D#C#A#
           #########
         """
-        w: str = chalk.hex("eee").bg_hex("848")("#")
-        e: str = chalk.hex("332").bg_hex("111")(".")
+        edge = Color.from_name("indigo", lightness=0.35)
+        dot = Color.from_name("poison", lightness=0.6)
+        amph = Color.from_name("pink", lightness=0.1)
 
-        def q(cs: str) -> str:
-            return "".join(
-                e if c == "." else chalk.hex("111").bg_hex("0af")(c) for c in cs
-            )
+        w = Colored("#", edge, edge.with_changed(lightness=0.7)).formatted
+
+        def colored_char(c: str) -> str:
+            color = dot if c == "." else amph
+            return Colored(c, color, color.contrasting_shade).formatted
+
+        def colored(cs: str) -> str:
+            return "".join(colored_char(c) for c in cs)
 
         def p(r: int) -> str:
             return "  " if r > 0 else w * 2
@@ -155,12 +168,12 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         h = ".".join(s[a] for a in self.v.hallway)
         rs = self.c.room_size
         yield f"{w * 13}"
-        yield f"{w + q(h[0] + h[2:-2] + h[-1]) + w}"
+        yield f"{w + colored(h[0] + h[2:-2] + h[-1]) + w}"
         for i in range(rs):
             yield (
                 p(i)
                 + w
-                + w.join(q(s[r.get(rs - i - 1)]) for r in self.v.rooms)
+                + w.join(colored(s[r.get(rs - i - 1)]) for r in self.v.rooms)
                 + w
                 + p(i)
             )
