@@ -51,16 +51,16 @@ dev = [
 
 [[package]]
 name = "based-utils"
-version = "0.6.3"
+version = "0.6.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gaffe" },
     { name = "hsluv" },
     { name = "yachalk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/74/03/0503367da4ae7186c0c2bbb559e6e464cb6fe76e2013841d0f65d5ff8ee9/based_utils-0.6.3.tar.gz", hash = "sha256:741a3472a57635e9e4316c2e3b8690f9ecaa26abcab5dc1f907a234958585501", size = 12805, upload-time = "2025-11-19T21:22:02.155Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/83/733564063a5cba23fccfc003339d9dd921cd7a13f7f43a21811d715cdf8c/based_utils-0.6.6.tar.gz", hash = "sha256:71b0a78cf5799e5a86677891643502eebe695481ffe3799c1c294431f9404d7b", size = 13038, upload-time = "2025-11-20T05:13:44.944Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fd/b1/b67297e00aaffa2346b0135263d21ef6ab4f2833796e8e456c3c7eab7982/based_utils-0.6.3-py3-none-any.whl", hash = "sha256:1a38eb5515925ef75c7731ac58bd2986118c78e5f3d50e0da14e2b5c81436e39", size = 16719, upload-time = "2025-11-19T21:22:01.03Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/27/ea3cc116b81b30212a8090262e9b2e294882e258951f040af67bfb73d754/based_utils-0.6.6-py3-none-any.whl", hash = "sha256:f03c28578acdf2d5c27a2d6568111db443c6d0bc0b59ca00a07f4c1b6f804c65", size = 16726, upload-time = "2025-11-20T05:13:43.99Z" },
 ]
 
 [[package]]
@@ -554,16 +554,16 @@ wheels = [
 
 [[package]]
 name = "powerchord"
-version = "0.3.0"
+version = "0.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1d/0e/c7a39eeb5e4d1e6c79bdcf4728ce742297c5a7f0873b68c4938ba09fbdb2/powerchord-0.3.0.tar.gz", hash = "sha256:572294353226e78d7195a5999adffc536455bb277973240a068463a4e01b7421", size = 5756, upload-time = "2025-11-19T20:56:04.258Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ed/fe/c06e57796bb9e168b6a0b1356ef777c9683912ab6f1ae38da549cf7f4634/powerchord-0.3.1.tar.gz", hash = "sha256:b41b1b4f2d95e491d7ac7cd7cf125be5a6cf04603a26dab8146d9f0382410446", size = 5743, upload-time = "2025-11-20T03:07:55.05Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/48/d9/aa2f2e0ff9e636f4ebd1d5bd4608c1ab9d9838cbdbdbfabaf1309d54156e/powerchord-0.3.0-py3-none-any.whl", hash = "sha256:d89da51cfe59eeedc4d2f6b8a29d42244fe74079c7175193b68654485073d9f6", size = 6629, upload-time = "2025-11-19T20:56:03.124Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/12/58b5d64ee103c135a324b20d277259feec1626869f4cd5952fba5f73d520/powerchord-0.3.1-py3-none-any.whl", hash = "sha256:ef3b251be776894bbe5de88846b2bafe3cafe45681345d31bd1145e7159b2b83", size = 6623, upload-time = "2025-11-20T03:07:53.853Z" },
 ]
 
 [[package]]

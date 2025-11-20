@@ -53,7 +53,7 @@ class Problem[T](ABC):
             self._load_input()
         return self
 
-    def var[V](self, test: V, puzzle: V) -> V:
+    def var[V](self, *, test: V, puzzle: V) -> V:
         return test if self.is_test_run else puzzle
 
     def _load_input(self) -> None:

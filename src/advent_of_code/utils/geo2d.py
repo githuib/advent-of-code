@@ -387,7 +387,7 @@ class NumberGrid2(_Grid2[int]):
             return Colored(" ")
         return Colored(
             str(value) if value < 10 else "+",
-            Color.from_name("yellow").shade(0.15 + min(value, 10) * 0.035),
+            Color.from_name("green").shade(0.15 + min(value, 10) * 0.035),
         )
 
 
