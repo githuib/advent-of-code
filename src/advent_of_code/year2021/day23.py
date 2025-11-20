@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import DijkstraState
 from based_utils.cli import Colored
 from based_utils.colors import Color
+from more_itertools import consume
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
@@ -202,16 +203,15 @@ class _Problem(MultiLineProblem[int], ABC):
         ]
         path = AmphipodState.find_path(Variables(rooms), Constants(room_size))
 
-        def debug_str() -> Iterator[str]:
-            for i, state in enumerate(path.states):
-                if i > 0:
-                    yield f"Step {i}, cost so far: {state.cost}"
-                    yield ""
-                yield from state.to_lines()
-                yield ""
+        def fmt(item: tuple[int, AmphipodState]) -> Iterator[str]:
+            i, state = item
+            yield f"Step {i}, cost so far: {state.cost}" if i > 0 else ""
+            yield ""
+            yield from state.to_lines()
+            yield ""
 
-        log.lazy_debug(debug_str)
-
+        states = enumerate(path.states)
+        consume(log.debug_animated(states, fmt, keep_last=True, frame_rate=8))
         return path.length
 
 

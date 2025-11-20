@@ -1,5 +1,6 @@
 from abc import ABC
 from collections import deque
+from collections.abc import Iterable
 from itertools import count, cycle
 from typing import TYPE_CHECKING
 
@@ -11,7 +12,7 @@ from advent_of_code.problems import OneLineProblem
 from advent_of_code.utils.geo2d import StringGrid2
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Sequence
+    from collections.abc import Iterator
 
 MAX_HEIGHT = 65
 
@@ -23,6 +24,9 @@ SHAPES = [
     [0b11000, 0b11000],  # []
 ]
 
+Shape = list[int]
+Pattern = Iterable[int]
+
 
 class MaxHeightReachedError(RuntimeError):
     def __init__(self) -> None:
@@ -31,46 +35,25 @@ class MaxHeightReachedError(RuntimeError):
         )
 
 
-def reset_pattern() -> deque[int]:
-    return deque([0b1111111] * MAX_HEIGHT, maxlen=MAX_HEIGHT)
-
-
 class _Problem(OneLineProblem[int], ABC):
-    def __init__(self) -> None:
-        self.pattern = reset_pattern()
-
-    def occludes_with(self, shape: Sequence[int], y: int) -> bool:
-        return any(r <= y and self.pattern[y - r] & row for r, row in enumerate(shape))
-
-    def try_move(self, d: str, shape: list[int], y: int) -> list[int]:
-        to_left = d == "<"
-        moved = [row << 1 if to_left else row >> 1 for row in shape]
-        side = 0b1000000 if to_left else 0b0000001
-        occ_side = any(r & side for r in shape)
-        occ_pat = self.occludes_with(moved, y)
-        return shape if occ_side or occ_pat else moved
-
-    def debug_board(self, shape: list[int], y: int) -> None:
-        def value(row_: int, r: int, c: int) -> str:
-            n = len(shape)
-            s = y - min(0, y - n + 1) - r
-            if 0 <= s < n and shape[s] >> c & 1:
-                return "^"
-            return "#" if row_ >> c & 1 else "."
-
-        log.lazy_debug(
-            lambda: StringGrid2(
-                ((c, r), value(row, r, c))
-                for r, row in enumerate(self.pattern)
-                for c in range(6, -1, -1)
-            ).to_lines()
-        )
-
-    def play(self) -> Iterator[tuple[int, list[int]]]:
-        self.pattern = reset_pattern()
+    def play(self) -> Iterator[tuple[int, int, Pattern, Shape]]:
+        pattern = deque([0b1111111] * MAX_HEIGHT, maxlen=MAX_HEIGHT)
         height = 0
         directions = cycle(self.line)
         shapes = cycle(SHAPES)
+
+        def occludes_with(shape: Shape, y_: int) -> bool:
+            return any(
+                r <= y_ and pattern[y_ - r] & row_ for r, row_ in enumerate(shape)
+            )
+
+        def try_move(d: str, shape: Shape, y_: int) -> Shape:
+            to_left = d == "<"
+            moved = [row_ << 1 if to_left else row_ >> 1 for row_ in shape]
+            side = 0b1000000 if to_left else 0b0000001
+            occ_side = any(r & side for r in shape)
+            occ_pat = occludes_with(moved, y_)
+            return shape if occ_side or occ_pat else moved
 
         while True:
             curr_shape = next(shapes)
@@ -78,26 +61,43 @@ class _Problem(OneLineProblem[int], ABC):
                 if y == MAX_HEIGHT:
                     raise MaxHeightReachedError
 
-                curr_shape = self.try_move(next(directions), curr_shape, y)
+                curr_shape = try_move(next(directions), curr_shape, y)
 
-                if y < -1 or not self.occludes_with(curr_shape, y + 1):
+                if y < -1 or not occludes_with(curr_shape, y + 1):
                     continue
 
                 for i, row in enumerate(curr_shape):
                     py = y - i
                     if py < 0:
-                        self.pattern.appendleft(row)
+                        pattern.appendleft(row)
                         height += 1
                     else:
-                        self.pattern[py] |= row
+                        pattern[py] |= row
 
-                self.debug_board(curr_shape, y)
-
-                yield height, list(self.pattern)
+                yield height, y, pattern, curr_shape
                 break
 
     def height_at_t(self, t: int) -> int:
-        height, _pattern = nth_or_last(self.play(), t - 1)
+        def format_state(item: tuple[int, int, Pattern, Shape]) -> Iterator[str]:
+            _height, y, pattern, shape = item
+
+            def value(row_: int, r: int, c: int) -> str:
+                n = len(shape)
+                s = y - min(0, y - n + 1) - r
+                if 0 <= s < n and shape[s] >> c & 1:
+                    return "^"
+                return "#" if row_ >> c & 1 else "."
+
+            return StringGrid2(
+                ((c, r), value(row, r, c))
+                for r, row in enumerate(pattern)
+                for c in range(6, -1, -1)
+            ).to_lines()
+
+        it = log.debug_animated(self.play(), format_state, frame_rate=1000)
+        state_at_t = nth_or_last(it, t - 1)
+        log.lazy_debug(lambda: format_state(state_at_t))
+        height, *_ = state_at_t
         return height
 
 
@@ -114,7 +114,7 @@ class Problem2(_Problem):
     puzzle_solution = 1570930232582
 
     def solution(self) -> int:
-        _heights, patterns = unzip(self.play())
+        _heights, _ys, patterns, _shapes = unzip(self.play())
         cycle_ = detect_cycle(patterns)
         n = 1_000_000_000_000 - cycle_.start
         return (

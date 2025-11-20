@@ -1,4 +1,6 @@
-from collections.abc import Callable, Iterator
+import sys
+import time
+from collections.abc import Callable, Iterable, Iterator
 from functools import cached_property
 from logging import Formatter, LogRecord
 from os import get_terminal_size
@@ -79,5 +81,36 @@ class AppLogger(LogMeister):
         self._main_logger.info(cb())
 
     def debug_action(self, cb: Callable[[], None]) -> None:
-        if self._main_logger.level == LogLevel.DEBUG:
-            cb()
+        if self._main_logger.level > LogLevel.DEBUG:
+            return
+        cb()
+
+    def debug_animated[T](
+        self,
+        items: Iterable[T],
+        format_item: Callable[[T], Iterable[str]],
+        *,
+        frame_rate: int = 60,
+        keep_last: bool = False,
+    ) -> Iterator[T]:
+        if self._main_logger.level > LogLevel.DEBUG:
+            yield from items
+            return
+
+        block: list[str] = []
+        for item in items:
+            block = list(format_item(item))
+            yield item
+
+            for line in block:
+                sys.stdout.write(line + "\n")
+
+            time.sleep(1 / frame_rate)
+            for _ in block:
+                # \033[1A <-- LINE UP
+                # \x1b[2K <-- LINE CLEAR
+                sys.stdout.write("\033[1A\x1b[2K")
+
+        if keep_last:
+            for line in block:
+                sys.stdout.write(line + "\n")
