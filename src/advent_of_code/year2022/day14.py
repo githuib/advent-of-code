@@ -102,7 +102,7 @@ class Problem2(_Problem):
         for x in range(-y, y + 1):
             self.map[sx + x, y] = Material.ROCK
         maps = self.go(lambda _x, _y: self.map[START] == Material.SOURCE)
-        consume(log.debug_animated(maps, lambda item: item, only_every_nth=5000))
+        consume(log.debug_animated(maps, lambda item: item, only_every_nth=1000))
         return sum(m == Material.SAND for m in self.map.values())
 
 

@@ -1,7 +1,9 @@
 from collections.abc import Set
+from itertools import count
 from typing import TYPE_CHECKING, Self
 
 from based_utils.colors import Color
+from more_itertools.recipes import consume
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem, StringGridProblem
@@ -23,7 +25,7 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     colors = {
         ".": Color.from_name("ocean", lightness=0.9),
         ">": Color.from_name("pink", lightness=0.4, saturation=0.5),
-        "v": Color.from_name("purple", lightness=0.22, saturation=0.5),
+        "v": Color.from_name("purple", lightness=0.2, saturation=0.5),
     }
 
     def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
@@ -62,8 +64,9 @@ class Problem1(StringGridProblem[int]):
         return prev
 
     def solution(self) -> int:
-        log.lazy_debug(lambda: board_str(self.sea_cucumbers))
-        n, sea_cucumbers = first_duplicate(self)
+        n, sea_cucumbers = first_duplicate(
+            log.debug_animated(self, board_str, only_every_nth=20)
+        )
         log.lazy_debug(lambda: board_str(sea_cucumbers))
         return n
 
@@ -71,16 +74,33 @@ class Problem1(StringGridProblem[int]):
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-        s = """
-                                               .
-                    __  |__                    .
-                  __L L_|L L__                 .
-            ...[+(____________)                .
-                   C_________/                 .
-                                               ."""
+        frame_0 = [
+            " " * 30 + line + " " * 30
+            for line in [
+                "        __  |__    ",
+                "      __L L_|L L__ ",
+                "...[+(____________)",
+                "       C_________/ ",
+            ]
+        ]
+
+        def animated() -> Iterator[list[str]]:
+            for num in count():
+                n = num % 80
+                yield [(line[-n:] + line[:-n]) for line in frame_0[:]]
+
         sub = Color.from_name("poison", lightness=0.9)
         ocean = Color.from_name("ocean", lightness=0.7, saturation=0.9)
-        log.info(Colored(s, sub, ocean).formatted)
+
+        def fmt(f: list[str]) -> Iterator[str]:
+            for s in f:
+                yield Colored(s, sub, ocean).formatted
+
+        try:
+            while True:
+                consume(log.debug_animated(animated(), format_item=fmt, frame_rate=10))
+        except KeyboardInterrupt:
+            pass
 
 
 TEST_INPUT = """
