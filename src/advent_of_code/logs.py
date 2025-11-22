@@ -1,4 +1,3 @@
-import time
 from collections.abc import Callable, Iterable, Iterator
 from functools import cached_property
 from logging import Formatter, LogRecord
@@ -7,8 +6,9 @@ from pprint import pformat
 
 from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister
 from based_utils.colors import Color
+from more_itertools.recipes import consume
 
-from advent_of_code.utils.cli import clear_lines, print_lines
+from advent_of_code.utils.cli import animate
 
 
 class LogFormatter(Formatter):
@@ -82,33 +82,44 @@ class AppLogger(LogMeister):
         self._main_logger.info(cb())
 
     def debug_action[T](self, cb: Callable[[], T]) -> T | None:
-        if self._main_logger.level > LogLevel.DEBUG:
-            return None
-        return cb()
+        return cb() if self._main_logger.level == LogLevel.DEBUG else None
+
+    def debug_animated_iter[T](
+        self,
+        items: Iterable[T],
+        format_item: Callable[[T], Iterable[str]],
+        *,
+        fps: int = 60,
+        keep_last: bool = True,
+        only_every_nth: int = 1,
+    ) -> Iterator[T]:
+        yield from (
+            animate(
+                items,
+                format_item,
+                fps=fps,
+                keep_last=keep_last,
+                only_every_nth=only_every_nth,
+            )
+            if self._main_logger.level == LogLevel.DEBUG
+            else items
+        )
 
     def debug_animated[T](
         self,
         items: Iterable[T],
         format_item: Callable[[T], Iterable[str]],
         *,
-        frame_rate: int = 60,
+        fps: int = 60,
         keep_last: bool = True,
         only_every_nth: int = 1,
-    ) -> Iterator[T]:
-        if self._main_logger.level > LogLevel.DEBUG:
-            yield from items
-            return
-
-        last_item: T | None = None
-        for i, item in enumerate(items):
-            yield item
-            last_item = item
-            if i % only_every_nth != 0:
-                continue
-            lines = list(format_item(item))
-            print_lines(lines)
-            time.sleep(1 / frame_rate)
-            clear_lines(lines)
-
-        if keep_last and last_item is not None:
-            print_lines(list(format_item(last_item)))
+    ) -> None:
+        consume(
+            self.debug_animated_iter(
+                items,
+                format_item,
+                fps=fps,
+                keep_last=keep_last,
+                only_every_nth=only_every_nth,
+            )
+        )

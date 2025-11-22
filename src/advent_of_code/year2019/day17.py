@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.utils.geo2d import P2, NumberGrid2
+from advent_of_code.utils.geo2d import P2, StringGrid2
 
 from .intcode import IntcodeProblem
 
@@ -35,10 +35,9 @@ class Problem1(IntcodeProblem[int]):
         )
 
 
-def process_output(runner: Iterable[int]) -> Iterator[tuple[P2, int]]:
+def process_output(runner: Iterable[int]) -> Iterator[tuple[P2, str]]:
     x = 0
     y = 0
-    char_values = {".": 0, "#": 1, "^": 2}
     for output in runner:
         c = chr(output)
         if c == "\n":
@@ -47,7 +46,7 @@ def process_output(runner: Iterable[int]) -> Iterator[tuple[P2, int]]:
             x = 0
             y += 1
         else:
-            yield (x, y), char_values[c]
+            yield (x, y), c
             x += 1
 
 
@@ -61,7 +60,7 @@ class Problem2(Problem1):
 
         # stage 1: Constructed path from first output
         processed = process_output(runner)
-        log.lazy_debug(lambda: NumberGrid2(processed).to_lines())
+        log.lazy_debug(lambda: StringGrid2(processed).to_lines())
 
         # Stage 2: Patterns derived manually after looking at path
         self.computer.inputs = [

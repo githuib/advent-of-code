@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import DijkstraState
 from based_utils.cli import Colored
 from based_utils.colors import Color
-from more_itertools import consume
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
@@ -211,7 +210,7 @@ class _Problem(MultiLineProblem[int], ABC):
             yield ""
 
         states = enumerate(path.states)
-        consume(log.debug_animated(states, fmt, frame_rate=10))
+        log.debug_animated(states, fmt, fps=10)
         return path.length
 
 

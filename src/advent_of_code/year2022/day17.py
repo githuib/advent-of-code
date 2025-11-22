@@ -94,7 +94,7 @@ class _Problem(OneLineProblem[int], ABC):
                 for c in range(6, -1, -1)
             ).to_lines()
 
-        it = log.debug_animated(self.play(), format_state, frame_rate=1000)
+        it = log.debug_animated_iter(self.play(), format_state, fps=1000)
         state_at_t = nth_or_last(it, t - 1)
         log.lazy_debug(lambda: format_state(state_at_t))
         height, *_ = state_at_t

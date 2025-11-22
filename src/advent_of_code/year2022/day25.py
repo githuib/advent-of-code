@@ -1,5 +1,8 @@
+from contextlib import suppress
+
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
+from advent_of_code.utils.cli import changing_colors
 
 FUBAR = {"=": -2, "-": -1, "0": 0, "1": 1, "2": 2}
 SNAFU = [("0", 0), ("1", 0), ("2", 0), ("=", 1), ("-", 1), ("0", 1)]
@@ -31,25 +34,33 @@ class Problem1(MultiLineProblem[str]):
         )
 
 
+GNOME = r"""
+             ___,@
+            /  <
+       ,_  /    \  _,
+   ?    \`/______\`/     \8/
+,_(_).  |; (e  e) ;|   #######
+ \___ \ \/\   7  /\/   #..#..#
+     \/\   \'=='/      #######
+      \ \___)--(_______#..#..#
+       \___  ()  _____/#######
+          /  ()  \    `----'
+         /   ()   \
+        '-.______.-'
+      _    |_||_|    _
+     (@____) || (____@)
+      \______||______/
+
+"""
+
+
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
-        log.info(r"""
-                ___,@
-               /  <
-          ,_  /    \  _,
-      ?    \`/______\`/     \8/
-   ,_(_).  |; (e  e) ;|   #######
-    \___ \ \/\   7  /\/   #..#..#
-        \/\   \'=='/      #######
-         \ \___)--(_______#..#..#
-          \___  ()  _____/#######
-             /  ()  \    `----'
-            /   ()   \
-           '-.______.-'
-         _    |_||_|    _
-        (@____) || (____@)
-         \______||______/
-""")
+        """Day 25 didn't have a part 2."""
+        lines = GNOME.splitlines()
+        max(len(line) for line in lines) + 3
+        with suppress(KeyboardInterrupt):
+            log.debug_animated(changing_colors(lines), format_item=lambda s: s, fps=20)
 
 
 TEST_INPUT = """

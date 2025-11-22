@@ -1,20 +1,19 @@
 from collections.abc import Set
-from itertools import count
+from contextlib import suppress
 from typing import TYPE_CHECKING, Self
 
 from based_utils.colors import Color
-from more_itertools.recipes import consume
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem, StringGridProblem
-from advent_of_code.utils.cli import Colored
+from advent_of_code.utils.cli import Colored, Lines, moving_forward
 from advent_of_code.utils.data import first_duplicate
 from advent_of_code.utils.geo2d import P2, StringGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-SeaCucumbers = tuple[Set[P2], Set[P2]]
+type SeaCucumbers = tuple[Set[P2], Set[P2]]
 
 
 def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
@@ -65,42 +64,35 @@ class Problem1(StringGridProblem[int]):
 
     def solution(self) -> int:
         n, sea_cucumbers = first_duplicate(
-            log.debug_animated(self, board_str, only_every_nth=20)
+            log.debug_animated_iter(self, board_str, only_every_nth=20)
         )
         log.lazy_debug(lambda: board_str(sea_cucumbers))
         return n
 
 
+POSEIDON = r"""
+        __  |__
+      __L L_|L L__
+...[+(____________)
+       C_________/
+
+"""
+SUB_COLOR = Color.from_name("poison", lightness=0.9)
+OCEAN_COLOR = Color.from_name("ocean", lightness=0.7, saturation=0.9)
+
+
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-        frame_0 = [
-            " " * 30 + line + " " * 30
-            for line in [
-                "        __  |__    ",
-                "      __L L_|L L__ ",
-                "...[+(____________)",
-                "       C_________/ ",
-            ]
-        ]
 
-        def animated() -> Iterator[list[str]]:
-            for num in count():
-                n = num % 80
-                yield [(line[-n:] + line[:-n]) for line in frame_0[:]]
+        def fmt(lines: Lines) -> Iterator[str]:
+            for line in lines:
+                yield Colored(line, SUB_COLOR, OCEAN_COLOR).formatted
 
-        sub = Color.from_name("poison", lightness=0.9)
-        ocean = Color.from_name("ocean", lightness=0.7, saturation=0.9)
-
-        def fmt(f: list[str]) -> Iterator[str]:
-            for s in f:
-                yield Colored(s, sub, ocean).formatted
-
-        try:
-            while True:
-                consume(log.debug_animated(animated(), format_item=fmt, frame_rate=10))
-        except KeyboardInterrupt:
-            pass
+        with suppress(KeyboardInterrupt):
+            log.debug_animated(
+                moving_forward(POSEIDON.splitlines()), format_item=fmt, fps=10
+            )
 
 
 TEST_INPUT = """

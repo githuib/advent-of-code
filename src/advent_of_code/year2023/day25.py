@@ -1,9 +1,11 @@
+from contextlib import suppress
 from math import prod
 
 from igraph import Graph  # type: ignore[import-untyped]
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
+from advent_of_code.utils.cli import flashing
 
 
 class Problem1(MultiLineProblem[int]):
@@ -28,9 +30,7 @@ class Problem1(MultiLineProblem[int]):
         )
 
 
-class Problem2(MultiLineProblem[None]):
-    def solution(self) -> None:
-        log.info(r"""
+HOCKEY = r"""
         _----_    _________       /\
        /      \  /         \/\ __///
       (        \/          / > /   \
@@ -49,7 +49,16 @@ class Problem2(MultiLineProblem[None]):
             ///        (________)
  _________///          ===========
 //|_____|///
-""")
+
+"""
+
+
+class Problem2(MultiLineProblem[None]):
+    def solution(self) -> None:
+        lines = [f"   {line}   " for line in HOCKEY.splitlines()]
+        max(len(line) for line in lines)
+        with suppress(KeyboardInterrupt):
+            log.debug_animated(flashing(lines), format_item=lambda s: s, fps=10)
 
 
 TEST_INPUT = """

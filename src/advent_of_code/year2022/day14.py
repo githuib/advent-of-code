@@ -4,7 +4,6 @@ from itertools import pairwise
 from typing import TYPE_CHECKING
 
 from based_utils.colors import Color
-from more_itertools import consume
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
@@ -88,7 +87,7 @@ class Problem1(_Problem):
     def solution(self) -> int:
         (min_x, _), (max_x, max_y) = self.p_min, self.p_max
         maps = self.go(lambda x, y: min_x <= x <= max_x and y < max_y)
-        consume(log.debug_animated(maps, lambda item: item, only_every_nth=50))
+        log.debug_animated(maps, lambda item: item, only_every_nth=50)
         return sum(m == Material.SAND for m in self.map.values())
 
 
@@ -102,7 +101,7 @@ class Problem2(_Problem):
         for x in range(-y, y + 1):
             self.map[sx + x, y] = Material.ROCK
         maps = self.go(lambda _x, _y: self.map[START] == Material.SOURCE)
-        consume(log.debug_animated(maps, lambda item: item, only_every_nth=1000))
+        log.debug_animated(maps, lambda item: item, only_every_nth=1000)
         return sum(m == Material.SAND for m in self.map.values())
 
 
