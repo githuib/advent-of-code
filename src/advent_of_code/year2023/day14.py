@@ -10,8 +10,8 @@ from advent_of_code.problems import StringGridProblem
 from advent_of_code.utils.data import repeat_transform, rotated_cw
 from advent_of_code.utils.geo2d import StringGrid2
 
-Line = list[str]
-Lines = Iterable[Line]
+type Line = list[str]
+type Lines = Iterable[Line]
 
 
 def debug_grid(lines: Lines) -> None:

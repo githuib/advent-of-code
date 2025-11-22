@@ -10,9 +10,9 @@ brackets = {"(": ")", "[": "]", "{": "}", "<": ">"}
 broken_scores = {None: 0, ")": 3, "]": 57, "}": 1197, ">": 25137}
 missing_scores = {"(": 1, "[": 2, "{": 3, "<": 4}
 
-OpeningBracket = Literal["(", "[", "{", "<"]
-ClosingBracket = Literal[")", "]", "}", ">"]
-Bracket = OpeningBracket | ClosingBracket
+type OpeningBracket = Literal["(", "[", "{", "<"]
+type ClosingBracket = Literal[")", "]", "}", ">"]
+type Bracket = OpeningBracket | ClosingBracket
 
 
 def parse_char(

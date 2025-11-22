@@ -4,7 +4,7 @@ from typing import NamedTuple
 
 from advent_of_code.utils.data import transposed
 
-P3 = tuple[int, int, int]
+type P3 = tuple[int, int, int]
 
 
 class P3D(NamedTuple):

@@ -6,7 +6,7 @@ from advent_of_code.problems import NoSolutionFoundError, ParsedProblem
 from advent_of_code.utils.geo2d import intersect_lines_2
 from advent_of_code.utils.geo3d import P3D, Grid3D
 
-Trajectory = tuple[P3D, P3D]
+type Trajectory = tuple[P3D, P3D]
 
 
 class _Problem(ParsedProblem[Trajectory, int], ABC):

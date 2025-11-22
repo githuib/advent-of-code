@@ -10,9 +10,9 @@ from advent_of_code.problems import MultiLineProblem
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-Check = tuple[str, str, int]
-Rule = tuple[Check, str]
-Workflow = tuple[list[Rule], str]
+type Check = tuple[str, str, int]
+type Rule = tuple[Check, str]
+type Workflow = tuple[list[Rule], str]
 
 
 def parse_rule(rule: str) -> Rule:

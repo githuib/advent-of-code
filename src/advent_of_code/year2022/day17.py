@@ -24,8 +24,8 @@ SHAPES = [
     [0b11000, 0b11000],  # []
 ]
 
-Shape = list[int]
-Pattern = Iterable[int]
+type Shape = list[int]
+type Pattern = Iterable[int]
 
 
 class MaxHeightReachedError(RuntimeError):

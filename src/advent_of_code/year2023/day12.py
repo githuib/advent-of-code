@@ -7,7 +7,7 @@ from advent_of_code.problems import MultiLineProblem
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-Criteria = tuple[int, ...]  # tuple because @cache wants something hashable
+type Criteria = tuple[int, ...]  # tuple because @cache wants something hashable
 
 
 @cache

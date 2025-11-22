@@ -5,7 +5,7 @@ from more_itertools import chunked
 
 from advent_of_code.problems import MultiLineProblem
 
-Item = int | list
+type Item = int | list
 
 
 def compare_items(item_l: Item, item_r: Item) -> bool:

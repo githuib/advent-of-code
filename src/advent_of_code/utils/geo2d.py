@@ -19,9 +19,9 @@ from advent_of_code.utils.data import (
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator
 
-P2 = tuple[int, int]
-Range = tuple[int, int]
-Line2 = tuple[P2, P2]
+type P2 = tuple[int, int]
+type Range = tuple[int, int]
+type Line2 = tuple[P2, P2]
 
 
 # class D2:
@@ -49,8 +49,8 @@ ordinal_directions: list[P2] = [LEFT_UP, RIGHT_UP, LEFT_DOWN, RIGHT_DOWN]
 # Direction = CardinalDirection | OrdinalDirection
 all_directions: list[P2] = [*cardinal_directions, *ordinal_directions]
 
-Side = Literal["L", "R"]
-CardinalDirection = Literal["U", "D"] | Side
+type Side = Literal["L", "R"]
+type CardinalDirection = Literal["U", "D"] | Side
 
 
 def rotate(direction: CardinalDirection, side: Side) -> CardinalDirection:

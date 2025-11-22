@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator, Mapping
 
 
-Predicate = Callable[..., bool]
+type Predicate = Callable[..., bool]
 
 
 @runtime_checkable

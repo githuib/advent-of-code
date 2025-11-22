@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
     from advent_of_code.utils.geo2d import Range
 
-MapEntry = tuple[int, int, int]
+type MapEntry = tuple[int, int, int]
 
 
 class _Problem(MultiLineProblem[int], ABC):

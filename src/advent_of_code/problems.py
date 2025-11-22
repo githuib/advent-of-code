@@ -20,7 +20,7 @@ class FatalError(Exception):
         self.message = message
 
 
-InputMode = Literal["puzzle", "test", "none"]
+type InputMode = Literal["puzzle", "test", "none"]
 
 
 @dataclass
