@@ -1,8 +1,8 @@
+from based_utils.data.iterators import split_items, transposed_lines
+from based_utils.data.strings import padded, split_at
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import split_items, transposed_lines
-from advent_of_code.utils.strings import padded, split_at
 
 
 class _Problem(MultiLineProblem[str]):

@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
+from based_utils.data.iterators import transposed
+
 from advent_of_code.problems import ParsedProblem
-from advent_of_code.utils.data import transposed
 
 
 class _Problem(ParsedProblem[tuple[int, int], int], ABC):

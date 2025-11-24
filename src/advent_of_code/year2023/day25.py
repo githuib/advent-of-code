@@ -1,11 +1,11 @@
-from contextlib import suppress
 from math import prod
 
+from based_utils.cli import animated
+from based_utils.cli.animation import flashing
 from igraph import Graph  # type: ignore[import-untyped]
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.cli import flashing
 
 
 class Problem1(MultiLineProblem[int]):
@@ -57,8 +57,7 @@ class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         lines = [f"   {line}   " for line in HOCKEY.splitlines()]
         max(len(line) for line in lines)
-        with suppress(KeyboardInterrupt):
-            log.debug_animated(flashing(lines), format_item=lambda s: s, fps=10)
+        log.debug_animated(animated(lines, flashing), fps=10)
 
 
 TEST_INPUT = """

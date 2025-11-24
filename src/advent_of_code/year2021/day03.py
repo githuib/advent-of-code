@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
+from based_utils.data.conversion import bits_to_int
+
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.conversion import bits_to_int
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

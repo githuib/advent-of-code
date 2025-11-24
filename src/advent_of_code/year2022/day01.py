@@ -1,10 +1,10 @@
 from abc import ABC
 from operator import not_
 
+from based_utils.data.conversion import try_convert
 from more_itertools import split_at
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.conversion import try_convert
 
 
 class _Problem(MultiLineProblem[int], ABC):

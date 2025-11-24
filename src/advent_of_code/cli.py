@@ -2,13 +2,12 @@ import argparse
 import sys
 from datetime import UTC, datetime
 
-from based_utils.cli import LogLevel, human_readable_duration, timed
+from based_utils.cli import LogLevel, format_table, human_readable_duration, timed
 from based_utils.cli.formats import FAIL, OK
 from based_utils.colors import Color
 
 from . import load_problem, log
 from .problems import FatalError, NoSolutionFoundError, Problem, PuzzleData
-from .utils.cli import format_table
 
 
 def solution_lines[T](my_solution: T, actual_solution: T | None) -> list[str]:

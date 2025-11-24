@@ -1,9 +1,11 @@
+from based_utils.cli import Colored
+from based_utils.colors import Color
 from more_itertools import first_true
 
 from advent_of_code.problems import NoSolutionFoundError, OneLineProblem
 
-WIDTH, HEIGHT = 25, 6
-SIZE = WIDTH * HEIGHT
+W, H = 25, 6
+N = W * H
 
 
 class Problem1(OneLineProblem[int]):
@@ -14,8 +16,8 @@ class Problem1(OneLineProblem[int]):
         first_line = self.line
         lowest_zero_count = None
         lowest_zeros_layer = None
-        for i in range(0, len(first_line), SIZE):
-            layer = first_line[i : i + SIZE]
+        for i in range(0, len(first_line), N):
+            layer = first_line[i : i + N]
             zero_count = layer.count("0")
             if lowest_zero_count and lowest_zero_count < zero_count:
                 continue
@@ -26,21 +28,36 @@ class Problem1(OneLineProblem[int]):
         return lowest_zeros_layer.count("1") * lowest_zeros_layer.count("2")
 
 
+def format_char(s: str) -> str:
+    if s not in ".#":
+        return s
+
+    color_fg = Color.from_name("yellow", lightness=0.8)
+    fg = color_fg if s == "#" else color_fg.contrasting_hue.with_changed(lightness=0.5)
+    bg = fg.with_changed(lightness=0.5)
+    return Colored(s, fg, bg).formatted
+
+
+def colored(s: str) -> str:
+    return "".join(format_char(c) for c in s)
+
+
 class Problem2(OneLineProblem[str]):
     test_solution = None
-    puzzle_solution = """
-█░░░██░░░░████░███░░░░██░
-█░░░██░░░░█░░░░█░░█░░░░█░
-░█░█░█░░░░███░░█░░█░░░░█░
-░░█░░█░░░░█░░░░███░░░░░█░
-░░█░░█░░░░█░░░░█░░░░█░░█░
-░░█░░████░█░░░░█░░░░░██░░
-"""
+    puzzle_solution = colored("""
+#...##....####.###....##.
+#...##....#....#..#....#.
+.#.#.#....###..#..#....#.
+..#..#....#....###.....#.
+..#..#....#....#....#..#.
+..#..####.#....#.....##..
+""")
 
     def solution(self) -> str:
-        chars = {"0": "░", "1": "█", None: "?"}
-        pixels = [
-            chars[first_true(self.line[i::SIZE], pred=lambda s: s != "2")]
-            for i in range(SIZE)
-        ]
-        return "\n".join("".join(pixels[i : i + WIDTH]) for i in range(0, SIZE, WIDTH))
+        ns = [int(c) for c in self.line]
+
+        def check(i: int) -> bool:
+            return i < 2
+
+        pixels = ["#" if first_true(ns[i::N], pred=check) else "." for i in range(N)]
+        return colored("\n".join("".join(pixels[i : i + W]) for i in range(0, N, W)))

@@ -8,10 +8,10 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import DijkstraState
 from based_utils.cli import Colored
 from based_utils.colors import Color
+from based_utils.data.strings import PRE_A
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.strings import PRE_A
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -209,8 +209,7 @@ class _Problem(MultiLineProblem[int], ABC):
             yield from state.to_lines()
             yield ""
 
-        states = enumerate(path.states)
-        log.debug_animated(states, fmt, fps=10)
+        log.debug_animated(lambda: enumerate(path.states), fmt, fps=10)
         return path.length
 
 

@@ -4,11 +4,9 @@ from logging import Formatter, LogRecord
 from os import get_terminal_size
 from pprint import pformat
 
-from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister
+from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister, animate
 from based_utils.colors import Color
 from more_itertools.recipes import consume
-
-from advent_of_code.utils.cli import animate
 
 
 class LogFormatter(Formatter):
@@ -86,8 +84,8 @@ class AppLogger(LogMeister):
 
     def debug_animated_iter[T](
         self,
-        items: Iterable[T],
-        format_item: Callable[[T], Iterable[str]],
+        items: Callable[[], Iterable[T]],
+        format_item: Callable[[T], Iterable[str]] = None,
         *,
         fps: int = 60,
         keep_last: bool = True,
@@ -95,31 +93,32 @@ class AppLogger(LogMeister):
     ) -> Iterator[T]:
         yield from (
             animate(
-                items,
+                items(),
                 format_item,
                 fps=fps,
                 keep_last=keep_last,
                 only_every_nth=only_every_nth,
             )
             if self._main_logger.level == LogLevel.DEBUG
-            else items
+            else items()
         )
 
     def debug_animated[T](
         self,
-        items: Iterable[T],
-        format_item: Callable[[T], Iterable[str]],
+        items: Callable[[], Iterable[T]],
+        format_item: Callable[[T], Iterable[str]] = None,
         *,
         fps: int = 60,
         keep_last: bool = True,
         only_every_nth: int = 1,
     ) -> None:
-        consume(
-            self.debug_animated_iter(
-                items,
-                format_item,
-                fps=fps,
-                keep_last=keep_last,
-                only_every_nth=only_every_nth,
+        if self._main_logger.level == LogLevel.DEBUG:
+            consume(
+                self.debug_animated_iter(
+                    items,
+                    format_item,
+                    fps=fps,
+                    keep_last=keep_last,
+                    only_every_nth=only_every_nth,
+                )
             )
-        )

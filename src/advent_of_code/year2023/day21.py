@@ -2,11 +2,11 @@ from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
 from based_utils.algo import BFSState
+from based_utils.data.iterators import repeat_transform
 from more_itertools import last
 
 from advent_of_code import log
 from advent_of_code.problems import FatalError, StringGridProblem
-from advent_of_code.utils.data import repeat_transform
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

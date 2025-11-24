@@ -3,13 +3,13 @@ from enum import IntEnum
 from itertools import pairwise
 from typing import TYPE_CHECKING
 
+from based_utils.cli import Colored
 from based_utils.colors import Color
+from based_utils.data.iterators import smart_range
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.cli import Colored
-from advent_of_code.utils.data import smart_range
 from advent_of_code.utils.geo2d import P2, MutableNumberGrid2
 
 if TYPE_CHECKING:
@@ -86,8 +86,9 @@ class Problem1(_Problem):
 
     def solution(self) -> int:
         (min_x, _), (max_x, max_y) = self.p_min, self.p_max
-        maps = self.go(lambda x, y: min_x <= x <= max_x and y < max_y)
-        log.debug_animated(maps, lambda item: item, only_every_nth=50)
+
+        maps = list(self.go(lambda x, y: min_x <= x <= max_x and y < max_y))
+        log.debug_animated(lambda: maps, only_every_nth=50)
         return sum(m == Material.SAND for m in self.map.values())
 
 
@@ -100,8 +101,9 @@ class Problem2(_Problem):
         sx, _ = START
         for x in range(-y, y + 1):
             self.map[sx + x, y] = Material.ROCK
-        maps = self.go(lambda _x, _y: self.map[START] == Material.SOURCE)
-        log.debug_animated(maps, lambda item: item, only_every_nth=1000)
+
+        maps = list(self.go(lambda _x, _y: self.map[START] == Material.SOURCE))
+        log.debug_animated(lambda: maps, only_every_nth=1000)
         return sum(m == Material.SAND for m in self.map.values())
 
 

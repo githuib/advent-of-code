@@ -7,14 +7,10 @@ from os import get_terminal_size
 from typing import TYPE_CHECKING, Literal, Self
 
 from based_utils.calx import randf
+from based_utils.cli import Colored
 from based_utils.colors import Color
-
-from advent_of_code.utils.cli import Colored
-from advent_of_code.utils.data import (
-    WithClearablePropertyCache,
-    pairwise_circular,
-    tripletwise_circular,
-)
+from based_utils.data.iterators import pairwise_circular, tripletwise_circular
+from based_utils.data.mixins import WithClearablePropertyCache
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator

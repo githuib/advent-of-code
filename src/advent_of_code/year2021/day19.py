@@ -1,11 +1,11 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
+from based_utils.data.iterators import split_items
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import split_items
 from advent_of_code.utils.geo3d import P3D, ROTATIONS_3D
 
 if TYPE_CHECKING:

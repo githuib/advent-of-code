@@ -1,10 +1,10 @@
 from abc import ABC
 
+from based_utils.cli import Colored
 from based_utils.colors import Color
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.cli import Colored
 from advent_of_code.utils.geo2d import P2, all_directions
 
 

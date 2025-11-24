@@ -6,7 +6,6 @@ from based_utils.calx import compare
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.utils.cli import center
 from advent_of_code.utils.geo2d import MutableStringGrid2
 
 from .intcode import IntcodeProblem
@@ -58,9 +57,9 @@ class Problem2(Problem1):
             lines, score = item
             yield " "
             yield from lines
-            yield center(f"Score: {score:05d}", 44)
+            yield f"Score: {score:05d}".center(44)
 
-        _grid, final_score = last(log.debug_animated_iter(self.grids(), fmt))
+        _grid, final_score = last(log.debug_animated_iter(self.grids, fmt))
         return final_score
 
 

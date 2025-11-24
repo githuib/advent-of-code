@@ -2,7 +2,7 @@ from collections.abc import Iterable, Iterator, Mapping
 from functools import cached_property
 from typing import NamedTuple
 
-from advent_of_code.utils.data import transposed
+from based_utils.data.iterators import transposed
 
 type P3 = tuple[int, int, int]
 

@@ -1,8 +1,8 @@
-from contextlib import suppress
+from based_utils.cli import animated
+from based_utils.cli.animation import changing_colors, fuck_me_sideways
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.cli import changing_colors
 
 FUBAR = {"=": -2, "-": -1, "0": 0, "1": 1, "2": 2}
 SNAFU = [("0", 0), ("1", 0), ("2", 0), ("=", 1), ("-", 1), ("0", 1)]
@@ -59,8 +59,7 @@ class Problem2(MultiLineProblem[None]):
         """Day 25 didn't have a part 2."""
         lines = GNOME.splitlines()
         max(len(line) for line in lines) + 3
-        with suppress(KeyboardInterrupt):
-            log.debug_animated(changing_colors(lines), format_item=lambda s: s, fps=20)
+        log.debug_animated(animated(lines, fuck_me_sideways, changing_colors))
 
 
 TEST_INPUT = """

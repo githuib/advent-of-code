@@ -1,8 +1,9 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
+from based_utils.data.iterators import transposed
+
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import transposed
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

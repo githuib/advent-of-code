@@ -5,10 +5,10 @@ from dataclasses import dataclass
 from math import lcm
 from operator import add, mul
 
+from based_utils.data.conversion import try_convert
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code.problems import ParsedProblem
-from advent_of_code.utils.conversion import try_convert
 
 
 @dataclass

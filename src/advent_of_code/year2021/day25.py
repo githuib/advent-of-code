@@ -1,13 +1,14 @@
 from collections.abc import Set
 from contextlib import suppress
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
 
+from based_utils.cli import Colored, Lines, animated
+from based_utils.cli.animation import moving_forward
 from based_utils.colors import Color
+from based_utils.data.iterators import first_duplicate
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem, StringGridProblem
-from advent_of_code.utils.cli import Colored, Lines, moving_forward
-from advent_of_code.utils.data import first_duplicate
 from advent_of_code.utils.geo2d import P2, StringGrid2
 
 if TYPE_CHECKING:
@@ -38,33 +39,28 @@ class Problem1(StringGridProblem[int]):
     test_solution = 58
     puzzle_solution = 389
 
-    def __init__(self) -> None:
-        self.width = self.grid.width
-        self.height = self.grid.height
-        self.sea_cucumbers = (
+    def sea_cucumbers(self) -> Iterator[SeaCucumbers]:
+        sea_cucumbers = (
             self.grid.points_with_value(">"),
             self.grid.points_with_value("v"),
         )
-
-    def __iter__(self) -> Self:
-        return self
-
-    def __next__(self) -> SeaCucumbers:
-        prev = east, south = self.sea_cucumbers
-        east = frozenset(
-            ((x, y) if ((p := ((x + 1) % self.width, y)) in east or p in south) else p)
-            for (x, y) in east
-        )
-        south = frozenset(
-            ((x, y) if ((p := (x, (y + 1) % self.height)) in east or p in south) else p)
-            for (x, y) in south
-        )
-        self.sea_cucumbers = east, south
-        return prev
+        width, height = self.grid.width, self.grid.height
+        while True:
+            prev = east, south = sea_cucumbers
+            east = frozenset(
+                ((x, y) if ((p := ((x + 1) % width, y)) in east or p in south) else p)
+                for (x, y) in east
+            )
+            south = frozenset(
+                ((x, y) if ((p := (x, (y + 1) % height)) in east or p in south) else p)
+                for (x, y) in south
+            )
+            sea_cucumbers = east, south
+            yield prev
 
     def solution(self) -> int:
         n, sea_cucumbers = first_duplicate(
-            log.debug_animated_iter(self, board_str, only_every_nth=20)
+            log.debug_animated_iter(self.sea_cucumbers, board_str, only_every_nth=20)
         )
         log.lazy_debug(lambda: board_str(sea_cucumbers))
         return n
@@ -91,7 +87,7 @@ class Problem2(MultiLineProblem[None]):
 
         with suppress(KeyboardInterrupt):
             log.debug_animated(
-                moving_forward(POSEIDON.splitlines()), format_item=fmt, fps=10
+                animated(POSEIDON.splitlines(), moving_forward), format_item=fmt, fps=10
             )
 
 

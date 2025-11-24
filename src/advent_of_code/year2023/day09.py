@@ -1,9 +1,10 @@
 from itertools import pairwise
 from typing import TYPE_CHECKING
 
+from based_utils.data.mixins import Unique
+
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import Unique
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence

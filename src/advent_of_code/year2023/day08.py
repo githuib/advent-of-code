@@ -11,7 +11,7 @@ from advent_of_code.problems import MultiLineProblem
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from advent_of_code.utils.data import Predicate
+    from based_utils.data.iterators import Predicate
 
 
 class _Problem(MultiLineProblem[int], ABC):

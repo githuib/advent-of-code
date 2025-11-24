@@ -3,11 +3,11 @@ from collections.abc import Iterable, Iterator
 from itertools import groupby
 
 from based_utils.algo import detect_cycle
+from based_utils.data.iterators import repeat_transform, rotated_cw
 from more_itertools import last
 
 from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
-from advent_of_code.utils.data import repeat_transform, rotated_cw
 from advent_of_code.utils.geo2d import StringGrid2
 
 type Line = list[str]

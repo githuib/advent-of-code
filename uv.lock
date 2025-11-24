@@ -47,16 +47,17 @@ dev = [
 
 [[package]]
 name = "based-utils"
-version = "0.6.6"
+version = "0.8.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gaffe" },
     { name = "hsluv" },
+    { name = "more-itertools" },
     { name = "yachalk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/83/733564063a5cba23fccfc003339d9dd921cd7a13f7f43a21811d715cdf8c/based_utils-0.6.6.tar.gz", hash = "sha256:71b0a78cf5799e5a86677891643502eebe695481ffe3799c1c294431f9404d7b", size = 13038, upload-time = "2025-11-20T05:13:44.944Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/75/23/ca01fc1fb545216bc7fad286fabc1cc6f21c6d37d170e45638c599b6ab50/based_utils-0.8.6.tar.gz", hash = "sha256:009823f82ff7c3ea0253cd879006ab5d31980ffd9a65501eec5b4707e725154e", size = 17159, upload-time = "2025-11-24T00:10:49.844Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5c/27/ea3cc116b81b30212a8090262e9b2e294882e258951f040af67bfb73d754/based_utils-0.6.6-py3-none-any.whl", hash = "sha256:f03c28578acdf2d5c27a2d6568111db443c6d0bc0b59ca00a07f4c1b6f804c65", size = 16726, upload-time = "2025-11-20T05:13:43.99Z" },
+    { url = "https://files.pythonhosted.org/packages/56/e0/2897b3968ef3efedadc5c22e0dc343138c7099ed0a653449f5129db363aa/based_utils-0.8.6-py3-none-any.whl", hash = "sha256:a5ccaf86712efaa9f70de930c5b7fc3f70301021b7d549e5cedf14bb5a453e8f", size = 23010, upload-time = "2025-11-24T00:10:48.341Z" },
 ]
 
 [[package]]
@@ -564,7 +565,7 @@ wheels = [
 
 [[package]]
 name = "pre-commit"
-version = "4.4.0"
+version = "4.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cfgv" },
@@ -573,9 +574,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "virtualenv" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a6/49/7845c2d7bf6474efd8e27905b51b11e6ce411708c91e829b93f324de9929/pre_commit-4.4.0.tar.gz", hash = "sha256:f0233ebab440e9f17cabbb558706eb173d19ace965c68cdce2c081042b4fab15", size = 197501, upload-time = "2025-11-08T21:12:11.607Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/9b/6a4ffb4ed980519da959e1cf3122fc6cb41211daa58dbae1c73c0e519a37/pre_commit-4.5.0.tar.gz", hash = "sha256:dc5a065e932b19fc1d4c653c6939068fe54325af8e741e74e88db4d28a4dd66b", size = 198428, upload-time = "2025-11-22T21:02:42.304Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/27/11/574fe7d13acf30bfd0a8dd7fa1647040f2b8064f13f43e8c963b1e65093b/pre_commit-4.4.0-py2.py3-none-any.whl", hash = "sha256:b35ea52957cbf83dcc5d8ee636cbead8624e3a15fbfa61a370e42158ac8a5813", size = 226049, upload-time = "2025-11-08T21:12:10.228Z" },
+    { url = "https://files.pythonhosted.org/packages/5d/c4/b2d28e9d2edf4f1713eb3c29307f1a63f3d67cf09bdda29715a36a68921a/pre_commit-4.5.0-py2.py3-none-any.whl", hash = "sha256:25e2ce09595174d9c97860a95609f9f852c0614ba602de3561e267547f2335e1", size = 226429, upload-time = "2025-11-22T21:02:40.836Z" },
 ]
 
 [[package]]

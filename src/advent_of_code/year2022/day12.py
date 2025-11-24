@@ -4,14 +4,13 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import AStarState, BFSState, DijkstraState
 from based_utils.algo.paths import State
-from based_utils.cli import human_readable_duration, timed
+from based_utils.cli import Colored, format_table, human_readable_duration, timed
 from based_utils.colors import Color
+from based_utils.data.strings import PRE_a
 
 from advent_of_code import log
 from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.cli import Colored, format_table
 from advent_of_code.utils.geo2d import P2, NumberGrid2
-from advent_of_code.utils.strings import PRE_a
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

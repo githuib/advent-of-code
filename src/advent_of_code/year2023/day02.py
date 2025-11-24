@@ -3,8 +3,9 @@ from abc import ABC
 from math import prod
 from typing import TYPE_CHECKING
 
+from based_utils.data.conversion import grouped_pairs
+
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.data import grouped_pairs
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

@@ -1,11 +1,10 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
+from based_utils.data.conversion import compose_number, invert_dict
 from more_itertools import partition
 
 from advent_of_code.problems import ParsedProblem
-from advent_of_code.utils.conversion import compose_number
-from advent_of_code.utils.data import contains, invert_dict
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
@@ -13,6 +12,12 @@ if TYPE_CHECKING:
 
 def __parse_codes(s: str) -> list[str]:
     return ["".join(sorted(code)) for code in s.split()]
+
+
+def contains[T](this: Iterable[T], that: Iterable[T]) -> bool:
+    # return all(c in this for c in that)
+    this_set, that_set = set(this), set(that)
+    return that_set & this_set == that_set
 
 
 class _Problem(ParsedProblem[tuple[list[str], list[str]], int], ABC):
@@ -35,7 +40,7 @@ class Problem1(_Problem):
 
 
 def decode_output(signal: Iterable[str], output: Iterable[str]) -> int:
-    n = {}
+    n: dict[int, str] = {}
 
     # numbers with unique length: (1, 4, 7, 8)
     signal, [n[1]] = partition(lambda s: len(s) == 2, signal)

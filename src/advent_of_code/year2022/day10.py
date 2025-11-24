@@ -2,8 +2,9 @@ from abc import ABC
 from itertools import batched
 from typing import TYPE_CHECKING
 
+from based_utils.data.conversion import try_convert
+
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.conversion import try_convert
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

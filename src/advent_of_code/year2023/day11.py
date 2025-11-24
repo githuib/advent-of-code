@@ -1,10 +1,10 @@
 from abc import ABC
 
+from based_utils.data.iterators import repeat_transform
 from more_itertools import last
 
 from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
-from advent_of_code.utils.data import repeat_transform
 from advent_of_code.utils.geo2d import MutableStringGrid2, StringGrid2, manhattan_dist_2
 
 
