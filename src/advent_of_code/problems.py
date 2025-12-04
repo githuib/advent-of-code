@@ -4,20 +4,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import ClassVar, Literal, Self
 
+from gaffe import raises
 from more_itertools import strip
 from parse import findall  # type: ignore[import-untyped]
 
-from .utils.geo2d import NumberGrid2, StringGrid2
+from .utils.geo2d import BitGrid2, NumberGrid2, StringGrid2
 from .utils.geo3d import P3D
 
 
 class NoSolutionFoundError(Exception):
-    pass
-
-
-class FatalError(Exception):
-    def __init__(self, message: str) -> None:
-        self.message = message
+    def __init__(self) -> None:
+        super().__init__("No solution found!? 🤷‍")
 
 
 type InputMode = Literal["puzzle", "test", "none"]
@@ -56,6 +53,7 @@ class Problem[T](ABC):
     def var[V](self, *, test: V, puzzle: V) -> V:
         return test if self.is_test_run else puzzle
 
+    @raises(FileNotFoundError)
     def _load_input(self) -> None:
         if self.is_test_run:
             self._load_test_input()
@@ -141,6 +139,17 @@ class NumberGridProblem[T](_GridProblem[int, T], ABC):
         self.grid = NumberGrid2.from_lines(
             self.lines, parse_callback=self.convert_element
         )
+
+
+class BitGridProblem[T](_GridProblem[int, T], ABC):
+    grid: BitGrid2
+
+    def convert_element(self, element: str) -> bool:
+        return element != "."
+
+    def process_input(self) -> None:
+        super().process_input()
+        self.grid = BitGrid2.from_lines(self.lines, parse_callback=self.convert_element)
 
 
 class ParsedProblem[R, T](Problem[T], ABC):

@@ -2,20 +2,31 @@
 
 CWD=$PWD
 script_dir=$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")
-cd "$script_dir/.." || exit
+cd "$script_dir/.." || exit 1
+
+function finish {
+  cd "$CWD" || exit
+}
+trap finish EXIT
 
 if [[ $# -ge 3 && $1 =~ ^[0-9]{4}$ ]]; then
-  cmd="uv run aoc_solve --year $1 --day $2 --part $3 ${@:4}"
-elif [[ $# -ge 2 && $1 =~ ^[0-9]{2}$ ]]; then
-  cmd="uv run aoc_solve --day $1 --part $2 ${#:3}"
+  cmd1="uv run aoc_solve --year $1 --day $2 --part $3"
+  shift
+  shift
+  shift
+  cmd="$cmd1 $*"
+elif [[ $# -ge 2 && $1 =~ ^[0-9]?[0-9]$ ]]; then
+  cmd1="uv run aoc_solve --day $1 --part $2"
+  shift
+  shift
+  cmd="$cmd1 $*"
 elif [[ $# -ge 1 ]]; then
-  cmd="uv run aoc_solve --part $1 ${@:2}"
+  cmd="uv run aoc_solve --part $1"
+  shift
+  cmd="$cmd1 $*"
 else
-  echo "Wrong arguments: $@"
+  echo "Wrong arguments: $*"
   exit 1
 fi
 
-#echo "$cmd"
 $cmd
-
-cd "$CWD" || exit

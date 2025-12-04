@@ -6,7 +6,7 @@ from based_utils.data.iterators import repeat_transform
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import FatalError, StringGridProblem
+from advent_of_code.problems import StringGridProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -65,17 +65,6 @@ class Problem2(_Problem):
     test_solution = None
     puzzle_solution = 598044246091826
 
-    def infinite_plots(self, steps: int) -> int:
-        if self.is_test_run:
-            msg = "This approach only works for the puzzle data!"
-            raise FatalError(msg)
-        size, (center, _) = self.grid.width, self.start
-        c, u1, u2 = (self.num_garden_plots(center + size * i) for i in range(3))
-        b = (u1 * 4 - u2 - c * 3) / 2
-        a = u1 - b - c
-        n = (steps - center) / size
-        return round(n**2 * a + n * b + c)
-
     def solution(self) -> int:
         self.grid.cyclic = True
         if self.is_test_run:
@@ -92,7 +81,13 @@ class Problem2(_Problem):
                     f"Checking input {i}: {s} == {ans} -> {'👌' if ans == s else 'Nope'}"
                 )
             return 0
-        return self.infinite_plots(26501365)
+
+        size, (center, _) = self.grid.width, self.start
+        c, u1, u2 = (self.num_garden_plots(center + size * i) for i in range(3))
+        b = (u1 * 4 - u2 - c * 3) / 2
+        a = u1 - b - c
+        n = (26501365 - center) / size
+        return round(n**2 * a + n * b + c)
 
 
 TEST_INPUT = """

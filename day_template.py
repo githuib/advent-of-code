@@ -4,7 +4,8 @@ from advent_of_code.problems import MultiLineProblem
 
 
 class _Problem(MultiLineProblem[int], ABC):
-    pass
+    def __init__(self) -> None:
+        pass
 
 
 class Problem1(_Problem):

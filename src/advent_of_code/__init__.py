@@ -1,6 +1,8 @@
 from importlib import import_module
 from typing import TYPE_CHECKING
 
+from gaffe import raises
+
 from .logs import AppLogger
 
 if TYPE_CHECKING:
@@ -9,6 +11,7 @@ if TYPE_CHECKING:
 log = AppLogger(__name__)
 
 
+@raises(ModuleNotFoundError)
 def load_problem[T](data: PuzzleData) -> type[Problem[T]]:
     problem_module = import_module(f"{__name__}.year{data.year}.day{data.day:02d}")
     problem_cls: type[Problem[T]] = getattr(problem_module, f"Problem{data.part}")

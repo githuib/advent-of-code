@@ -280,6 +280,8 @@ class _Grid2[T](Mapping[P2, T], ABC):
     def neighbors(
         self, pos: P2, directions: Iterable[P2] = None
     ) -> Iterator[tuple[P2, T]]:
+        if directions is None:
+            directions = all_directions
         for n in neighbors_2(pos, None if self.cyclic else self, directions):
             yield n, self[n]
 

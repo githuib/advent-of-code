@@ -1,47 +1,67 @@
-import argparse
 import sys
+from argparse import ArgumentParser, Namespace
 from datetime import UTC, datetime
+from pathlib import Path
+from typing import TYPE_CHECKING
 
-from based_utils.cli import LogLevel, format_table, human_readable_duration, timed
+from based_utils.cli import (
+    LogLevel,
+    format_table,
+    human_readable_duration,
+    killed_by_errors,
+    timed,
+)
 from based_utils.cli.formats import FAIL, OK
 from based_utils.colors import Color
+from based_utils.data.strings import align_left, strlen
 
 from . import load_problem, log
-from .problems import FatalError, NoSolutionFoundError, Problem, PuzzleData
+from .problems import InputMode, NoSolutionFoundError, Problem, PuzzleData
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
-def solution_lines[T](my_solution: T, actual_solution: T | None) -> list[str]:
+def solution_lines[T](my_solution: T, actual_solution: T | None) -> Iterator[str]:
     mine: list[str] = (
         my_solution.splitlines() if isinstance(my_solution, str) else [str(my_solution)]
     )
-    actual: list[str] = (
-        [""]
-        if (actual_solution is None)
-        else actual_solution.splitlines()
-        if (isinstance(actual_solution, str))
-        else [str(actual_solution)]
-    )
-    if len(mine) > 1:
-        mine = ["", *mine]
-    if len(actual) > 1:
-        actual = ["", *actual]
 
-    if not actual_solution:
-        return ["Attempted solution... 👾 ", *mine]
+    if actual_solution is None:
+        yield "Attempted solution... 👾 "
+        yield from mine
 
-    if my_solution == actual_solution:
-        return ["Correct solution! 🍻 ", *mine]
+    elif my_solution == actual_solution:
+        yield "Correct solution! 🍻 "
+        yield from mine
 
-    my_answer = f"{FAIL} Your answer:"
-    actual_answer = f"{OK} Correct answer:"
-    return ["Wrong solution! 💀"] + (
-        [f"{my_answer}    {mine[0]}", f"{actual_answer} {actual[0]}"]
-        if (len(mine) == 1 and len(actual) == 1)
-        else ["", my_answer, *mine, "", actual_answer, *actual]
-    )
+    else:
+        my_answer = f"{FAIL} Your answer:"
+        actual_answer = f"{OK} Correct answer:"
+        yield "Wrong solution! 💀"
+
+        actual: list[str] = (
+            actual_solution.splitlines()
+            if (isinstance(actual_solution, str))
+            else [str(actual_solution)]
+        )
+
+        if len(mine) == 1 and len(actual) == 1:
+            w = max(strlen(my_answer), strlen(actual_answer))
+            yield f"{align_left(my_answer, w)} {mine[0]}"
+            yield f"{align_left(actual_answer, w)} {actual[0]}"
+        else:
+            yield ""
+            yield my_answer
+            yield ""
+            yield from mine
+            yield ""
+            yield actual_answer
+            yield ""
+            yield from actual
 
 
-def duration_lines(duration: int) -> list[str]:
+def duration_lines(duration: int) -> Iterator[str]:
     duration_str = human_readable_duration(duration)
     if duration_str.endswith("minutes"):
         emoji = "🦥"
@@ -51,77 +71,90 @@ def duration_lines(duration: int) -> list[str]:
         emoji = "🐇"
     else:
         emoji = "🚀"
-    return [f"Solved in {duration_str} {emoji}"]
+    yield f"Solved in {duration_str} {emoji}"
 
 
+def output_lines[T](
+    my_solution: T, actual_solution: T | None, duration: int
+) -> Iterator[str]:
+    yield from solution_lines(my_solution, actual_solution)
+    yield ""
+    yield from duration_lines(duration)
+
+
+# @raises(FileNotFoundError, NoSolutionFoundError)
 def solve[T](problem_cls: type[Problem[T]]) -> bool:
     problem, dur_init = timed(problem_cls)
     sol_actual = problem.actual_solution
-    try:
-        sol_mine, dur_solution = timed(problem.solution)
+    sol_mine, dur_solution = timed(problem.solution)
+    if sol_mine is None:
+        return sol_actual is None
 
-    except NoSolutionFoundError:
-        is_correct_solution = False
-        output_lines = ["No solution found!? 🤷‍️"]
+    mine = sol_mine.strip() if isinstance(sol_mine, str) else sol_mine
+    actual = sol_actual.strip() if isinstance(sol_actual, str) else sol_actual
+    # TODO: Might be interesting to show input loading time separately.
+    duration = dur_init + dur_solution
 
-    except FatalError as exc:
-        log.fatal(exc.message)
-        is_correct_solution = False
-        output_lines = ["The process died before a solution could be found. 💀‍️"]
+    table_color = Color.from_name("blue", lightness=0.35)
+    table_rows = ([line] for line in output_lines(mine, actual, duration))
+    log.info(format_table(*table_rows, color=table_color))
 
-    else:
-        if sol_mine is None:
-            return sol_actual is None
-
-        mine = sol_mine.strip() if isinstance(sol_mine, str) else sol_mine
-        actual = sol_actual.strip() if isinstance(sol_actual, str) else sol_actual
-        is_correct_solution = mine == actual
-        # TODO: Might be interesting to show input loading time separately.
-        dur = dur_init + dur_solution
-        output_lines = [*solution_lines(mine, actual), "", *duration_lines(dur)]
-
-    color = Color.from_name("blue", lightness=0.35)
-    log.info(format_table(*[[line] for line in output_lines], color=color))
-    return is_correct_solution
+    return mine == actual
 
 
-def main() -> None:
-    ty, tm, td = (t := datetime.now(UTC).date()).year, t.month, t.day
-    y, d = (ty + int(dec := tm == 12) - 1), (td if dec and td <= 25 else None)
+def _parse_args() -> Namespace:
+    today = datetime.now(UTC).date()
+    y, m, d = today.year, today.month, today.day
+    days = list(range(1, 26))
+    is_aoc_month = m == 12
+    is_aoc_day = is_aoc_month and d in days
 
-    parser = argparse.ArgumentParser()
+    year = y if is_aoc_month else y - 1
+    day = d if is_aoc_day else 25
+
+    Path().glob("year*")
+
+    parser = ArgumentParser()
     parser.add_argument(
-        "--year", dest="year", type=int, default=y, choices=[2019, *range(2021, y + 1)]
+        "--year",
+        dest="year",
+        type=int,
+        default=year,
+        choices=[2019, *range(2021, year + 1)],
     )
     parser.add_argument(
         "--day",
         dest="day",
         type=int,
-        default=d,
-        choices=list(range(1, 26)),
-        required=not d,
+        default=day,
+        choices=days,
+        required=not is_aoc_day,
     )
     parser.add_argument("--part", dest="part", type=int, choices=[1, 2], required=True)
     parser.add_argument("-t", "--test", dest="test", action="store_true")
     parser.add_argument("-d", "--debug", dest="debugging", action="store_true")
     parser.add_argument("-n", "--no-input", dest="no_input", action="store_true")
-    parser.add_argument("-q", "--quiet", dest="quiet", action="store_true")
-    # parser.add_argument("-p", "--pycharm", dest="pycharm", action="store_true")
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    with log.context(
-        LogLevel.DEBUG
-        if args.debugging
-        else LogLevel.ERROR
-        if args.quiet
-        else LogLevel.INFO
-    ):
-        data = PuzzleData(
-            args.year,
-            args.day,
-            args.part,
-            "none" if args.no_input else "test" if args.test else "puzzle",
-        )
-        success = solve(load_problem(data))
 
+@killed_by_errors(FileNotFoundError, ModuleNotFoundError, NoSolutionFoundError)
+def main() -> None:
+    args = _parse_args()
+    input_mode: InputMode = (
+        "none" if args.no_input else "test" if args.test else "puzzle"
+    )
+    puzzle_data = PuzzleData(args.year, args.day, args.part, input_mode)
+    with log.context(LogLevel.DEBUG if args.debugging else LogLevel.INFO):
+        success = solve(load_problem(puzzle_data))
+    sys.exit(not success)
+
+
+@killed_by_errors(FileNotFoundError, ModuleNotFoundError, NoSolutionFoundError)
+def main_quiet() -> None:
+    args = _parse_args()
+    input_mode: InputMode = (
+        "none" if args.no_input else "test" if args.test else "puzzle"
+    )
+    puzzle_data = PuzzleData(args.year, args.day, args.part, input_mode)
+    success = solve(load_problem(puzzle_data))
     sys.exit(not success)
