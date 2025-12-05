@@ -3,7 +3,7 @@ from contextlib import suppress
 from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored, Lines, animated
-from based_utils.cli.animation import moving_forward
+from based_utils.cli.animation import AnimationParams, moving_forward
 from based_utils.colors import Color
 from based_utils.data.iterators import first_duplicate
 
@@ -24,13 +24,13 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     )
     colors = {
         ".": Color.from_name("ocean", lightness=0.9),
-        ">": Color.from_name("pink", lightness=0.4, saturation=0.5),
-        "v": Color.from_name("purple", lightness=0.2, saturation=0.5),
+        ">": Color.from_name("pink", lightness=0.6, saturation=0.5),
+        "v": Color.from_name("purple", lightness=0.4, saturation=0.5),
     }
 
     def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
         c = colors[v]
-        return Colored(v, c, c.with_changed(lightness=0.9))
+        return Colored(v, c, c.with_changed(lightness=0.75))
 
     return board.to_lines(format_value=format_value)
 
@@ -60,7 +60,9 @@ class Problem1(StringGridProblem[int]):
 
     def solution(self) -> int:
         n, sea_cucumbers = first_duplicate(
-            log.debug_animated_iter(self.sea_cucumbers, board_str, only_every_nth=20)
+            log.debug_animated_iter(
+                self.sea_cucumbers, board_str, params=AnimationParams(only_every_nth=10)
+            )
         )
         log.lazy_debug(lambda: board_str(sea_cucumbers))
         return n
@@ -87,7 +89,9 @@ class Problem2(MultiLineProblem[None]):
 
         with suppress(KeyboardInterrupt):
             log.debug_animated(
-                animated(POSEIDON.splitlines(), moving_forward), format_item=fmt, fps=10
+                animated(POSEIDON.splitlines(), moving_forward),
+                format_item=fmt,
+                params=AnimationParams(fps=10),
             )
 
 

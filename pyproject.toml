@@ -23,12 +23,12 @@ dev = [
   "ruff",
 ]
 
-#[tool.uv.sources]
-#based-utils = { path = "../based-utils", editable = true }
-#
+[tool.uv.sources]
+based-utils = { path = "../based-utils", editable = true }
+powerchord = { path = "../powerchord", editable = true }
+
 [project.scripts]
 aoc_solve = "advent_of_code.cli:main"
-p = "advent_of_code.cli:p"
 
 [build-system]
 requires = ["uv_build>=0.9.3,<0.10.0"]

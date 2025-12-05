@@ -27,7 +27,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "based-utils" },
+    { name = "based-utils", editable = "../based-utils" },
     { name = "cairocffi" },
     { name = "igraph" },
     { name = "matplotlib" },
@@ -39,7 +39,7 @@ requires-dist = [
 dev = [
     { name = "matplotlib-stubs" },
     { name = "mypy" },
-    { name = "powerchord" },
+    { name = "powerchord", editable = "../powerchord" },
     { name = "pre-commit" },
     { name = "pytest" },
     { name = "ruff" },
@@ -47,17 +47,30 @@ dev = [
 
 [[package]]
 name = "based-utils"
-version = "0.8.6"
-source = { registry = "https://pypi.org/simple" }
+version = "0.8.14"
+source = { editable = "../based-utils" }
 dependencies = [
     { name = "gaffe" },
     { name = "hsluv" },
     { name = "more-itertools" },
     { name = "yachalk" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/75/23/ca01fc1fb545216bc7fad286fabc1cc6f21c6d37d170e45638c599b6ab50/based_utils-0.8.6.tar.gz", hash = "sha256:009823f82ff7c3ea0253cd879006ab5d31980ffd9a65501eec5b4707e725154e", size = 17159, upload-time = "2025-11-24T00:10:49.844Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/56/e0/2897b3968ef3efedadc5c22e0dc343138c7099ed0a653449f5129db363aa/based_utils-0.8.6-py3-none-any.whl", hash = "sha256:a5ccaf86712efaa9f70de930c5b7fc3f70301021b7d549e5cedf14bb5a453e8f", size = 23010, upload-time = "2025-11-24T00:10:48.341Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "gaffe" },
+    { name = "hsluv" },
+    { name = "more-itertools" },
+    { name = "yachalk" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy" },
+    { name = "powerchord" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
 ]
 
 [[package]]
@@ -551,16 +564,27 @@ wheels = [
 
 [[package]]
 name = "powerchord"
-version = "0.3.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.4.0"
+source = { editable = "../powerchord" }
 dependencies = [
     { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ed/fe/c06e57796bb9e168b6a0b1356ef777c9683912ab6f1ae38da549cf7f4634/powerchord-0.3.1.tar.gz", hash = "sha256:b41b1b4f2d95e491d7ac7cd7cf125be5a6cf04603a26dab8146d9f0382410446", size = 5743, upload-time = "2025-11-20T03:07:55.05Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d7/12/58b5d64ee103c135a324b20d277259feec1626869f4cd5952fba5f73d520/powerchord-0.3.1-py3-none-any.whl", hash = "sha256:ef3b251be776894bbe5de88846b2bafe3cafe45681345d31bd1145e7159b2b83", size = 6623, upload-time = "2025-11-20T03:07:53.853Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "based-utils" },
+    { name = "chili" },
+    { name = "gaffe" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "ruff" },
 ]
 
 [[package]]

@@ -7,7 +7,12 @@ from more_itertools import last
 
 from advent_of_code import log
 from advent_of_code.problems import StringGridProblem
-from advent_of_code.utils.geo2d import P2, MutableNumberGrid2, NumberGrid2
+from advent_of_code.utils.geo2d import (
+    P2,
+    MutableNumberGrid2,
+    NumberGrid2,
+    all_directions,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Set
@@ -25,7 +30,7 @@ class _Problem(StringGridProblem[int], ABC):
         for p, v in self.num_grid.items():
             if v == -1:
                 continue
-            n = sum(n > -1 for _p, n in self.num_grid.neighbors(p))
+            n = sum(n > -1 for _p, n in self.num_grid.neighbors(p, all_directions))
             if n < 4:
                 ps.add(p)
                 n = -1
@@ -76,7 +81,7 @@ class Problem2(_Problem):
             yield count, self.num_grid, ps
 
     def solution(self) -> int:
-        it = log.debug_animated_iter(self.grids, grid_str, fps=2)
+        it = log.debug_animated_iter(self.grids, grid_str)
         count, _grid, _ps = last(it)
         return count
 

@@ -280,8 +280,6 @@ class _Grid2[T](Mapping[P2, T], ABC):
     def neighbors(
         self, pos: P2, directions: Iterable[P2] = None
     ) -> Iterator[tuple[P2, T]]:
-        if directions is None:
-            directions = all_directions
         for n in neighbors_2(pos, None if self.cyclic else self, directions):
             yield n, self[n]
 
@@ -315,46 +313,43 @@ class _Grid2[T](Mapping[P2, T], ABC):
         crop_y: tuple[int, int] = None,
         highlighted: Set[P2] = None,
     ) -> Iterator[str]:
-        (x_min, y_min), (x_max, y_max) = self.span
+        (x_lo, y_lo), (x_hi, y_hi) = self.span
 
         if crop_x:
-            crop_x_min, crop_x_max = crop_x
-            xl, xh = max(x_min, crop_x_min), min(x_max, crop_x_max)
-        else:
-            xl, xh = x_min, x_max
+            crop_x_lo, crop_x_hi = crop_x
+            x_lo, x_hi = max(x_lo, crop_x_lo), min(x_hi, crop_x_hi)
 
         if crop_y:
-            crop_y_min, crop_y_may = crop_y
-            yl, yh = max(y_min, crop_y_min), min(y_max, crop_y_may)
-        else:
-            yl, yh = y_min, y_max
+            crop_y_lo, crop_y_hi = crop_y
+            y_lo, y_hi = max(y_lo, crop_y_lo), min(y_hi, crop_y_hi)
 
-        max_width, _max_height = get_terminal_size()
-        xh = min(xh, xl + max_width - 1)
+        max_width, max_height = get_terminal_size()
+        x_hi = min(x_hi, x_lo + max_width - 1)
+        y_hi = min(y_hi, y_lo + max_height - 1)
 
         def fmt(pos: P2, value: T) -> Colored:
             s = self._format_value(pos, value)
             if format_value:
                 s = format_value(pos, value, s)
             if pos in (highlighted or {}):
-                c = (s.color or Color.from_name("green")).but_with(
-                    lightness=0.8, saturation=1
-                )
+                c = (s.color or Color.from_name("green")).but_with(lightness=0.8)
                 s = s.with_color(c).with_background(c.with_changed(lightness=0.5))
             return s
 
-        for y in range(yl, yh + 1):
-            yield "".join(fmt((x, y), self[x, y]).formatted for x in range(xl, xh + 1))
+        for y in range(y_lo, y_hi + 1):
+            yield "".join(
+                fmt((x, y), self[x, y]).formatted for x in range(x_lo, x_hi + 1)
+            )
 
 
 @cache
-def _colors() -> list[Color]:
+def _colors(n: int) -> list[Color]:
     h = randf()
     return [
         Color.from_fields(
-            lightness=i * 0.25, saturation=((i - 1) * 2 / 3) % 1 or 1, hue=h + i / 3
+            lightness=i / n, saturation=(i / n) ** 0.5, hue=h + i * (n // 2 + 1) / n
         )
-        for i in range(3)
+        for i in range(n)
     ]
 
 
@@ -367,9 +362,11 @@ class StringGrid2(_Grid2[str]):
 
     def _format_value(self, _pos: P2, value: str) -> Colored:
         values = ".#^"
-        if value not in values:
-            return Colored(value, Color.from_name("indigo"))
-        color = _colors()[values.index(value)]
+        try:
+            n = values.index(value)
+        except ValueError:
+            n = 3
+        color = _colors(5)[n]
         return Colored(value, color, color.with_changed(lightness=0.75))
 
 

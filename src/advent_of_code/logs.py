@@ -3,10 +3,14 @@ from functools import cached_property
 from logging import Formatter, LogRecord
 from os import get_terminal_size
 from pprint import pformat
+from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister, animate
 from based_utils.colors import Color
 from more_itertools.recipes import consume
+
+if TYPE_CHECKING:
+    from based_utils.cli.animation import AnimationParams
 
 
 class LogFormatter(Formatter):
@@ -87,18 +91,10 @@ class AppLogger(LogMeister):
         items: Callable[[], Iterable[T]],
         format_item: Callable[[T], Iterable[str]] = None,
         *,
-        fps: int = 60,
-        keep_last: bool = True,
-        only_every_nth: int = 1,
+        params: AnimationParams = None,
     ) -> Iterator[T]:
         yield from (
-            animate(
-                items(),
-                format_item,
-                fps=fps,
-                keep_last=keep_last,
-                only_every_nth=only_every_nth,
-            )
+            animate(items(), format_item, params=params)
             if self._main_logger.level == LogLevel.DEBUG
             else items()
         )
@@ -108,17 +104,7 @@ class AppLogger(LogMeister):
         items: Callable[[], Iterable[T]],
         format_item: Callable[[T], Iterable[str]] = None,
         *,
-        fps: int = 60,
-        keep_last: bool = True,
-        only_every_nth: int = 1,
+        params: AnimationParams = None,
     ) -> None:
         if self._main_logger.level == LogLevel.DEBUG:
-            consume(
-                self.debug_animated_iter(
-                    items,
-                    format_item,
-                    fps=fps,
-                    keep_last=keep_last,
-                    only_every_nth=only_every_nth,
-                )
-            )
+            consume(self.debug_animated_iter(items, format_item, params=params))
