@@ -6,7 +6,7 @@ from based_utils.colors import Color
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import StringGridProblem
+from advent_of_code.problems import CharacterGridProblem
 from advent_of_code.utils.geo2d import (
     P2,
     MutableNumberGrid2,
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Set
 
 
-class _Problem(StringGridProblem[int], ABC):
+class _Problem(CharacterGridProblem[int], ABC):
     def __init__(self) -> None:
         self.num_grid = MutableNumberGrid2(
             (p, 0 if v == "@" else -1) for p, v in self.grid.items()

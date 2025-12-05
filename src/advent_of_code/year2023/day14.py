@@ -7,18 +7,20 @@ from based_utils.data.iterators import repeat_transform, rotated_cw
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import StringGridProblem
-from advent_of_code.utils.geo2d import StringGrid2
+from advent_of_code.problems import CharacterGridProblem
+from advent_of_code.utils.geo2d import CharacterGrid2
 
 type Line = list[str]
 type Lines = Iterable[Line]
 
 
 def debug_grid(lines: Lines) -> None:
-    log.lazy_debug(StringGrid2.from_lines(["".join(line) for line in lines]).to_lines)
+    log.lazy_debug(
+        CharacterGrid2.from_lines(["".join(line) for line in lines]).to_lines
+    )
 
 
-class _Problem(StringGridProblem[int], ABC):
+class _Problem(CharacterGridProblem[int], ABC):
     def __init__(self) -> None:
         self.cols: Lines = [
             [v for (x, _), v in self.grid.items() if x == c]

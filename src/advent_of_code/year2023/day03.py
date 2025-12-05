@@ -40,12 +40,8 @@ class _Problem(NumberGridProblem[int], ABC):
                     curr_num = ""
                     curr_symbol = None
 
-    def convert_element(self, element: str) -> int:
-        if element.isdigit():
-            return int(element)
-        if element == ".":
-            return 10
-        return ord(element)
+    def parse_value(self, c: str) -> int:
+        return int(c) if c.isdigit() else 10 if c == "." else ord(c)
 
 
 class Problem1(_Problem):

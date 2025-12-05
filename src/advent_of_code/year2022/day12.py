@@ -68,11 +68,11 @@ class _AStarState(_State, AStarState[AStarConstants, Variables]):
 
 
 class _Problem(NumberGridProblem[int], ABC):
-    def convert_element(self, element: str) -> int:
-        return {"S": 0, "E": 27}.get(element, ord(element) - PRE_a)
+    def parse_value(self, c: str) -> int:
+        return {"S": 0, "E": 27}.get(c, ord(c) - PRE_a)
 
     def shortest_path(self, start: str, end: str) -> int:
-        start_val, end_val = self.convert_element(start), self.convert_element(end)
+        start_val, end_val = self.parse_value(start), self.parse_value(end)
         start_pos = self.grid.point_with_value(start_val)
         ep = self.grid.points_with_value(end_val)
 

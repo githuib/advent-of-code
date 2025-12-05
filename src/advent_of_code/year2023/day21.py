@@ -6,16 +6,16 @@ from based_utils.data.iterators import repeat_transform
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import StringGridProblem
+from advent_of_code.problems import CharacterGridProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from advent_of_code.utils.geo2d import P2, StringGrid2
+    from advent_of_code.utils.geo2d import P2, CharacterGrid2
 
 
 class Constants(NamedTuple):
-    grid: StringGrid2
+    grid: CharacterGrid2
     steps: int
 
 
@@ -36,7 +36,7 @@ class GardenState(BFSState[Constants, Variables]):
                 yield self.move(Variables(pos, count_me=not self.v.count_me))
 
 
-class _Problem(StringGridProblem[int], ABC):
+class _Problem(CharacterGridProblem[int], ABC):
     def __init__(self) -> None:
         self.start = self.grid.point_with_value("S")
 

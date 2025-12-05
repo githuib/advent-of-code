@@ -7,16 +7,16 @@ from igraph import EdgeSeq, Graph, Layout, plot  # type: ignore[import-untyped]
 from matplotlib import pyplot as plt
 
 from advent_of_code import log
-from advent_of_code.problems import StringGridProblem
-from advent_of_code.utils.geo2d import DOWN, P2, RIGHT, StringGrid2
+from advent_of_code.problems import CharacterGridProblem
+from advent_of_code.utils.geo2d import DOWN, P2, RIGHT, CharacterGrid2
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
 
 
-class _Problem(StringGridProblem[int], ABC):
+class _Problem(CharacterGridProblem[int], ABC):
     def __init__(self) -> None:
-        self.road = StringGrid2({p: v for p, v in self.grid.items() if v != "#"})
+        self.road = CharacterGrid2({p: v for p, v in self.grid.items() if v != "#"})
         self.ps = list(self.road.keys())
         ids: dict[P2, int] = {p: i for i, p in enumerate(self.road)}
         self.start, *_, self.end = self.road.keys()

@@ -9,7 +9,7 @@ from based_utils.cli import Colored
 from based_utils.colors import Color
 
 from advent_of_code import log
-from advent_of_code.problems import StringGridProblem
+from advent_of_code.problems import CharacterGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, manhattan_dist_2
 
 if TYPE_CHECKING:
@@ -66,7 +66,7 @@ class ValleyState(AStarState[Constants, Variables]):
         return f"{self.v.pos} - {self.v.cycle}"
 
 
-class _Problem(StringGridProblem[int], ABC):
+class _Problem(CharacterGridProblem[int], ABC):
     def __init__(self) -> None:
         self.grouped_tiles = {t: self.grid.points_with_value(t) for t in TILES}
         self.ground = frozenset.union(*self.grouped_tiles.values())

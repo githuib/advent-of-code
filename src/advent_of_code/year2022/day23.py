@@ -7,7 +7,7 @@ from based_utils.data.iterators import first_duplicate
 from more_itertools import nth_or_last
 
 from advent_of_code import log
-from advent_of_code.problems import StringGridProblem
+from advent_of_code.problems import CharacterGridProblem
 from advent_of_code.utils.geo2d import (
     DOWN,
     LEFT,
@@ -43,7 +43,7 @@ def next_pos(x: int, y: int, step: int, occupied: Set[P2]) -> P2 | None:
     return None
 
 
-class _Problem(StringGridProblem[int], ABC):
+class _Problem(CharacterGridProblem[int], ABC):
     def __init__(self) -> None:
         log.lazy_debug(self.grid.to_lines)
 

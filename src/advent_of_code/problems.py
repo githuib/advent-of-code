@@ -8,7 +8,7 @@ from gaffe import raises
 from more_itertools import strip
 from parse import findall  # type: ignore[import-untyped]
 
-from .utils.geo2d import BitGrid2, NumberGrid2, StringGrid2
+from .utils.geo2d import BitGrid2, CharacterGrid2, Grid2, NumberGrid2
 from .utils.geo3d import P3D
 
 
@@ -108,48 +108,40 @@ class MultiLineProblem[T](Problem[T], ABC):
 
 
 class _GridProblem[E, T](MultiLineProblem[T], ABC):
-    # grid: Grid2[E]
+    grid_cls: type[Grid2[E]]
+    grid: Grid2[E]
 
     @abstractmethod
-    def convert_element(self, element: str) -> E:
+    def parse_value(self, c: str) -> E:
         pass
-
-
-class StringGridProblem[T](_GridProblem[str, T], ABC):
-    grid: StringGrid2
-
-    def convert_element(self, element: str) -> str:
-        return element
 
     def process_input(self) -> None:
         super().process_input()
-        self.grid = StringGrid2.from_lines(
-            self.lines, parse_callback=self.convert_element
-        )
+        self.grid = self.grid_cls.from_lines(self.lines, parse_value=self.parse_value)
+
+
+class CharacterGridProblem[T](_GridProblem[str, T], ABC):
+    grid_cls = CharacterGrid2
+    grid: CharacterGrid2
+
+    def parse_value(self, c: str) -> str:
+        return c
 
 
 class NumberGridProblem[T](_GridProblem[int, T], ABC):
+    grid_cls = NumberGrid2
     grid: NumberGrid2
 
-    def convert_element(self, element: str) -> int:
-        return int(element)
-
-    def process_input(self) -> None:
-        super().process_input()
-        self.grid = NumberGrid2.from_lines(
-            self.lines, parse_callback=self.convert_element
-        )
+    def parse_value(self, c: str) -> int:
+        return int(c)
 
 
-class BitGridProblem[T](_GridProblem[int, T], ABC):
+class BitGridProblem[T](_GridProblem[bool, T], ABC):
+    grid_cls = BitGrid2
     grid: BitGrid2
 
-    def convert_element(self, element: str) -> bool:
-        return element != "."
-
-    def process_input(self) -> None:
-        super().process_input()
-        self.grid = BitGrid2.from_lines(self.lines, parse_callback=self.convert_element)
+    def parse_value(self, c: str) -> bool:
+        return c != "."
 
 
 class ParsedProblem[R, T](Problem[T], ABC):

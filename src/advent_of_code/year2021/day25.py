@@ -8,8 +8,8 @@ from based_utils.colors import Color
 from based_utils.data.iterators import first_duplicate
 
 from advent_of_code import log
-from advent_of_code.problems import MultiLineProblem, StringGridProblem
-from advent_of_code.utils.geo2d import P2, StringGrid2
+from advent_of_code.problems import CharacterGridProblem, MultiLineProblem
+from advent_of_code.utils.geo2d import P2, CharacterGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -19,7 +19,7 @@ type SeaCucumbers = tuple[Set[P2], Set[P2]]
 
 def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     east, south = sea_cucumbers
-    board = StringGrid2(
+    board = CharacterGrid2(
         dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
     )
     colors = {
@@ -35,7 +35,7 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     return board.to_lines(format_value=format_value)
 
 
-class Problem1(StringGridProblem[int]):
+class Problem1(CharacterGridProblem[int]):
     test_solution = 58
     puzzle_solution = 389
 

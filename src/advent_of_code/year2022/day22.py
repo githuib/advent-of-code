@@ -5,7 +5,7 @@ from more_itertools import split_when
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem, NoSolutionFoundError
-from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, StringGrid2
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, CharacterGrid2
 from advent_of_code.utils.geo3d import P3D, Dir3D, Rotation90deg3D, Trans3
 
 if TYPE_CHECKING:
@@ -16,7 +16,7 @@ DIRECTIONS = [RIGHT, DOWN, LEFT, UP]
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
-        self.map_2d = StringGrid2.from_lines(self.lines[:-2])
+        self.map_2d = CharacterGrid2.from_lines(self.lines[:-2])
         log.lazy_debug(self.map_2d.to_lines)
         self.route = [
             (s[0], int("".join(s[1:])))

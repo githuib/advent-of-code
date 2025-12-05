@@ -170,7 +170,7 @@ def intersect_segments_2(line_1: Line2, line_2: Line2) -> tuple[float, float] | 
     return intersect_2(line_1, line_2, segments=True)
 
 
-class _Grid2[T](Mapping[P2, T], ABC):
+class Grid2[T](Mapping[P2, T], ABC):
     _default_value: T
 
     class NoDefaultError(Exception):
@@ -292,14 +292,14 @@ class _Grid2[T](Mapping[P2, T], ABC):
         cls: type[Self],
         lines: Iterable[str],
         *,
-        parse_callback: Callable[[str], T] = None,
+        parse_value: Callable[[str], T] = None,
         ignore: str = " ",
     ) -> Self:
         return cls(
-            ((x, y), (parse_callback or cls._parse_value)(element))
+            ((x, y), (parse_value or cls._parse_value)(c))
             for y, line in enumerate(lines)
-            for x, element in enumerate(line)
-            if element not in ignore
+            for x, c in enumerate(line)
+            if c not in ignore
         )
 
     @abstractmethod
@@ -353,7 +353,7 @@ def _colors(n: int) -> list[Color]:
     ]
 
 
-class StringGrid2(_Grid2[str]):
+class CharacterGrid2(Grid2[str]):
     _default_value = ""
 
     @classmethod
@@ -370,7 +370,7 @@ class StringGrid2(_Grid2[str]):
         return Colored(value, color, color.with_changed(lightness=0.75))
 
 
-class NumberGrid2(_Grid2[int]):
+class NumberGrid2(Grid2[int]):
     _default_value = 0
 
     @classmethod
@@ -386,7 +386,7 @@ class NumberGrid2(_Grid2[int]):
         )
 
 
-class BitGrid2(_Grid2[bool]):
+class BitGrid2(Grid2[bool]):
     _default_value = False
 
     @classmethod
@@ -404,7 +404,7 @@ class BitGrid2(_Grid2[bool]):
 
 
 class _MutableGrid2[T](
-    _Grid2[T], MutableMapping[P2, T], WithClearablePropertyCache, ABC
+    Grid2[T], MutableMapping[P2, T], WithClearablePropertyCache, ABC
 ):
     def __init__(
         self,
@@ -484,7 +484,7 @@ class _MutableGrid2[T](
         )
 
 
-class MutableStringGrid2(StringGrid2, _MutableGrid2[str]):
+class MutableStringGrid2(CharacterGrid2, _MutableGrid2[str]):
     pass
 
 
