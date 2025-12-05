@@ -190,6 +190,8 @@ uv run powerchord -l failed_tasks=error -t \
   "y25 d03 p2"="uv run aoc_solve --year 2025 --day 3 --part 2" \
   "y25 d04 p1"="uv run aoc_solve --year 2025 --day 4 --part 1" \
   "y25 d04 p2"="uv run aoc_solve --year 2025 --day 4 --part 2" \
+  "y25 d05 p1"="uv run aoc_solve --year 2025 --day 5 --part 1" \
+  "y25 d05 p2"="uv run aoc_solve --year 2025 --day 5 --part 2" \
 
 
 

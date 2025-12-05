@@ -47,7 +47,7 @@ dev = [
 
 [[package]]
 name = "based-utils"
-version = "0.8.14"
+version = "0.8.16"
 source = { editable = "../based-utils" }
 dependencies = [
     { name = "gaffe" },
