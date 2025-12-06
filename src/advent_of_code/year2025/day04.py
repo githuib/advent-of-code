@@ -1,21 +1,24 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored
 from based_utils.colors import Color
-from more_itertools import last
+from based_utils.data.iterators import polarized
+from more_itertools import first, last
 
 from advent_of_code import log
 from advent_of_code.problems import CharacterGridProblem
-from advent_of_code.utils.geo2d import (
-    P2,
-    MutableNumberGrid2,
-    NumberGrid2,
-    all_directions,
-)
+from advent_of_code.utils.geo2d import P2, MutableNumberGrid2, all_directions
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Set
+    from collections.abc import Iterable, Iterator
+
+type GridItems = Iterable[tuple[P2, int]]
+type PolarizedItems = tuple[list[tuple[P2, int]], list[tuple[P2, int]]]
+
+
+def polarized_values(grid_items: GridItems) -> PolarizedItems:
+    return polarized(grid_items, lambda i: i[1] == -1)
 
 
 class _Problem(CharacterGridProblem[int], ABC):
@@ -24,66 +27,62 @@ class _Problem(CharacterGridProblem[int], ABC):
             (p, 0 if v == "@" else -1) for p, v in self.grid.items()
         )
 
-    def step(self) -> Set[P2]:
-        ps = set()
-        g: dict[P2, int] = {}
-        for p, v in self.num_grid.items():
+    def new_value(self, p: P2) -> int:
+        _empty, non_empty = polarized_values(self.num_grid.neighbors(p, all_directions))
+        v = len(non_empty)
+        return v if v >= 4 else -1
+
+    def new_values(self, non_empty: GridItems) -> PolarizedItems:
+        new_values = {p: self.new_value(p) for p, _v in non_empty}
+        self.num_grid |= new_values
+        return polarized_values(new_values.items())
+
+    def _grids(self) -> Iterator[tuple[int, GridItems]]:
+        count = 0
+        empty, non_empty = polarized_values(self.num_grid.items())
+        while len(empty) > 0:
+            empty, non_empty = self.new_values(non_empty)
+            count += len(empty)
+            yield count, empty
+
+    @abstractmethod
+    def grids(self) -> Iterator[tuple[int, GridItems]]: ...
+
+    def grid_str(self, args: tuple[int, GridItems]) -> Iterator[str]:
+        count, empty = args
+
+        def fmt(p: P2, v: int, _c: Colored) -> Colored:
+            if p in [p for p, _v in empty]:
+                cx = Color.from_name("pink")
+                return Colored("x", cx, cx.contrasting_shade)
             if v == -1:
-                continue
-            n = sum(n > -1 for _p, n in self.num_grid.neighbors(p, all_directions))
-            if n < 4:
-                ps.add(p)
-                n = -1
-            g[p] = n
-        for p, v in g.items():
-            self.num_grid[p] = v
-        return ps
+                return Colored(".", Color.from_name("yellow", lightness=0.4))
+            c = Color.from_name("green")
+            return Colored(str(v), c.shade(v / 10), c.contrasting_shade)
 
+        yield from self.num_grid.to_lines(format_value=fmt)
+        yield ""
+        yield f"Counted: {count}"
 
-def grid_str(args: tuple[int, NumberGrid2, Set[P2]]) -> Iterator[str]:
-    count, grid, ps = args
-
-    def fmt(p: P2, v: int, _c: Colored) -> Colored:
-        if p in ps:
-            cx = Color.from_name("pink")
-            return Colored("x", cx, cx.contrasting_shade)
-        if v == -1:
-            return Colored(".", Color.from_name("blue", lightness=0.25))
-        c = Color.from_name("green")
-        return Colored(str(v), c.shade(v / 10), c.contrasting_shade)
-
-    yield from grid.to_lines(format_value=fmt)
-    yield ""
-    yield f"Counted: {count}"
+    def solution(self) -> int:
+        count, _empty = last(log.debug_animated_iter(self.grids, self.grid_str))
+        return count
 
 
 class Problem1(_Problem):
     test_solution = 13
     puzzle_solution = 1551
 
-    def solution(self) -> int:
-        ps = self.step()
-        n = len(ps)
-        log.lazy_debug(lambda: grid_str((n, self.num_grid, ps)))
-        return n
+    def grids(self) -> Iterator[tuple[int, GridItems]]:
+        yield first(self._grids())
 
 
 class Problem2(_Problem):
     test_solution = 43
     puzzle_solution = 9784
 
-    def grids(self) -> Iterator[tuple[int, NumberGrid2, Set[P2]]]:
-        count = 0
-        ps: Set[P2] | None = None
-        while ps is None or len(ps) > 0:
-            ps = self.step()
-            count += len(ps)
-            yield count, self.num_grid, ps
-
-    def solution(self) -> int:
-        it = log.debug_animated_iter(self.grids, grid_str)
-        count, _grid, _ps = last(it)
-        return count
+    def grids(self) -> Iterator[tuple[int, GridItems]]:
+        yield from self._grids()
 
 
 TEST_INPUT = """

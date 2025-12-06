@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from based_utils.data.iterators import transposed
+from more_itertools import transpose
 
 from advent_of_code.problems import MultiLineProblem
 
@@ -14,7 +14,7 @@ class Board:
         # parse 5 x 5 bingo board from input
         self.data = [[int(x) for x in line.split()] for line in input_lines]
         # data with rows and columns swapped
-        self.inverted_data = list(transposed(self.data))
+        self.inverted_data = [list(c) for c in transpose(self.data)]
         self.has_bingo = False
 
     def draw_number(self, n: int) -> None:

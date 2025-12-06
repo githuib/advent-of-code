@@ -1,5 +1,5 @@
-from based_utils.data.iterators import split_items, transposed_lines
-from based_utils.data.strings import padded, split_at
+from based_utils.data.iterators import split_items
+from based_utils.data.strings import equalized_lines, split_at, transposed_lines
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code.problems import MultiLineProblem
@@ -11,15 +11,9 @@ class _Problem(MultiLineProblem[str]):
     def __init__(self) -> None:
         stacks, self._moves_input = split_items(self.lines, delimiter="")
         *rows, nums = (line[1::4] for line in stacks)
+        cols = transposed_lines(equalized_lines(reversed(rows), max_length=len(nums)))
         self._stacks: dict[str, str] = dict(
-            zip(
-                nums,
-                (
-                    s.strip()
-                    for s in transposed_lines(padded(reversed(rows), len(nums)))
-                ),
-                strict=True,
-            )
+            zip(nums, (c.strip() for c in cols), strict=True)
         )
 
     def solution(self) -> str:

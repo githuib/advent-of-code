@@ -3,7 +3,7 @@ from abc import ABC
 from math import ceil, prod, sqrt
 
 from based_utils.data.conversion import compose_number
-from based_utils.data.iterators import transposed
+from more_itertools import transpose
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
@@ -32,7 +32,7 @@ class Problem1(_Problem):
     puzzle_solution = 3316275
 
     def solution(self) -> int:
-        return prod(ways_to_win(t, d) for t, d in transposed(self.parsed))
+        return prod(ways_to_win(t, d) for t, d in transpose(self.parsed))
 
 
 class Problem2(_Problem):

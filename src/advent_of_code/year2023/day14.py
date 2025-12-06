@@ -10,7 +10,7 @@ from advent_of_code import log
 from advent_of_code.problems import CharacterGridProblem
 from advent_of_code.utils.geo2d import CharacterGrid2
 
-type Line = list[str]
+type Line = tuple[str, ...]
 type Lines = Iterable[Line]
 
 
@@ -23,7 +23,7 @@ def debug_grid(lines: Lines) -> None:
 class _Problem(CharacterGridProblem[int], ABC):
     def __init__(self) -> None:
         self.cols: Lines = [
-            [v for (x, _), v in self.grid.items() if x == c]
+            tuple(v for (x, _), v in self.grid.items() if x == c)
             for c in range(self.grid.width)
         ]
         debug_grid(self.cols)

@@ -9,7 +9,11 @@ from typing import TYPE_CHECKING, Literal, Self
 from based_utils.calx import randf
 from based_utils.cli import Colored
 from based_utils.colors import Color
-from based_utils.data.iterators import pairwise_circular, tripletwise_circular
+from based_utils.data.iterators import (
+    Predicate,
+    pairwise_circular,
+    tripletwise_circular,
+)
 from based_utils.data.mixins import WithClearablePropertyCache
 
 if TYPE_CHECKING:
@@ -276,6 +280,9 @@ class Grid2[T](Mapping[P2, T], ABC):
 
     def points_with_value(self, *values: T) -> frozenset[P2]:
         return frozenset(p for p, v in self.items() if v in values)
+
+    def points_where(self, predicate: Predicate[T]) -> frozenset[P2]:
+        return frozenset(p for p, v in self.items() if predicate(v))
 
     def neighbors(
         self, pos: P2, directions: Iterable[P2] = None

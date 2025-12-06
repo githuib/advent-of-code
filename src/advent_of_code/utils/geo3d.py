@@ -2,7 +2,7 @@ from collections.abc import Iterable, Iterator, Mapping
 from functools import cached_property
 from typing import NamedTuple
 
-from based_utils.data.iterators import transposed
+from more_itertools import transpose
 
 type P3 = tuple[int, int, int]
 
@@ -219,7 +219,7 @@ class Grid3D(dict[P3D, int]):
 
     @property
     def span(self) -> tuple[P3D, P3D]:
-        xs, ys, zs = transposed(self.keys())
+        xs, ys, zs = transpose(self.keys())
         return P3D(min(xs), min(ys), min(zs)), P3D(max(xs), max(ys), max(zs))
 
     @cached_property

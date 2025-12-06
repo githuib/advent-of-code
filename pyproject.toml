@@ -11,6 +11,7 @@ dependencies = [
   "matplotlib",
   "more-itertools",
   "parse",
+  "simpleeval",
 ]
 
 [dependency-groups]
