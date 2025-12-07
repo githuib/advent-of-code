@@ -7,7 +7,7 @@ from advent_of_code import log
 from advent_of_code.problems import CharacterGridProblem
 from advent_of_code.utils.geo2d import (
     CharacterGrid2,
-    MutableStringGrid2,
+    MutableCharacterGrid2,
     manhattan_dist_2,
 )
 
@@ -20,7 +20,7 @@ class _Problem(CharacterGridProblem[int], ABC):
 
     def solution(self) -> int:
         def expand(grid: CharacterGrid2) -> CharacterGrid2:
-            big_grid, offset = MutableStringGrid2(), 0
+            big_grid, offset = MutableCharacterGrid2(), 0
             for cx in range(grid.width):
                 row = {(y, x + offset): v for (x, y), v in grid.items() if x == cx}
                 if "#" in row.values():

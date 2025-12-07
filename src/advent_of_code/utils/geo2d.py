@@ -397,7 +397,7 @@ class NumberGrid2(Grid2[int]):
 
     def _format_value(self, _pos: P2, value: int) -> Colored:
         if value < 0:
-            return Colored(" ")
+            return Colored(".")
         return Colored(
             str(value) if value < 10 else "+",
             Color.from_name("green").shade(0.15 + min(value, 10) * 0.035),
@@ -502,7 +502,7 @@ class _MutableGrid2[T](
         )
 
 
-class MutableStringGrid2(CharacterGrid2, _MutableGrid2[str]):
+class MutableCharacterGrid2(CharacterGrid2, _MutableGrid2[str]):
     pass
 
 
