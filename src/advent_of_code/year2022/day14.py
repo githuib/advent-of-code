@@ -12,7 +12,7 @@ from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.geo2d import P2, MutableNumberGrid2
+from advent_of_code.utils.geo2d import P2, MutableNumGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
@@ -47,7 +47,7 @@ def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
-        self.map = MutableNumberGrid2()
+        self.map = MutableNumGrid2()
         self.map |= dict.fromkeys(self.points, Material.ROCK)
         self.map[START] = Material.SOURCE
 

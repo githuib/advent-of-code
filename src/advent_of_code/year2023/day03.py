@@ -4,7 +4,7 @@ from based_utils.cli import Colored
 from based_utils.colors import Color
 
 from advent_of_code import log
-from advent_of_code.problems import NumberGridProblem
+from advent_of_code.problems import NumGridProblem
 from advent_of_code.utils.geo2d import P2, all_directions
 
 
@@ -17,7 +17,7 @@ def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
     return Colored(v, Color.from_name("green", lightness=0.66))
 
 
-class _Problem(NumberGridProblem[int], ABC):
+class _Problem(NumGridProblem[int], ABC):
     def __init__(self) -> None:
         log.lazy_debug(lambda: self.grid.to_lines(format_value=format_value))
 

@@ -7,7 +7,7 @@ from based_utils.data.iterators import polarized
 
 from advent_of_code import log
 from advent_of_code.problems import CharGridProblem
-from advent_of_code.utils.geo2d import P2, Crop, MutableNumberGrid2, all_directions
+from advent_of_code.utils.geo2d import P2, Crop, MutableNumGrid2, all_directions
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -21,7 +21,7 @@ def remove_rolls(grid_items: Iterable[tuple[P2, int]]) -> tuple[Rolls, Rolls]:
 
 class _Problem(CharGridProblem[int], ABC):
     def __init__(self) -> None:
-        self.num_grid = MutableNumberGrid2(
+        self.num_grid = MutableNumGrid2(
             (p, 0 if v == "@" else -1) for p, v in self.grid.items()
         )
 

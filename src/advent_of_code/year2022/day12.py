@@ -9,8 +9,8 @@ from based_utils.colors import Color
 from based_utils.data.strings import PRE_a
 
 from advent_of_code import log
-from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.geo2d import P2, NumberGrid2
+from advent_of_code.problems import NumGridProblem
+from advent_of_code.utils.geo2d import P2, NumGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class Constants:
-    hill: NumberGrid2
+    hill: NumGrid2
     goal: int
     reverse: bool
 
@@ -67,7 +67,7 @@ class _AStarState(_State, AStarState[AStarConstants, Variables]):
         return horizontal_distance + vertical_distance
 
 
-class _Problem(NumberGridProblem[int], ABC):
+class _Problem(NumGridProblem[int], ABC):
     def parse_value(self, c: str) -> int:
         return {"S": 0, "E": 27}.get(c, ord(c) - PRE_a)
 

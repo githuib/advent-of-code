@@ -8,7 +8,7 @@ from gaffe import raises
 from more_itertools import strip
 from parse import findall  # type: ignore[import-untyped]
 
-from .utils.geo2d import BitGrid2, CharGrid2, Grid2, NumberGrid2
+from .utils.geo2d import BitGrid2, CharGrid2, Grid2, NumGrid2
 from .utils.geo3d import P3D
 
 
@@ -128,9 +128,9 @@ class CharGridProblem[T](_GridProblem[str, T], ABC):
         return c
 
 
-class NumberGridProblem[T](_GridProblem[int, T], ABC):
-    grid_cls = NumberGrid2
-    grid: NumberGrid2
+class NumGridProblem[T](_GridProblem[int, T], ABC):
+    grid_cls = NumGrid2
+    grid: NumGrid2
 
     def parse_value(self, c: str) -> int:
         return int(c)

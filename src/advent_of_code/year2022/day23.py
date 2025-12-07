@@ -18,7 +18,7 @@ from advent_of_code.utils.geo2d import (
     RIGHT_DOWN,
     RIGHT_UP,
     UP,
-    NumberGrid2,
+    NumGrid2,
     all_directions,
 )
 
@@ -67,7 +67,7 @@ class Problem1(_Problem):
     puzzle_solution = 3788
 
     def solution(self) -> int:
-        elfs = NumberGrid2(dict.fromkeys(nth_or_last(self.dance(), 10), 1))
+        elfs = NumGrid2(dict.fromkeys(nth_or_last(self.dance(), 10), 1))
         log.lazy_debug(elfs.to_lines)
         return elfs.area - len(elfs)
 
@@ -78,7 +78,7 @@ class Problem2(_Problem):
 
     def solution(self) -> int:
         n, elfs = first_duplicate(self.dance())
-        log.lazy_debug(NumberGrid2(dict.fromkeys(elfs, 1)).to_lines)
+        log.lazy_debug(NumGrid2(dict.fromkeys(elfs, 1)).to_lines)
         return n
 
 

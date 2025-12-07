@@ -2,13 +2,13 @@ from abc import ABC
 from math import prod
 from typing import TYPE_CHECKING
 
-from advent_of_code.problems import NumberGridProblem
+from advent_of_code.problems import NumGridProblem
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
 
 
-class _Problem(NumberGridProblem[int], ABC):
+class _Problem(NumGridProblem[int], ABC):
     def neighbors(self, x: int, y: int) -> list[Iterator[int]]:
         return [
             (self.grid[x, n] for n in reversed(range(y))),  # west

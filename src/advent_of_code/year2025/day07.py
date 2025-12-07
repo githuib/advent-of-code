@@ -9,7 +9,7 @@ from more_itertools.recipes import consume
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils.geo2d import P2, MutableNumberGrid2
+from advent_of_code.utils.geo2d import P2, MutableNumGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -29,7 +29,7 @@ def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
-        self.grid = MutableNumberGrid2.from_lines(self.lines[::2], parse_value=parse)
+        self.grid = MutableNumGrid2.from_lines(self.lines[::2], parse_value=parse)
         consume(
             log.debug_animated_iter(
                 self.manifold, lambda _: self.grid.to_lines(format_value=format_value)

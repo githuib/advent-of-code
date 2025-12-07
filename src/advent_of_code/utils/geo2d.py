@@ -388,7 +388,7 @@ class CharGrid2(Grid2[str]):
         return Colored(value, color, color.with_changed(lightness=0.75))
 
 
-class NumberGrid2(Grid2[int]):
+class NumGrid2(Grid2[int]):
     _default_value = 0
 
     @classmethod
@@ -439,7 +439,7 @@ class _MutableGrid2[T](
         """
         Update the value at the given position.
 
-        >>> class MNG(NumberGrid2, _MutableGrid2[int]):
+        >>> class MNG(NumGrid2, _MutableGrid2[int]):
         ...     pass
         >>> grid = MNG({(0, 0): 1, (1, 2): 1, (2, 1): 1}, default_value=2)
         >>> list(grid.rows)
@@ -506,7 +506,7 @@ class MutableCharGrid2(CharGrid2, _MutableGrid2[str]):
     pass
 
 
-class MutableNumberGrid2(NumberGrid2, _MutableGrid2[int]):
+class MutableNumGrid2(NumGrid2, _MutableGrid2[int]):
     pass
 
 

@@ -4,15 +4,15 @@ from typing import TYPE_CHECKING, NamedTuple, Self
 from based_utils.algo import DijkstraState
 
 from advent_of_code import log
-from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, NumberGrid2, Range
+from advent_of_code.problems import NumGridProblem
+from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, NumGrid2, Range
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
 class Constants:
-    def __init__(self, grid: NumberGrid2, segment_range: Range) -> None:
+    def __init__(self, grid: NumGrid2, segment_range: Range) -> None:
         self.grid = grid
         self.min_segment, self.max_segment = segment_range
         self.end = grid.width - 1, grid.height - 1
@@ -58,7 +58,7 @@ class LavaState(DijkstraState[Constants, Variables]):
                 )
 
 
-class _Problem(NumberGridProblem[int], ABC):
+class _Problem(NumGridProblem[int], ABC):
     segment_range: Range
 
     def solution(self) -> int:

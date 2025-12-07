@@ -4,15 +4,15 @@ from based_utils.algo import DijkstraState
 from based_utils.calx import mods
 
 from advent_of_code import log
-from advent_of_code.problems import NumberGridProblem
-from advent_of_code.utils.geo2d import P2, NumberGrid2
+from advent_of_code.problems import NumGridProblem
+from advent_of_code.utils.geo2d import P2, NumGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
 class Constants:
-    def __init__(self, cave: NumberGrid2) -> None:
+    def __init__(self, cave: NumGrid2) -> None:
         self.cave = cave
         _, self.end_position = cave.span
 
@@ -32,7 +32,7 @@ class ChitonState(DijkstraState[Constants, Variables]):
             yield self.move(Variables(pos), distance=dist)
 
 
-class Problem1(NumberGridProblem[int]):
+class Problem1(NumGridProblem[int]):
     test_solution = 40
     puzzle_solution = 583
 
@@ -50,7 +50,7 @@ class Problem2(Problem1):
 
     def solution(self) -> int:
         w, h = self.grid.size
-        grid = NumberGrid2(
+        grid = NumGrid2(
             {
                 (x + w * i, y + h * j): mods(risk + i + j, 9, 1)
                 for i in range(5)

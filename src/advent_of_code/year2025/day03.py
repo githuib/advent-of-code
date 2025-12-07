@@ -1,7 +1,7 @@
 from abc import ABC
 
 from advent_of_code import log
-from advent_of_code.problems import NumberGridProblem
+from advent_of_code.problems import NumGridProblem
 
 
 def joltage(n: list[int], left: int) -> int:
@@ -15,7 +15,7 @@ def joltage(n: list[int], left: int) -> int:
     return d * 10**left + joltage(n[n.index(d) + 1 :], left - 1)
 
 
-class _Problem(NumberGridProblem[int], ABC):
+class _Problem(NumGridProblem[int], ABC):
     number_size: int
 
     def joltage(self, n: list[int]) -> int:
