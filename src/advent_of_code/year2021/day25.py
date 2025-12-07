@@ -1,9 +1,8 @@
 from collections.abc import Set
-from contextlib import suppress
 from typing import TYPE_CHECKING
 
-from based_utils.cli import Colored, Lines, animated
-from based_utils.cli.animation import AnimationParams, moving_forward
+from based_utils.cli import Colored, animated
+from based_utils.cli.animation import AnimParams, flashing, moving_forward
 from based_utils.colors import Color
 from based_utils.data.iterators import first_duplicate
 
@@ -61,7 +60,7 @@ class Problem1(CharGridProblem[int]):
     def solution(self) -> int:
         n, sea_cucumbers = first_duplicate(
             log.debug_animated_iter(
-                self.sea_cucumbers, board_str, params=AnimationParams(only_every_nth=10)
+                self.sea_cucumbers, board_str, params=AnimParams(only_every_nth=10)
             )
         )
         log.lazy_debug(lambda: board_str(sea_cucumbers))
@@ -75,24 +74,15 @@ POSEIDON = r"""
        C_________/
 
 """
-SUB_COLOR = Color.from_name("poison", lightness=0.9)
-OCEAN_COLOR = Color.from_name("ocean", lightness=0.7, saturation=0.9)
 
 
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-
-        def fmt(lines: Lines) -> Iterator[str]:
-            for line in lines:
-                yield Colored(line, SUB_COLOR, OCEAN_COLOR).formatted
-
-        with suppress(KeyboardInterrupt):
-            log.debug_animated(
-                animated(POSEIDON.splitlines(), moving_forward),
-                format_item=fmt,
-                params=AnimationParams(fps=10),
-            )
+        fg = Color.from_name("poison", lightness=0.9)
+        bg = Color.from_name("ocean", lightness=0.7, saturation=0.9)
+        anim = animated(POSEIDON.splitlines(), moving_forward, flashing(fg=fg, bg=bg))
+        log.debug_animated(anim, params=AnimParams(fps=10))
 
 
 TEST_INPUT = """

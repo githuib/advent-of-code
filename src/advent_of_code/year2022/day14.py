@@ -4,7 +4,7 @@ from itertools import pairwise
 from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored
-from based_utils.cli.animation import AnimationParams
+from based_utils.cli.animation import AnimParams
 from based_utils.colors import Color
 from based_utils.data.iterators import smart_range
 from more_itertools import consume
@@ -91,9 +91,7 @@ class Problem1(_Problem):
             return self.go(lambda x, y: min_x <= x <= max_x and y < max_y)
 
         consume(
-            log.debug_animated_iter(
-                maps, params=AnimationParams(fps=60, only_every_nth=50)
-            )
+            log.debug_animated_iter(maps, params=AnimParams(fps=60, only_every_nth=50))
         )
         return sum(m == Material.SAND for m in self.map.values())
 
@@ -113,7 +111,7 @@ class Problem2(_Problem):
 
         consume(
             log.debug_animated_iter(
-                maps, params=AnimationParams(fps=60, only_every_nth=1000)
+                maps, params=AnimParams(fps=60, only_every_nth=1000)
             )
         )
         return sum(m == Material.SAND for m in self.map.values())

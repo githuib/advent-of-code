@@ -1,7 +1,7 @@
 from math import prod
 
 from based_utils.cli import animated
-from based_utils.cli.animation import AnimationParams, flashing
+from based_utils.cli.animation import AnimParams, flashing
 from igraph import Graph  # type: ignore[import-untyped]
 
 from advent_of_code import log
@@ -55,9 +55,8 @@ HOCKEY = r"""
 
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
-        lines = [f"   {line}   " for line in HOCKEY.splitlines()]
-        max(len(line) for line in lines)
-        log.debug_animated(animated(lines, flashing), params=AnimationParams(fps=10))
+        anim = animated(HOCKEY.splitlines(), flashing())
+        log.debug_animated(anim, params=AnimParams(fps=30))
 
 
 TEST_INPUT = """

@@ -10,7 +10,7 @@ from based_utils.colors import Color
 from more_itertools.recipes import consume
 
 if TYPE_CHECKING:
-    from based_utils.cli.animation import AnimationParams
+    from based_utils.cli.animation import AnimParams
 
 
 class LogFormatter(Formatter):
@@ -92,7 +92,7 @@ class AppLogger(LogMeister):
         items: Callable[[], Iterable[T]],
         format_item: Callable[[T], Iterable[str]] = None,
         *,
-        params: AnimationParams = None,
+        params: AnimParams = None,
     ) -> Iterator[T]:
         yield from (
             animate(items(), format_item, params=params)
@@ -105,7 +105,7 @@ class AppLogger(LogMeister):
         items: Callable[[], Iterable[T]],
         format_item: Callable[[T], Iterable[str]] = None,
         *,
-        params: AnimationParams = None,
+        params: AnimParams = None,
     ) -> None:
         if self._main_logger.level == LogLevel.DEBUG:
             consume(self.debug_animated_iter(items, format_item, params=params))

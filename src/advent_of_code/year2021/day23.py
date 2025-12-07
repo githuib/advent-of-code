@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import DijkstraState
 from based_utils.cli import Colored
-from based_utils.cli.animation import AnimationParams
+from based_utils.cli.animation import AnimParams
 from based_utils.colors import Color
 from based_utils.data.strings import PRE_A
 
@@ -211,7 +211,7 @@ class _Problem(MultiLineProblem[int], ABC):
             yield ""
 
         log.debug_animated(
-            lambda: enumerate(path.states), fmt, params=AnimationParams(fps=10)
+            lambda: enumerate(path.states), fmt, params=AnimParams(fps=10)
         )
         return path.length
 
