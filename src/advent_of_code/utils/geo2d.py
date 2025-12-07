@@ -174,6 +174,14 @@ def intersect_segments_2(line_1: Line2, line_2: Line2) -> tuple[float, float] | 
     return intersect_2(line_1, line_2, segments=True)
 
 
+@dataclass(frozen=True)
+class Crop:
+    left: int = 0
+    right: int = 0
+    top: int = 0
+    bottom: int = 0
+
+
 class Grid2[T](Mapping[P2, T], ABC):
     _default_value: T
 
@@ -316,37 +324,40 @@ class Grid2[T](Mapping[P2, T], ABC):
         self,
         *,
         format_value: Callable[[P2, T, Colored], Colored] = None,
-        crop_x: tuple[int, int] = None,
-        crop_y: tuple[int, int] = None,
         highlighted: Set[P2] = None,
+        crop: Crop = None,
+        crop_to_terminal: bool = True,
     ) -> Iterator[str]:
         (x_lo, y_lo), (x_hi, y_hi) = self.span
 
-        if crop_x:
-            crop_x_lo, crop_x_hi = crop_x
-            x_lo, x_hi = max(x_lo, crop_x_lo), min(x_hi, crop_x_hi)
+        if crop_to_terminal:
+            max_width, max_height = get_terminal_size()
+            # Keep centered horizontally
+            x_cropped = max(0, self.width - max_width)
+            x_lo += x_cropped // 2
+            x_hi -= (x_cropped - 1) // 2 + 1
+            # Crop from bottom
+            y_cropped = max(0, self.height - max_height + 1)
+            y_hi -= y_cropped
 
-        if crop_y:
-            crop_y_lo, crop_y_hi = crop_y
-            y_lo, y_hi = max(y_lo, crop_y_lo), min(y_hi, crop_y_hi)
+        if crop:
+            x_lo += crop.left
+            x_hi -= crop.right
+            y_lo += crop.top
+            y_hi -= crop.bottom
 
-        max_width, max_height = get_terminal_size()
-        x_hi = min(x_hi, x_lo + max_width - 1)
-        y_hi = min(y_hi, y_lo + max_height - 1)
-
-        def fmt(pos: P2, value: T) -> Colored:
+        def fmt(pos: P2) -> str:
+            value = self[pos]
             s = self._format_value(pos, value)
             if format_value:
                 s = format_value(pos, value, s)
             if pos in (highlighted or {}):
                 c = (s.color or Color.from_name("green")).but_with(lightness=0.8)
                 s = s.with_color(c).with_background(c.with_changed(lightness=0.5))
-            return s
+            return s.formatted
 
         for y in range(y_lo, y_hi + 1):
-            yield "".join(
-                fmt((x, y), self[x, y]).formatted for x in range(x_lo, x_hi + 1)
-            )
+            yield "".join(fmt((x, y)) for x in range(x_lo, x_hi + 1))
 
 
 @cache

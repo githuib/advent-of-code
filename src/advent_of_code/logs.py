@@ -27,7 +27,8 @@ class LogFormatter(Formatter):
                 record.msg = "".join(f"{line}\n" for line in record.msg)
             if isinstance(record.msg, str):
                 return Formatter("%(message)s").format(record)
-            return pformat(record.msg, width=get_terminal_size()[0])
+            max_width, _max_height = get_terminal_size()
+            return pformat(record.msg, width=max_width)
 
         # Warnings & errors (or external package loggings): add prefix and color
         fmt = f"{'' if from_internal_code else '[%(name)s] '}%(levelname)s: %(message)s"

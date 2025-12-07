@@ -72,9 +72,7 @@ class _Problem(MultiLineProblem[int], ABC):
         while keep_going(x, y):
             if (np := self.next_pos(x, y)) == START:
                 self.map[x, y] = Material.SAND
-                yield self.map.to_lines(
-                    format_value=format_map_value, crop_x=(START_X - 18, START_X + 81)
-                )
+                yield self.map.to_lines(format_value=format_map_value)
             x, y = np
 
 
