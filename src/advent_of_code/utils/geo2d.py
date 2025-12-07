@@ -185,10 +185,6 @@ class Crop:
 class Grid2[T](Mapping[P2, T], ABC):
     _default_value: T
 
-    class NoDefaultError(Exception):
-        def __init__(self) -> None:
-            super().__init__("Default value needs to be provided")
-
     def __init__(
         self,
         items: Mapping[P2, T] | Iterable[tuple[P2, T]] | None = None,
@@ -198,10 +194,8 @@ class Grid2[T](Mapping[P2, T], ABC):
     ) -> None:
         if default_value is not None:
             self._default_value = default_value
-
-        self._grid: dict[P2, T] = dict(items or {})
-
         self.cyclic = cyclic
+        self._grid: dict[P2, T] = dict(items or {})
 
     def __len__(self) -> int:
         return len(self._grid)
@@ -230,7 +224,11 @@ class Grid2[T](Mapping[P2, T], ABC):
         return pos in self._grid
 
     def __or__(self, other: Mapping[P2, T]) -> Self:
-        return self.__class__(self._grid | dict(other))
+        return self.__class__(
+            self._grid | dict(other),
+            default_value=self._default_value,
+            cyclic=self.cyclic,
+        )
 
     @cached_property
     def x_range(self) -> tuple[int, int]:
@@ -430,10 +428,10 @@ class _MutableGrid2[T](
         *,
         default_value: T = None,
         cyclic: bool = False,
-        allow_extention: bool = False,
+        allow_resize: bool = False,
     ) -> None:
         super().__init__(items, default_value=default_value, cyclic=cyclic)
-        self._allow_extention = allow_extention or not items
+        self._allow_resize = allow_resize or not items
 
     def __setitem__(self, pos: P2, value: T, /) -> None:
         """
@@ -456,7 +454,7 @@ class _MutableGrid2[T](
             ...
         KeyError: (3, 0)
         >>> grid_2 = MNG(
-        ...     {(0, 0): 1, (1, 2): 1, (2, 1): 1}, default_value=2, allow_extention=True
+        ...     {(0, 0): 1, (1, 2): 1, (2, 1): 1}, default_value=2, allow_resize=True
         ... )
         >>> list(grid_2.rows)
         [[1, 2, 2], [2, 2, 1], [2, 1, 2]]
@@ -479,15 +477,10 @@ class _MutableGrid2[T](
         try:
             _ = self[pos]
         except KeyError:
-            will_extend = True
-        else:
-            will_extend = False
-
-        if will_extend:
-            if not self._allow_extention:
+            if not self._allow_resize:
                 # We're not allowed to set an item we can't access
                 # (or: only allowed to "update", not to extend the grid).
-                raise KeyError(pos)
+                raise
             # Clear cached properties so they will be recalculated based on the extended grid.
             self.clear_property_cache()
 
@@ -498,7 +491,10 @@ class _MutableGrid2[T](
 
     def __or__(self, other: Mapping[P2, T]) -> Self:
         return self.__class__(
-            self._grid | dict(other), allow_extention=self._allow_extention
+            self._grid | dict(other),
+            default_value=self._default_value,
+            cyclic=self.cyclic,
+            allow_resize=self._allow_resize,
         )
 
 
