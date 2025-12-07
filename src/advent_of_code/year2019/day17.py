@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.utils.geo2d import P2, CharacterGrid2
+from advent_of_code.utils.geo2d import P2, CharGrid2
 
 from .intcode import IntcodeProblem
 
@@ -60,7 +60,7 @@ class Problem2(Problem1):
 
         # stage 1: Constructed path from first output
         processed = process_output(runner)
-        log.lazy_debug(lambda: CharacterGrid2(processed).to_lines())
+        log.lazy_debug(lambda: CharGrid2(processed).to_lines())
 
         # Stage 2: Patterns derived manually after looking at path
         self.computer.inputs = [

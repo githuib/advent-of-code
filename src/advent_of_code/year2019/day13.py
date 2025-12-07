@@ -6,7 +6,7 @@ from based_utils.calx import compare
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.utils.geo2d import MutableCharacterGrid2
+from advent_of_code.utils.geo2d import MutableCharGrid2
 
 from .intcode import IntcodeProblem
 
@@ -37,7 +37,7 @@ class Problem2(Problem1):
     def grids(self) -> Iterator[tuple[Iterator[str], int]]:
         self.computer.program[0] = 2
         score, paddle_x = 0, None
-        grid = MutableCharacterGrid2()
+        grid = MutableCharGrid2()
         for x, y, value in batched(self.computer.run_to_next_output(), 3, strict=True):
             if (x, y) == (-1, 0):
                 score = value

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from more_itertools import nth
 
-from advent_of_code.problems import CharacterGridProblem, NoSolutionFoundError
+from advent_of_code.problems import CharGridProblem, NoSolutionFoundError
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Set
@@ -23,7 +23,7 @@ def asteroids_grouped_by_angle(laser: P2, objects: Set[P2]) -> dict[float, list[
     return grouped_by_angle
 
 
-class _Problem(CharacterGridProblem[int], ABC):
+class _Problem(CharGridProblem[int], ABC):
     def __init__(self) -> None:
         objects = self.grid.points_with_value("#")
         self.grouped_by_angle = max(

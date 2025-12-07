@@ -371,7 +371,7 @@ def _colors(n: int) -> list[Color]:
     ]
 
 
-class CharacterGrid2(Grid2[str]):
+class CharGrid2(Grid2[str]):
     _default_value = ""
 
     @classmethod
@@ -502,11 +502,15 @@ class _MutableGrid2[T](
         )
 
 
-class MutableCharacterGrid2(CharacterGrid2, _MutableGrid2[str]):
+class MutableCharGrid2(CharGrid2, _MutableGrid2[str]):
     pass
 
 
 class MutableNumberGrid2(NumberGrid2, _MutableGrid2[int]):
+    pass
+
+
+class MutableBitGrid2(BitGrid2, _MutableGrid2[int]):
     pass
 
 

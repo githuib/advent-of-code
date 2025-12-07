@@ -7,20 +7,18 @@ from based_utils.data.iterators import repeat_transform, rotated_cw
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import CharacterGridProblem
-from advent_of_code.utils.geo2d import CharacterGrid2
+from advent_of_code.problems import CharGridProblem
+from advent_of_code.utils.geo2d import CharGrid2
 
 type Line = tuple[str, ...]
 type Lines = Iterable[Line]
 
 
 def debug_grid(lines: Lines) -> None:
-    log.lazy_debug(
-        CharacterGrid2.from_lines(["".join(line) for line in lines]).to_lines
-    )
+    log.lazy_debug(CharGrid2.from_lines(["".join(line) for line in lines]).to_lines)
 
 
-class _Problem(CharacterGridProblem[int], ABC):
+class _Problem(CharGridProblem[int], ABC):
     def __init__(self) -> None:
         self.cols: Lines = [
             tuple(v for (x, _), v in self.grid.items() if x == c)

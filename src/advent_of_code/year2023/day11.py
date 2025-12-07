@@ -4,23 +4,19 @@ from based_utils.data.iterators import repeat_transform
 from more_itertools import last
 
 from advent_of_code import log
-from advent_of_code.problems import CharacterGridProblem
-from advent_of_code.utils.geo2d import (
-    CharacterGrid2,
-    MutableCharacterGrid2,
-    manhattan_dist_2,
-)
+from advent_of_code.problems import CharGridProblem
+from advent_of_code.utils.geo2d import CharGrid2, MutableCharGrid2, manhattan_dist_2
 
 
-class _Problem(CharacterGridProblem[int], ABC):
+class _Problem(CharGridProblem[int], ABC):
     empty_factor: int
 
     def __init__(self) -> None:
         log.lazy_debug(self.grid.to_lines)
 
     def solution(self) -> int:
-        def expand(grid: CharacterGrid2) -> CharacterGrid2:
-            big_grid, offset = MutableCharacterGrid2(), 0
+        def expand(grid: CharGrid2) -> CharGrid2:
+            big_grid, offset = MutableCharGrid2(), 0
             for cx in range(grid.width):
                 row = {(y, x + offset): v for (x, y), v in grid.items() if x == cx}
                 if "#" in row.values():

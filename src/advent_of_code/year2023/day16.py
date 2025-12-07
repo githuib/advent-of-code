@@ -3,14 +3,14 @@ from collections import deque
 from typing import TYPE_CHECKING
 
 from advent_of_code import log
-from advent_of_code.problems import CharacterGridProblem
+from advent_of_code.problems import CharGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP
 
 if TYPE_CHECKING:
     from collections.abc import Set
 
 
-class _Problem(CharacterGridProblem[int], ABC):
+class _Problem(CharGridProblem[int], ABC):
     def energized(self, start: tuple[P2, P2]) -> Set[P2]:
         beams = deque([start])
         visited = set()

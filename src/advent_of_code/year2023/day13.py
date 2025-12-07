@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from more_itertools import split_at
 
 from advent_of_code.problems import MultiLineProblem, NoSolutionFoundError
-from advent_of_code.utils.geo2d import CharacterGrid2
+from advent_of_code.utils.geo2d import CharGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Sequence
@@ -15,9 +15,7 @@ class _Problem(MultiLineProblem[int], ABC):
 
     def cols_rows(self) -> Iterator[tuple[list[str], list[str]]]:
         for lines in split_at(self.lines, lambda line: line == ""):
-            grid = CharacterGrid2.from_lines(
-                lines, parse_value=lambda c: str(".#".index(c))
-            )
+            grid = CharGrid2.from_lines(lines, parse_value=lambda c: str(".#".index(c)))
             yield (
                 [
                     "".join(v for (x, _), v in grid.items() if x == c)

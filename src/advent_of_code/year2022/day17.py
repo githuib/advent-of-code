@@ -9,7 +9,7 @@ from more_itertools import nth_or_last, unzip
 
 from advent_of_code import log
 from advent_of_code.problems import OneLineProblem
-from advent_of_code.utils.geo2d import CharacterGrid2
+from advent_of_code.utils.geo2d import CharGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -88,7 +88,7 @@ class _Problem(OneLineProblem[int], ABC):
                     return "^"
                 return "#" if row_ >> c & 1 else "."
 
-            return CharacterGrid2(
+            return CharGrid2(
                 ((c, r), value(row, r, c))
                 for r, row in enumerate(pattern)
                 for c in range(6, -1, -1)
