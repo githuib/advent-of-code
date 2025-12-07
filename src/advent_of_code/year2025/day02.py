@@ -1,6 +1,10 @@
-from abc import ABC
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
 from advent_of_code.problems import OneLineProblem
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 def invalid(lo: str, hi: str, d: int) -> set[int]:
@@ -25,25 +29,32 @@ class _Problem(OneLineProblem[int], ABC):
     def __init__(self) -> None:
         self.ranges = [s.split("-") for s in self.line.split(",")]
 
-    def numbers(self, n: int) -> set[int]:
-        nrs = (invalid(lo, hi, d) for lo, hi in self.ranges for d in range(2, n + 1))
-        return set.union(*nrs)
+    @abstractmethod
+    def num_size(self) -> int: ...
+
+    def numbers(self) -> Iterator[set[int]]:
+        for d in range(2, self.num_size() + 1):
+            for lo, hi in self.ranges:
+                yield invalid(lo, hi, d)
+
+    def solution(self) -> int:
+        return sum(set.union(*self.numbers()))
 
 
 class Problem1(_Problem):
     test_solution = 1227775554
     puzzle_solution = 41294979841
 
-    def solution(self) -> int:
-        return sum(self.numbers(2))
+    def num_size(self) -> int:
+        return 2
 
 
 class Problem2(_Problem):
     test_solution = 4174379265
     puzzle_solution = 66500947346
 
-    def solution(self) -> int:
-        return sum(self.numbers(max(len(hi) for lo, hi in self.ranges)))
+    def num_size(self) -> int:
+        return max(len(hi) for lo, hi in self.ranges)
 
 
 TEST_INPUT = """
