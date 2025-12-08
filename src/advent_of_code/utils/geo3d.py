@@ -1,10 +1,15 @@
 from collections.abc import Iterable, Iterator, Mapping
 from functools import cached_property
+from math import hypot
 from typing import NamedTuple
 
 from more_itertools import transpose
 
 type P3 = tuple[int, int, int]
+
+
+def dist_3(p1: P3D, p2: P3D) -> float:
+    return (p2 - p1).length
 
 
 class P3D(NamedTuple):
@@ -20,14 +25,6 @@ class P3D(NamedTuple):
     @classmethod
     def unity(cls: type[P3D]) -> P3D:
         return cls(1, 1, 1)
-
-    @property
-    def manhattan_length(self) -> int:
-        x, y, z = self
-        return abs(x) + abs(y) + abs(z)
-
-    def manhattan_distance_to(self, other: P3D) -> int:
-        return (other - self).manhattan_length
 
     def __neg__(self) -> P3D:
         x, y, z = self
@@ -71,6 +68,21 @@ class P3D(NamedTuple):
         if isinstance(other, P3D):
             return self.manhattan_distance_to(other)
         return NotImplemented
+
+    @property
+    def length(self) -> float:
+        return hypot(self.x, self.y, self.z)
+
+    def distance_to(self, other: P3D) -> float:
+        return dist_3(self, other)
+
+    @property
+    def manhattan_length(self) -> int:
+        x, y, z = self
+        return abs(x) + abs(y) + abs(z)
+
+    def manhattan_distance_to(self, other: P3D) -> int:
+        return (other - self).manhattan_length
 
     @property
     def volume(self) -> int:
