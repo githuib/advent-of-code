@@ -36,8 +36,8 @@ class LogFormatter(Formatter):
         prefix, *_ = msg.split(record.message)
         msg = msg.replace("\n", "\n" + prefix)
         color = {
-            LogLevel.DEBUG: Colors.grey.shade(0.5),
-            LogLevel.INFO: Colors.grey.shade(0.75),
+            LogLevel.DEBUG: Colors.grey,
+            LogLevel.INFO: Colors.grey.bright,
             LogLevel.WARNING: Colors.orange,
             LogLevel.ERROR: Colors.red,
             LogLevel.CRITICAL: Colors.red,

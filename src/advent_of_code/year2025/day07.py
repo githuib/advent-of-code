@@ -1,15 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.calx import (
-    InterpolationBounds,
-    LogarithmicInterpolationBounds,
-    MappingBounds,
-)
+from based_utils.calx import InterpolationBounds, LogarithmicInterpolationBounds
 from based_utils.cli import Colored
-from based_utils.colors import Colors
+from based_utils.colors import Color, Colors
 from more_itertools import last
-from more_itertools.recipes import consume
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
@@ -23,23 +18,30 @@ def parse(s: str) -> int:
     return -1 if s == "^" else 1 if s == "S" else 0
 
 
-def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
+# Maximum value v will have with my input
+VALUE_MAPPING = LogarithmicInterpolationBounds(1.01, 2205720519616)
+HUE_MAPPING = InterpolationBounds(0.8, -0.1)
+SHADE_MAPPING = InterpolationBounds(0.3, 0.6)
+
+C_SPLITTER = Colors.blue.dark.saturated(0.6)
+C_BACKGROUND = Colors.blue.very_dark
+
+
+def fmt(_p: P2, v: int, _colored: Colored) -> Colored:
     if v == -1:
-        return Colored("^", Colors.indigo.shade(0.4))
+        return Colored("^", C_SPLITTER)
     if v == 0:
-        return Colored(".", Colors.blue.shade(0.2))
-    b_from = LogarithmicInterpolationBounds(1, 10**12)
-    b_to = InterpolationBounds(0.2, 0.9)
-    return Colored("|", Colors.pink.shade(MappingBounds(b_from, b_to).map(v)))
+        return Colored(".", C_BACKGROUND)
+    f = VALUE_MAPPING.inverse_interpolate(v)
+    hue, shade = HUE_MAPPING.interpolate(f), SHADE_MAPPING.interpolate(f)
+    return Colored("|", Color(hue=hue, lightness=shade))
 
 
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
         self.grid = MutableNumGrid2.from_lines(self.lines[::2], parse_value=parse)
-        consume(
-            log.debug_animated_iter(
-                self.manifold, lambda _: self.grid.to_lines(format_value=format_value)
-            )
+        log.debug_animated(
+            self.manifold, lambda _: self.grid.to_lines(format_value=fmt)
         )
 
     def manifold(self) -> Iterator[None]:

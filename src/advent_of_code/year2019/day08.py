@@ -32,10 +32,8 @@ def format_char(s: str) -> str:
     if s not in ".#":
         return s
 
-    color_fg = Colors.yellow.shade(0.8)
-    fg = color_fg if s == "#" else color_fg.contrasting_hue.darker(2)
-    bg = fg.darker(2)
-    return Colored(s, fg, bg).formatted
+    c = Colors.yellow.very_bright if s == "#" else Colors.blue.dark
+    return Colored(s, c, c.darker()).formatted
 
 
 def colored(s: str) -> str:

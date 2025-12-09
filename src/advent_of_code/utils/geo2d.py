@@ -6,7 +6,7 @@ from math import hypot
 from os import get_terminal_size
 from typing import TYPE_CHECKING, Literal, Self
 
-from based_utils.calx import map_number, randf
+from based_utils.calx import InterpolationBounds, MappingBounds, randf
 from based_utils.cli import Colored
 from based_utils.colors import Color, Colors
 from based_utils.data.iterators import (
@@ -350,8 +350,8 @@ class Grid2[T](Mapping[P2, T], ABC):
             if format_value:
                 s = format_value(pos, value, s)
             if pos in (highlighted or {}):
-                c = (s.color or Colors.green).shade(0.8)
-                s = s.with_color(c).with_background(c.darker(2))
+                c = (s.color or Colors.green).very_bright
+                s = s.with_color(c).with_background(c.darker())
             return s.formatted
 
         for y in range(y_lo, y_hi + 1):
@@ -378,7 +378,12 @@ class CharGrid2(Grid2[str]):
         except ValueError:
             n = 3
         color = _colors(5)[n]
-        return Colored(value, color, color.darker(1.3))
+        return Colored(value, color, color.darker())
+
+
+NUM_SHADES_MAPPING = MappingBounds(
+    InterpolationBounds(1, 10), InterpolationBounds(0.2, 0.5)
+)
 
 
 class NumGrid2(Grid2[int]):
@@ -391,8 +396,8 @@ class NumGrid2(Grid2[int]):
     def _format_value(self, _pos: P2, value: int) -> Colored:
         if value < 0:
             return Colored(".")
-        s = map_number(min(value, 10), (1, 10), (0.2, 0.5))
-        return Colored(str(value) if value < 10 else "+", Colors.green.shade(s))
+        c = Colors.green.shade(NUM_SHADES_MAPPING.map(min(value, 10)))
+        return Colored(str(value) if value < 10 else "+", c)
 
 
 class BitGrid2(Grid2[bool]):
@@ -409,7 +414,7 @@ class BitGrid2(Grid2[bool]):
     ) -> Colored:
         c_bad, c_good, _ = _colors()
         color = c_good if value else c_bad
-        return Colored("#" if value else ".", color, color.darker(1.3))
+        return Colored("#" if value else ".", color, color.darker())
 
 
 class _MutableGrid2[T](

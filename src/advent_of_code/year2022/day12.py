@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import AStarState, BFSState, DijkstraState
 from based_utils.algo.paths import State
 from based_utils.cli import Colored, format_table, human_readable_duration, timed
-from based_utils.colors import Colors
+from based_utils.colors import Color, Colors
 from based_utils.data.strings import PRE_a
 
 from advent_of_code import log
@@ -110,39 +110,35 @@ class _Problem(NumGridProblem[int], ABC):
                 for p, h in self.grid.items()
             }
 
-            c_path = Colors.pink.shade(0.35)
-            c_start = Colors.blue.shade(0.4)
-            c_end = Colors.poison
-            c_searched = Colors.brown
+            def cs(v: object, color: Color) -> Colored:
+                return Colored(v, color, color.brighter())
 
-            class Styles:
-                start = c_start, c_start.brighter(1.75)
-                end = c_end, c_end.brighter(1.75)
-                path = c_path, c_path.brighter(1.75)
-                a = Colors.grey.shade(0.15), Colors.grey.shade(0.25)
-                a_star = (c_searched.darker(1.5), c_searched.darker(1.1))
-                dijkstra = (c_searched.darker(2.25), c_searched.darker(1.4))
-                bfs = (c_searched.darker(3), c_searched.darker(1.7))
-                none = Colors.grey.shade(0.15), Colors.black
+            def cf(v: object, color: Color) -> str:
+                return cs(v, color).formatted
+
+            c_start = Colors.blue.dark
+            c_end = Colors.poison
+            c_path = Colors.pink.dark
+            c_bfs = Colors.brown.saturated(0.5).very_dark
+            c_dijkstra = c_bfs.brighter()
+            c_a_star = c_dijkstra.brighter()
 
             def grid_cell_str(p: P2, default_val: int, _colored: Colored) -> Colored:
                 v = hill_chars.get(p, default_val)
                 return (
-                    Colored(v, *Styles.end)
+                    cs(v, c_end)
                     if (p == start_pos)
-                    else Colored(v, *Styles.start)
+                    else cs(v, c_start)
                     if (p in ep)
-                    else Colored(v, *Styles.path)
+                    else cs(v, c_path)
                     if (p in p_points)
-                    else Colored(v, *Styles.a_star)
+                    else cs(v, c_a_star)
                     if (p in visited_points_a_star)
-                    else Colored(v, *Styles.dijkstra)
+                    else cs(v, c_dijkstra)
                     if (p in visited_points_dijkstra)
-                    else Colored(v, *Styles.bfs)
+                    else cs(v, c_bfs)
                     if (p in visited_points_bfs)
-                    else Colored(v, *Styles.a)
-                    if (v == end_val)
-                    else Colored(v, *Styles.none)
+                    else Colored(v, c_dijkstra)
                 )
 
             yield from self.grid.to_lines(format_value=grid_cell_str)
@@ -150,34 +146,31 @@ class _Problem(NumGridProblem[int], ABC):
             yield from format_table(
                 ("Legend", "Algorithm", "Visited", "Path found in"),
                 (
-                    f"{Colored('x', *Styles.bfs).formatted} visited by BFS",
+                    f"{cf('x', c_bfs)} visited by BFS",
                     "BFS",
                     len(visited_points_bfs),
                     human_readable_duration(t_bfs),
                 ),
                 (
-                    f"{Colored('y', *Styles.dijkstra).formatted} visited by Dijkstra & BFS",
+                    f"{cf('y', c_dijkstra)} visited by Dijkstra & BFS",
                     "Dijkstra",
                     len(visited_points_dijkstra),
                     human_readable_duration(t_dijkstra),
                 ),
                 (
-                    f"{Colored('z', *Styles.a_star).formatted} visited by A*, Dijkstra & BFS",
+                    f"{cf('z', c_a_star)} visited by A*, Dijkstra & BFS",
                     "A*",
                     len(visited_points_a_star),
                     human_readable_duration(t_a_star),
                 )
                 if p_a_star
                 else (),
-                (f"{Colored('S', *Styles.start).formatted} start",),
-                (f"{Colored('E', *Styles.end).formatted} end",),
-                (f"{Colored('p', *Styles.path).formatted} path",),
-                (
-                    f"{Colored('a', *Styles.a).formatted} possible starting points (including un-escapable)",
-                ),
-                (f"{Colored('w', *Styles.none).formatted} wild, unexplored terrain",),
+                (f"{cf('S', c_start)} start",),
+                (f"{cf('E', c_end)} end",),
+                (f"{cf('p', c_path)} path",),
+                (f"{Colored('w', c_dijkstra).formatted} wild, unexplored terrain",),
                 column_splits=[1],
-                color=c_searched.darker(1.3),
+                color=c_a_star,
             )
 
         log.lazy_debug(_debug_str)

@@ -7,7 +7,6 @@ from based_utils.cli import Colored
 from based_utils.cli.animation import AnimParams
 from based_utils.colors import Colors
 from based_utils.data.iterators import smart_range
-from more_itertools import consume
 from parse import parse  # type: ignore[import-untyped]
 
 from advent_of_code import log
@@ -29,20 +28,16 @@ START = START_X, START_Y = 500, 0
 
 
 def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
-    air = Colors.grey.shade(0.15)
-    sand = Colors.orange.shade(0.9).saturated(0.25)
-    rock = sand.darker(2)
-    source = Colors.blue
     if 0 <= v < 4:
         c, s = {
-            Material.AIR: (air, "."),
-            Material.ROCK: (rock, "#"),
-            Material.SAND: (sand, "o"),
-            Material.SOURCE: (source, "+"),
+            Material.AIR: (Colors.grey.very_dark, "."),
+            Material.ROCK: (Colors.pink.dark, "#"),
+            Material.SAND: (Colors.brown.saturated(0.33).very_bright, "o"),
+            Material.SOURCE: (Colors.blue, "+"),
         }[Material(v)]
     else:
         return NotImplemented
-    return Colored(s, c, c.darker(1.25))
+    return Colored(s, c, c.darker())
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -90,9 +85,7 @@ class Problem1(_Problem):
         def maps() -> Iterator[Iterator[str]]:
             return self.go(lambda x, y: min_x <= x <= max_x and y < max_y)
 
-        consume(
-            log.debug_animated_iter(maps, params=AnimParams(fps=60, only_every_nth=50))
-        )
+        log.debug_animated(maps, params=AnimParams(fps=60, only_every_nth=50))
         return sum(m == Material.SAND for m in self.map.values())
 
 
@@ -109,11 +102,7 @@ class Problem2(_Problem):
         def maps() -> Iterator[Iterator[str]]:
             return self.go(lambda _x, _y: self.map[START] == Material.SOURCE)
 
-        consume(
-            log.debug_animated_iter(
-                maps, params=AnimParams(fps=60, only_every_nth=1000)
-            )
-        )
+        log.debug_animated(maps, params=AnimParams(fps=60, only_every_nth=1000))
         return sum(m == Material.SAND for m in self.map.values())
 
 

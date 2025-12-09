@@ -85,11 +85,9 @@ class _Problem(CharGridProblem[int], ABC):
                     color = {
                         s: c.adjust(hue=i / 36) for i, s in enumerate(DIRECTION_TILES)
                     }[v]
-                elif v == ".":
-                    color = Colors.indigo
                 else:
-                    color = Colors.pink
-                return Colored(v, color, color.darker(2))
+                    color = Colors.blue.dark if v == "." else Colors.pink.dark
+                return Colored(v, color, color.darker())
                 # on_path = p in positions
                 # return Colored(
                 #     v,

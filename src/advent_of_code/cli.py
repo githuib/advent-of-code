@@ -95,9 +95,8 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
     # TODO: Might be interesting to show input loading time separately.
     duration = dur_init + dur_solution
 
-    table_color = Colors.blue.shade(0.35)
     table_rows = ([line] for line in output_lines(mine, actual, duration))
-    log.info(format_table(*table_rows, color=table_color))
+    log.info(format_table(*table_rows, color=Colors.blue.dark))
 
     return mine == actual
 

@@ -20,6 +20,9 @@ def remove_rolls(grid_items: Iterable[tuple[P2, int]]) -> tuple[Rolls, Rolls]:
     return polarized(grid_items, lambda i: i[1] == -1)
 
 
+SHADES_MAPPING = MappingBounds(InterpolationBounds(4, 8), InterpolationBounds(0.3, 0.9))
+
+
 class _Problem(CharGridProblem[int], ABC):
     def __init__(self) -> None:
         self.num_grid = MutableNumGrid2(
@@ -43,16 +46,13 @@ class _Problem(CharGridProblem[int], ABC):
     def removed(self) -> Iterator[Rolls]: ...
 
     def grid_str(self, removed: Rolls) -> Iterator[str]:
-        bounds = MappingBounds(InterpolationBounds(4, 8), InterpolationBounds(0.3, 0.9))
-
         def fmt(p: P2, v: int, _c: Colored) -> Colored:
             if p in [p for p, _v in removed]:
                 cx = Colors.pink
                 return Colored("x", cx, cx.contrasting_shade)
             if v == -1:
                 return Colored(".", Colors.blue.shade(0.25))
-            c = Colors.green.shade(bounds.map(v))
-            return Colored(str(v), c, c.darker(5))
+            return Colored(str(v), Colors.green.shade(SHADES_MAPPING.map(v)))
 
         yield from self.num_grid.to_lines(format_value=fmt, crop=Crop(bottom=2))
         yield ""

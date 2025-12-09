@@ -22,14 +22,14 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
         dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
     )
     colors = {
-        ".": Colors.ocean.shade(0.9),
-        ">": Colors.pink.shade(0.6).saturated(0.5),
-        "v": Colors.purple.shade(0.4).saturated(0.5),
+        ".": Colors.ocean.very_bright,
+        ">": Colors.pink.saturated(0.5),
+        "v": Colors.purple.dark.saturated(0.5),
     }
 
     def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
         c = colors[v]
-        return Colored(v, c, c.darker(1.3))
+        return Colored(v, c, c.darker())
 
     return board.to_lines(format_value=format_value)
 
