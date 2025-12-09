@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
+from based_utils.calx import InterpolationBounds, MappingBounds
 from based_utils.cli import Colored
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from based_utils.data.iterators import polarized
 
 from advent_of_code import log
@@ -42,14 +43,16 @@ class _Problem(CharGridProblem[int], ABC):
     def removed(self) -> Iterator[Rolls]: ...
 
     def grid_str(self, removed: Rolls) -> Iterator[str]:
+        bounds = MappingBounds(InterpolationBounds(4, 8), InterpolationBounds(0.3, 0.9))
+
         def fmt(p: P2, v: int, _c: Colored) -> Colored:
             if p in [p for p, _v in removed]:
-                cx = Color.from_name("pink")
+                cx = Colors.pink
                 return Colored("x", cx, cx.contrasting_shade)
             if v == -1:
-                return Colored(".", Color.from_name("yellow", lightness=0.4))
-            c = Color.from_name("green")
-            return Colored(str(v), c.shade(v / 10), c.contrasting_shade)
+                return Colored(".", Colors.blue.shade(0.25))
+            c = Colors.green.shade(bounds.map(v))
+            return Colored(str(v), c, c.darker(5))
 
         yield from self.num_grid.to_lines(format_value=fmt, crop=Crop(bottom=2))
         yield ""

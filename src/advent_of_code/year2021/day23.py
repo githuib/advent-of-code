@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import DijkstraState
 from based_utils.cli import Colored
 from based_utils.cli.animation import AnimParams
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from based_utils.data.strings import PRE_A
 
 from advent_of_code import log
@@ -149,11 +149,11 @@ class AmphipodState(DijkstraState[Constants, Variables]):
           #A#D#C#A#
           #########
         """
-        edge = Color.from_name("indigo", lightness=0.35)
-        dot = Color.from_name("poison", lightness=0.6)
-        amph = Color.from_name("pink", lightness=0.1)
+        edge = Colors.indigo.shade(0.35)
+        dot = Colors.poison.shade(0.6)
+        amph = Colors.pink.shade(0.1)
 
-        w = Colored("#", edge, edge.with_changed(lightness=0.7)).formatted
+        w = Colored("#", edge, edge.darker(1.4)).formatted
 
         def colored_char(c: str) -> str:
             color = dot if c == "." else amph

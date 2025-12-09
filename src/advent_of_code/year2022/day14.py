@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored
 from based_utils.cli.animation import AnimParams
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from based_utils.data.iterators import smart_range
 from more_itertools import consume
 from parse import parse  # type: ignore[import-untyped]
@@ -29,10 +29,10 @@ START = START_X, START_Y = 500, 0
 
 
 def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
-    air = Color.grey(lightness=0.15)
-    sand = Color.from_name("orange", lightness=0.9, saturation=0.25)
-    rock = sand.with_changed(lightness=0.5)
-    source = Color.from_name("blue")
+    air = Colors.grey.shade(0.15)
+    sand = Colors.orange.shade(0.9).saturated(0.25)
+    rock = sand.darker(2)
+    source = Colors.blue
     if 0 <= v < 4:
         c, s = {
             Material.AIR: (air, "."),
@@ -42,7 +42,7 @@ def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
         }[Material(v)]
     else:
         return NotImplemented
-    return Colored(s, c, c.with_changed(lightness=0.8))
+    return Colored(s, c, c.darker(1.25))
 
 
 class _Problem(MultiLineProblem[int], ABC):

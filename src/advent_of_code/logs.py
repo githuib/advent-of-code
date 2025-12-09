@@ -6,7 +6,7 @@ from pprint import pformat
 from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister, animate
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from more_itertools.recipes import consume
 
 if TYPE_CHECKING:
@@ -36,11 +36,11 @@ class LogFormatter(Formatter):
         prefix, *_ = msg.split(record.message)
         msg = msg.replace("\n", "\n" + prefix)
         color = {
-            LogLevel.DEBUG: Color.grey(0.5),
-            LogLevel.INFO: Color.grey(0.75),
-            LogLevel.WARNING: Color.from_name("orange"),
-            LogLevel.ERROR: Color.from_name("red"),
-            LogLevel.CRITICAL: Color.from_name("red"),
+            LogLevel.DEBUG: Colors.grey.shade(0.5),
+            LogLevel.INFO: Colors.grey.shade(0.75),
+            LogLevel.WARNING: Colors.orange,
+            LogLevel.ERROR: Colors.red,
+            LogLevel.CRITICAL: Colors.red,
         }[LogLevel(record.levelno)]
         return Colored(msg, color).formatted
 

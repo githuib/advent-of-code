@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored, animated
 from based_utils.cli.animation import AnimParams, flashing, moving_forward
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from based_utils.data.iterators import first_duplicate
 
 from advent_of_code import log
@@ -22,14 +22,14 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
         dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
     )
     colors = {
-        ".": Color.from_name("ocean", lightness=0.9),
-        ">": Color.from_name("pink", lightness=0.6, saturation=0.5),
-        "v": Color.from_name("purple", lightness=0.4, saturation=0.5),
+        ".": Colors.ocean.shade(0.9),
+        ">": Colors.pink.shade(0.6).saturated(0.5),
+        "v": Colors.purple.shade(0.4).saturated(0.5),
     }
 
     def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
         c = colors[v]
-        return Colored(v, c, c.with_changed(lightness=0.75))
+        return Colored(v, c, c.darker(1.3))
 
     return board.to_lines(format_value=format_value)
 
@@ -79,8 +79,8 @@ POSEIDON = r"""
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-        fg = Color.from_name("poison", lightness=0.9)
-        bg = Color.from_name("ocean", lightness=0.7, saturation=0.9)
+        fg = Colors.poison.shade(0.9)
+        bg = Colors.ocean.shade(0.7).saturated(0.9)
         anim = animated(POSEIDON.splitlines(), moving_forward, flashing(fg=fg, bg=bg))
         log.debug_animated(anim, params=AnimParams(fps=10))
 

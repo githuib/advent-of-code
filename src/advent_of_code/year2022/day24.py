@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import AStarState
 from based_utils.cli import Colored
-from based_utils.colors import Color
+from based_utils.colors import Colors
 
 from advent_of_code import log
 from advent_of_code.problems import CharGridProblem
@@ -81,17 +81,15 @@ class _Problem(CharGridProblem[int], ABC):
 
             def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
                 if v in DIRECTION_TILES:
-                    c = Color.from_name("yellow", lightness=0.45, saturation=0.75)
+                    c = Colors.yellow.shade(0.45).saturated(0.75)
                     color = {
-                        s: c.with_changed(hue=i / 36)
-                        for i, s in enumerate(DIRECTION_TILES)
+                        s: c.adjust(hue=i / 36) for i, s in enumerate(DIRECTION_TILES)
                     }[v]
                 elif v == ".":
-                    color = Color.from_name("indigo")
+                    color = Colors.indigo
                 else:
-                    color = Color.from_name("pink")
-                background = color.with_changed(lightness=0.5)
-                return Colored(v, color, background)
+                    color = Colors.pink
+                return Colored(v, color, color.darker(2))
                 # on_path = p in positions
                 # return Colored(
                 #     v,

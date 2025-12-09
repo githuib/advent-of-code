@@ -1,5 +1,5 @@
 from based_utils.cli import Colored
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from more_itertools import first_true
 
 from advent_of_code.problems import NoSolutionFoundError, OneLineProblem
@@ -32,9 +32,9 @@ def format_char(s: str) -> str:
     if s not in ".#":
         return s
 
-    color_fg = Color.from_name("yellow", lightness=0.8)
-    fg = color_fg if s == "#" else color_fg.contrasting_hue.with_changed(lightness=0.5)
-    bg = fg.with_changed(lightness=0.5)
+    color_fg = Colors.yellow.shade(0.8)
+    fg = color_fg if s == "#" else color_fg.contrasting_hue.darker(2)
+    bg = fg.darker(2)
     return Colored(s, fg, bg).formatted
 
 

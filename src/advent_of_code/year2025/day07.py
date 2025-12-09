@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
-from math import log10
 from typing import TYPE_CHECKING
 
+from based_utils.calx import (
+    InterpolationBounds,
+    LogarithmicInterpolationBounds,
+    MappingBounds,
+)
 from based_utils.cli import Colored
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from more_itertools import last
 from more_itertools.recipes import consume
 
@@ -21,10 +25,12 @@ def parse(s: str) -> int:
 
 def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
     if v == -1:
-        return Colored("^", Color.from_name("indigo", lightness=0.4))
+        return Colored("^", Colors.indigo.shade(0.4))
     if v == 0:
-        return Colored(".", Color.from_name("blue", lightness=0.2))
-    return Colored("|", Color.from_name("pink", lightness=0.2 + log10(v) / 20))
+        return Colored(".", Colors.blue.shade(0.2))
+    b_from = LogarithmicInterpolationBounds(1, 10**12)
+    b_to = InterpolationBounds(0.2, 0.9)
+    return Colored("|", Colors.pink.shade(MappingBounds(b_from, b_to).map(v)))
 
 
 class _Problem(MultiLineProblem[int], ABC):

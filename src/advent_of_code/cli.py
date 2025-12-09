@@ -12,7 +12,7 @@ from based_utils.cli import (
     timed,
 )
 from based_utils.cli.formats import FAIL, OK
-from based_utils.colors import Color
+from based_utils.colors import Colors
 from based_utils.data.strings import align_left, strlen
 
 from . import load_problem, log
@@ -95,7 +95,7 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
     # TODO: Might be interesting to show input loading time separately.
     duration = dur_init + dur_solution
 
-    table_color = Color.from_name("blue", lightness=0.35)
+    table_color = Colors.blue.shade(0.35)
     table_rows = ([line] for line in output_lines(mine, actual, duration))
     log.info(format_table(*table_rows, color=table_color))
 

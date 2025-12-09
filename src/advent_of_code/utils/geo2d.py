@@ -6,9 +6,9 @@ from math import hypot
 from os import get_terminal_size
 from typing import TYPE_CHECKING, Literal, Self
 
-from based_utils.calx import randf
+from based_utils.calx import map_number, randf
 from based_utils.cli import Colored
-from based_utils.colors import Color
+from based_utils.colors import Color, Colors
 from based_utils.data.iterators import (
     Predicate,
     pairwise_circular,
@@ -350,8 +350,8 @@ class Grid2[T](Mapping[P2, T], ABC):
             if format_value:
                 s = format_value(pos, value, s)
             if pos in (highlighted or {}):
-                c = (s.color or Color.from_name("green")).but_with(lightness=0.8)
-                s = s.with_color(c).with_background(c.with_changed(lightness=0.5))
+                c = (s.color or Colors.green).shade(0.8)
+                s = s.with_color(c).with_background(c.darker(2))
             return s.formatted
 
         for y in range(y_lo, y_hi + 1):
@@ -361,12 +361,7 @@ class Grid2[T](Mapping[P2, T], ABC):
 @cache
 def _colors(n: int) -> list[Color]:
     h = randf()
-    return [
-        Color.from_fields(
-            lightness=i / n, saturation=(i / n) ** 0.5, hue=h + i * (n // 2 + 1) / n
-        )
-        for i in range(n)
-    ]
+    return [Color(h + i * (n // 2 + 1) / n, (i / n) ** 0.5, i / n) for i in range(n)]
 
 
 class CharGrid2(Grid2[str]):
@@ -383,7 +378,7 @@ class CharGrid2(Grid2[str]):
         except ValueError:
             n = 3
         color = _colors(5)[n]
-        return Colored(value, color, color.with_changed(lightness=0.75))
+        return Colored(value, color, color.darker(1.3))
 
 
 class NumGrid2(Grid2[int]):
@@ -396,10 +391,8 @@ class NumGrid2(Grid2[int]):
     def _format_value(self, _pos: P2, value: int) -> Colored:
         if value < 0:
             return Colored(".")
-        return Colored(
-            str(value) if value < 10 else "+",
-            Color.from_name("green").shade(0.15 + min(value, 10) * 0.035),
-        )
+        s = map_number(min(value, 10), (1, 10), (0.2, 0.5))
+        return Colored(str(value) if value < 10 else "+", Colors.green.shade(s))
 
 
 class BitGrid2(Grid2[bool]):
@@ -416,7 +409,7 @@ class BitGrid2(Grid2[bool]):
     ) -> Colored:
         c_bad, c_good, _ = _colors()
         color = c_good if value else c_bad
-        return Colored("#" if value else ".", color, color.with_changed(lightness=0.75))
+        return Colored("#" if value else ".", color, color.darker(1.3))
 
 
 class _MutableGrid2[T](
