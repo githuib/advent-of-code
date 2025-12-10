@@ -3,10 +3,9 @@ from typing import TYPE_CHECKING
 
 from based_utils.calx import InterpolationBounds, MappingBounds
 from based_utils.cli import Colored
-from based_utils.colors import Colors
 from based_utils.data.iterators import polarized
 
-from advent_of_code import log
+from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem
 from advent_of_code.utils.geo2d import P2, Crop, MutableNumGrid2, all_directions
 
@@ -48,11 +47,11 @@ class _Problem(CharGridProblem[int], ABC):
     def grid_str(self, removed: Rolls) -> Iterator[str]:
         def fmt(p: P2, v: int, _c: Colored) -> Colored:
             if p in [p for p, _v in removed]:
-                cx = Colors.pink
+                cx = C.pink
                 return Colored("x", cx, cx.contrasting_shade)
             if v == -1:
-                return Colored(".", Colors.blue.shade(0.25))
-            return Colored(str(v), Colors.green.shade(SHADES_MAPPING.map(v)))
+                return Colored(".", C.blue.shade(0.25))
+            return Colored(str(v), C.green.shade(SHADES_MAPPING.map(v)))
 
         yield from self.num_grid.to_lines(format_value=fmt, crop=Crop(bottom=2))
         yield ""

@@ -5,11 +5,10 @@ from typing import TYPE_CHECKING
 
 from based_utils.cli import Colored
 from based_utils.cli.animation import AnimParams
-from based_utils.colors import Colors
 from based_utils.data.iterators import smart_range
 from parse import parse  # type: ignore[import-untyped]
 
-from advent_of_code import log
+from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
 from advent_of_code.utils.geo2d import P2, MutableNumGrid2
 
@@ -30,10 +29,10 @@ START = START_X, START_Y = 500, 0
 def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
     if 0 <= v < 4:
         c, s = {
-            Material.AIR: (Colors.grey.very_dark, "."),
-            Material.ROCK: (Colors.pink.dark, "#"),
-            Material.SAND: (Colors.brown.saturated(0.33).very_bright, "o"),
-            Material.SOURCE: (Colors.blue, "+"),
+            Material.AIR: (C.grey.very_dark, "."),
+            Material.ROCK: (C.pink.dark, "#"),
+            Material.SAND: (C.brown.saturated(0.33).very_bright, "o"),
+            Material.SOURCE: (C.blue, "+"),
         }[Material(v)]
     else:
         return NotImplemented

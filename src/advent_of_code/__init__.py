@@ -1,6 +1,7 @@
 from importlib import import_module
 from typing import TYPE_CHECKING
 
+from based_utils.colors import Colors
 from gaffe import raises
 
 from .logs import AppLogger
@@ -9,6 +10,8 @@ if TYPE_CHECKING:
     from .problems import Problem, PuzzleData
 
 log = AppLogger(__name__)
+
+C = Colors
 
 
 @raises(ModuleNotFoundError)

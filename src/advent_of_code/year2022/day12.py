@@ -5,15 +5,16 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import AStarState, BFSState, DijkstraState
 from based_utils.algo.paths import State
 from based_utils.cli import Colored, format_table, human_readable_duration, timed
-from based_utils.colors import Color, Colors
 from based_utils.data.strings import PRE_a
 
-from advent_of_code import log
+from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem
 from advent_of_code.utils.geo2d import P2, NumGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+
+    from based_utils.colors import Color
 
 
 @dataclass
@@ -116,10 +117,10 @@ class _Problem(NumGridProblem[int], ABC):
             def cf(v: object, color: Color) -> str:
                 return cs(v, color).formatted
 
-            c_start = Colors.blue.dark
-            c_end = Colors.poison
-            c_path = Colors.pink.dark
-            c_bfs = Colors.brown.saturated(0.5).very_dark
+            c_start = C.blue.dark
+            c_end = C.poison
+            c_path = C.pink.dark
+            c_bfs = C.brown.very_dark
             c_dijkstra = c_bfs.brighter()
             c_a_star = c_dijkstra.brighter()
 

@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 
 from based_utils.calx import InterpolationBounds, LogarithmicInterpolationBounds
 from based_utils.cli import Colored
-from based_utils.colors import Color, Colors
+from based_utils.colors import Color
 from more_itertools import last
 
-from advent_of_code import log
+from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
 from advent_of_code.utils.geo2d import P2, MutableNumGrid2
 
@@ -23,8 +23,8 @@ VALUE_MAPPING = LogarithmicInterpolationBounds(1.01, 2205720519616)
 HUE_MAPPING = InterpolationBounds(0.8, -0.1)
 SHADE_MAPPING = InterpolationBounds(0.3, 0.6)
 
-C_SPLITTER = Colors.blue.dark.saturated(0.6)
-C_BACKGROUND = Colors.blue.very_dark
+C_SPLITTER = C.blue.dark.saturated(0.6)
+C_BACKGROUND = C.blue.very_dark
 
 
 def fmt(_p: P2, v: int, _colored: Colored) -> Colored:

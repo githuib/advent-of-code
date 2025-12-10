@@ -12,8 +12,9 @@ from based_utils.cli import (
     timed,
 )
 from based_utils.cli.formats import FAIL, OK
-from based_utils.colors import Colors
 from based_utils.data.strings import align_left, strlen
+
+from advent_of_code import C
 
 from . import load_problem, log
 from .problems import InputMode, NoSolutionFoundError, Problem, PuzzleData
@@ -96,7 +97,7 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
     duration = dur_init + dur_solution
 
     table_rows = ([line] for line in output_lines(mine, actual, duration))
-    log.info(format_table(*table_rows, color=Colors.blue.dark))
+    log.info(format_table(*table_rows, color=C.blue.dark))
 
     return mine == actual
 

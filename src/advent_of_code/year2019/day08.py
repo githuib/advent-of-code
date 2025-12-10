@@ -1,7 +1,7 @@
 from based_utils.cli import Colored
-from based_utils.colors import Colors
 from more_itertools import first_true
 
+from advent_of_code import C
 from advent_of_code.problems import NoSolutionFoundError, OneLineProblem
 
 W, H = 25, 6
@@ -32,7 +32,7 @@ def format_char(s: str) -> str:
     if s not in ".#":
         return s
 
-    c = Colors.yellow.very_bright if s == "#" else Colors.blue.dark
+    c = C.yellow.very_bright if s == "#" else C.blue.dark
     return Colored(s, c, c.darker()).formatted
 
 

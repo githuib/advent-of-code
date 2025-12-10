@@ -49,7 +49,7 @@ dev = [
 
 [[package]]
 name = "based-utils"
-version = "0.9.6"
+version = "0.9.9"
 source = { editable = "../based-utils" }
 dependencies = [
     { name = "gaffe" },
@@ -597,7 +597,7 @@ wheels = [
 
 [[package]]
 name = "powerchord"
-version = "0.4.2"
+version = "0.4.3"
 source = { editable = "../powerchord" }
 dependencies = [
     { name = "based-utils" },

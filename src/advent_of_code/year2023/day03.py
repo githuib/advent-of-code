@@ -1,20 +1,19 @@
 from abc import ABC
 
 from based_utils.cli import Colored
-from based_utils.colors import Colors
 
-from advent_of_code import log
+from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem
 from advent_of_code.utils.geo2d import P2, all_directions
 
 
 def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
     if v == 10:
-        return Colored(".", Colors.blue.dark.saturated(0.66))
+        return Colored(".", C.blue.dark.saturated(0.66))
     if v > 10:
-        c_special = Colors.red.bright
+        c_special = C.red.bright
         return Colored(chr(v), c_special, c_special.contrasting_shade)
-    return Colored(v, Colors.green.bright)
+    return Colored(v, C.green.bright)
 
 
 class _Problem(NumGridProblem[int], ABC):

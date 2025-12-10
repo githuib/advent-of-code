@@ -8,10 +8,9 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import DijkstraState
 from based_utils.cli import Colored
 from based_utils.cli.animation import AnimParams
-from based_utils.colors import Colors
 from based_utils.data.strings import PRE_A
 
-from advent_of_code import log
+from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
 
 if TYPE_CHECKING:
@@ -149,9 +148,9 @@ class AmphipodState(DijkstraState[Constants, Variables]):
           #A#D#C#A#
           #########
         """
-        edge = Colors.indigo.dark
-        dot = Colors.poison.very_dark
-        amph = Colors.pink
+        edge = C.indigo.dark
+        dot = C.poison.very_dark
+        amph = C.pink
 
         w = Colored("#", edge, edge.darker()).formatted
 

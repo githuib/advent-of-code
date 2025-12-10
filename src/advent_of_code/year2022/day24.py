@@ -6,9 +6,8 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import AStarState
 from based_utils.cli import Colored
-from based_utils.colors import Colors
 
-from advent_of_code import log
+from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, manhattan_dist_2
 
@@ -81,12 +80,12 @@ class _Problem(CharGridProblem[int], ABC):
 
             def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
                 if v in DIRECTION_TILES:
-                    c = Colors.yellow.shade(0.45).saturated(0.75)
+                    c = C.yellow.shade(0.45).saturated(0.75)
                     color = {
                         s: c.adjust(hue=i / 36) for i, s in enumerate(DIRECTION_TILES)
                     }[v]
                 else:
-                    color = Colors.blue.dark if v == "." else Colors.pink.dark
+                    color = C.blue.dark if v == "." else C.pink.dark
                 return Colored(v, color, color.darker())
                 # on_path = p in positions
                 # return Colored(

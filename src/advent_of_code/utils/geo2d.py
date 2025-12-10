@@ -8,13 +8,15 @@ from typing import TYPE_CHECKING, Literal, Self
 
 from based_utils.calx import InterpolationBounds, MappingBounds, randf
 from based_utils.cli import Colored
-from based_utils.colors import Color, Colors
+from based_utils.colors import Color
 from based_utils.data.iterators import (
     Predicate,
     pairwise_circular,
     tripletwise_circular,
 )
 from based_utils.data.mixins import WithClearablePropertyCache
+
+from advent_of_code import C
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator
@@ -350,7 +352,7 @@ class Grid2[T](Mapping[P2, T], ABC):
             if format_value:
                 s = format_value(pos, value, s)
             if pos in (highlighted or {}):
-                c = (s.color or Colors.green).very_bright
+                c = (s.color or C.green).very_bright
                 s = s.with_color(c).with_background(c.darker())
             return s.formatted
 
@@ -396,7 +398,7 @@ class NumGrid2(Grid2[int]):
     def _format_value(self, _pos: P2, value: int) -> Colored:
         if value < 0:
             return Colored(".")
-        c = Colors.green.shade(NUM_SHADES_MAPPING.map(min(value, 10)))
+        c = C.green.shade(NUM_SHADES_MAPPING.map(min(value, 10)))
         return Colored(str(value) if value < 10 else "+", c)
 
 
