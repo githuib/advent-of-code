@@ -1,10 +1,9 @@
 from math import prod
 
-from based_utils.cli import animated
+from based_utils.cli import animate, animated
 from based_utils.cli.animation import AnimParams, flashing
 from igraph import Graph  # type: ignore[import-untyped]
 
-from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
 
 
@@ -56,7 +55,7 @@ HOCKEY = r"""
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         anim = animated(HOCKEY.splitlines(), flashing())
-        log.debug_animated(anim, params=AnimParams(fps=30))
+        animate(anim, params=AnimParams(fps=30))
 
 
 TEST_INPUT = """

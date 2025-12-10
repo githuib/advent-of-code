@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import AStarState, BFSState, DijkstraState
 from based_utils.algo.paths import State
 from based_utils.cli import Colored, format_table, human_readable_duration, timed
-from based_utils.data.strings import PRE_a
+from based_utils.data import PRE_a
 
 from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem
@@ -114,12 +114,10 @@ class _Problem(NumGridProblem[int], ABC):
             def cs(v: object, color: Color) -> Colored:
                 return Colored(v, color, color.brighter())
 
-            def cf(v: object, color: Color) -> str:
-                return cs(v, color).formatted
-
             c_start = C.blue.dark
             c_end = C.poison
             c_path = C.pink.dark
+
             c_bfs = C.brown.very_dark
             c_dijkstra = c_bfs.brighter()
             c_a_star = c_dijkstra.brighter()
@@ -147,29 +145,29 @@ class _Problem(NumGridProblem[int], ABC):
             yield from format_table(
                 ("Legend", "Algorithm", "Visited", "Path found in"),
                 (
-                    f"{cf('x', c_bfs)} visited by BFS",
+                    f"{cs('x', c_bfs)} visited by BFS",
                     "BFS",
                     len(visited_points_bfs),
                     human_readable_duration(t_bfs),
                 ),
                 (
-                    f"{cf('y', c_dijkstra)} visited by Dijkstra & BFS",
+                    f"{cs('y', c_dijkstra)} visited by Dijkstra & BFS",
                     "Dijkstra",
                     len(visited_points_dijkstra),
                     human_readable_duration(t_dijkstra),
                 ),
                 (
-                    f"{cf('z', c_a_star)} visited by A*, Dijkstra & BFS",
+                    f"{cs('z', c_a_star)} visited by A*, Dijkstra & BFS",
                     "A*",
                     len(visited_points_a_star),
                     human_readable_duration(t_a_star),
                 )
                 if p_a_star
                 else (),
-                (f"{cf('S', c_start)} start",),
-                (f"{cf('E', c_end)} end",),
-                (f"{cf('p', c_path)} path",),
-                (f"{Colored('w', c_dijkstra).formatted} wild, unexplored terrain",),
+                (f"{cs('S', c_start)} start",),
+                (f"{cs('E', c_end)} end",),
+                (f"{cs('p', c_path)} path",),
+                (f"{Colored('w', c_dijkstra)} wild, unexplored terrain",),
                 column_splits=[1],
                 color=c_a_star,
             )

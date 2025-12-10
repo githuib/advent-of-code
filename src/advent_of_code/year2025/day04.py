@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.calx import InterpolationBounds, MappingBounds
+from based_utils.calx import LinearMapping, NumberMapping
 from based_utils.cli import Colored
 from based_utils.data.iterators import polarized
 
@@ -19,7 +19,7 @@ def remove_rolls(grid_items: Iterable[tuple[P2, int]]) -> tuple[Rolls, Rolls]:
     return polarized(grid_items, lambda i: i[1] == -1)
 
 
-SHADES_MAPPING = MappingBounds(InterpolationBounds(4, 8), InterpolationBounds(0.3, 0.9))
+SHADES_MAPPING = NumberMapping(LinearMapping(4, 8), LinearMapping(0.3, 0.9))
 
 
 class _Problem(CharGridProblem[int], ABC):

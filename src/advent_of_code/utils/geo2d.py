@@ -3,10 +3,9 @@ from collections.abc import Mapping, MutableMapping, Set
 from dataclasses import dataclass
 from functools import cache, cached_property
 from math import hypot
-from os import get_terminal_size
 from typing import TYPE_CHECKING, Literal, Self
 
-from based_utils.calx import InterpolationBounds, MappingBounds, randf
+from based_utils.calx import LinearMapping, NumberMapping, randf
 from based_utils.cli import Colored
 from based_utils.colors import Color
 from based_utils.data.iterators import (
@@ -16,7 +15,7 @@ from based_utils.data.iterators import (
 )
 from based_utils.data.mixins import WithClearablePropertyCache
 
-from advent_of_code import C
+from advent_of_code import C, term_size
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator
@@ -331,7 +330,7 @@ class Grid2[T](Mapping[P2, T], ABC):
         (x_lo, y_lo), (x_hi, y_hi) = self.span
 
         if crop_to_terminal:
-            max_width, max_height = get_terminal_size()
+            max_width, max_height = term_size()
             # Keep centered horizontally
             x_cropped = max(0, self.width - max_width)
             x_lo += x_cropped // 2
@@ -354,7 +353,7 @@ class Grid2[T](Mapping[P2, T], ABC):
             if pos in (highlighted or {}):
                 c = (s.color or C.green).very_bright
                 s = s.with_color(c).with_background(c.darker())
-            return s.formatted
+            return str(s)
 
         for y in range(y_lo, y_hi + 1):
             yield "".join(fmt((x, y)) for x in range(x_lo, x_hi + 1))
@@ -383,9 +382,7 @@ class CharGrid2(Grid2[str]):
         return Colored(value, color, color.darker())
 
 
-NUM_SHADES_MAPPING = MappingBounds(
-    InterpolationBounds(1, 10), InterpolationBounds(0.2, 0.5)
-)
+NUM_SHADES_MAPPING = NumberMapping(LinearMapping(1, 10), LinearMapping(0.2, 0.5))
 
 
 class NumGrid2(Grid2[int]):

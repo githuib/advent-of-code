@@ -11,8 +11,7 @@ from based_utils.cli import (
     killed_by_errors,
     timed,
 )
-from based_utils.cli.formats import FAIL, OK
-from based_utils.data.strings import align_left, strlen
+from based_utils.cli.formats import FAIL, OK, align_left, str_len
 
 from advent_of_code import C
 
@@ -48,7 +47,7 @@ def solution_lines[T](my_solution: T, actual_solution: T | None) -> Iterator[str
         )
 
         if len(mine) == 1 and len(actual) == 1:
-            w = max(strlen(my_answer), strlen(actual_answer))
+            w = max(str_len(my_answer), str_len(actual_answer))
             yield f"{align_left(my_answer, w)} {mine[0]}"
             yield f"{align_left(actual_answer, w)} {actual[0]}"
         else:

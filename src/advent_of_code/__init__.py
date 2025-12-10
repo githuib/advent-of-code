@@ -1,4 +1,6 @@
+from functools import cache
 from importlib import import_module
+from os import get_terminal_size, terminal_size
 from typing import TYPE_CHECKING
 
 from based_utils.colors import Colors
@@ -12,6 +14,11 @@ if TYPE_CHECKING:
 log = AppLogger(__name__)
 
 C = Colors
+
+
+@cache
+def term_size() -> terminal_size:
+    return get_terminal_size()
 
 
 @raises(ModuleNotFoundError)

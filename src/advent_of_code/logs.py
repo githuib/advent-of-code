@@ -1,16 +1,17 @@
 from collections.abc import Callable, Iterable, Iterator
 from functools import cached_property
 from logging import Formatter, LogRecord
-from os import get_terminal_size
 from pprint import pformat
 from typing import TYPE_CHECKING
 
-from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister, animate
+from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister, animate_iter
 from based_utils.colors import Colors
 from more_itertools.recipes import consume
 
+import advent_of_code
+
 if TYPE_CHECKING:
-    from based_utils.cli.animation import AnimParams
+    from based_utils.cli.animation import AnimParams, LazyItems
 
 
 class LogFormatter(Formatter):
@@ -27,7 +28,7 @@ class LogFormatter(Formatter):
                 record.msg = "".join(f"{line}\n" for line in record.msg)
             if isinstance(record.msg, str):
                 return Formatter("%(message)s").format(record)
-            max_width, _max_height = get_terminal_size()
+            max_width, _max_height = advent_of_code.term_size()
             return pformat(record.msg, width=max_width)
 
         # Warnings & errors (or external package loggings): add prefix and color
@@ -42,7 +43,7 @@ class LogFormatter(Formatter):
             LogLevel.ERROR: Colors.red,
             LogLevel.CRITICAL: Colors.red,
         }[LogLevel(record.levelno)]
-        return Colored(msg, color).formatted
+        return str(Colored(msg, color))
 
 
 class AppLogger(LogMeister):
@@ -89,23 +90,26 @@ class AppLogger(LogMeister):
 
     def debug_animated_iter[T](
         self,
-        items: Callable[[], Iterable[T]],
+        items: LazyItems[T],
         format_item: Callable[[T], Iterable[str]] = None,
         *,
         params: AnimParams = None,
     ) -> Iterator[T]:
         yield from (
-            animate(items(), format_item, params=params)
+            animate_iter(items, format_item, params=params)
             if self._main_logger.level == LogLevel.DEBUG
             else items()
         )
 
     def debug_animated[T](
         self,
-        items: Callable[[], Iterable[T]],
+        items: LazyItems[T],
         format_item: Callable[[T], Iterable[str]] = None,
         *,
         params: AnimParams = None,
     ) -> None:
-        if self._main_logger.level == LogLevel.DEBUG:
-            consume(self.debug_animated_iter(items, format_item, params=params))
+        consume(
+            self.debug_animated_iter(items, format_item, params=params)
+            if self._main_logger.level == LogLevel.DEBUG
+            else items()
+        )

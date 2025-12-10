@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, NamedTuple
 from based_utils.algo import DijkstraState
 from based_utils.cli import Colored
 from based_utils.cli.animation import AnimParams
-from based_utils.data.strings import PRE_A
+from based_utils.data import PRE_A
 
 from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
@@ -152,11 +152,11 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         dot = C.poison.very_dark
         amph = C.pink
 
-        w = Colored("#", edge, edge.darker()).formatted
+        w = str(Colored("#", edge, edge.darker()))
 
         def colored_char(c: str) -> str:
             color = dot if c == "." else amph
-            return Colored(c, color.contrasting_shade, color).formatted
+            return str(Colored(c, color.contrasting_shade, color))
 
         def colored(cs: str) -> str:
             return "".join(colored_char(c) for c in cs)

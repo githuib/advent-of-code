@@ -1,7 +1,7 @@
 from collections.abc import Set
 from typing import TYPE_CHECKING
 
-from based_utils.cli import Colored, animated
+from based_utils.cli import Colored, animate, animated
 from based_utils.cli.animation import AnimParams, flashing, moving_forward
 from based_utils.data.iterators import first_duplicate
 
@@ -78,10 +78,9 @@ POSEIDON = r"""
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-        fg = C.poison.shade(0.9)
-        bg = C.ocean.shade(0.7).saturated(0.9)
-        anim = animated(POSEIDON.splitlines(), moving_forward, flashing(fg=fg, bg=bg))
-        log.debug_animated(anim, params=AnimParams(fps=10))
+        flash = flashing(fg=C.poison.very_bright, bg=C.ocean)
+        anim = animated(POSEIDON.splitlines(), moving_forward, flash)
+        animate(anim, params=AnimParams(fps=10))
 
 
 TEST_INPUT = """

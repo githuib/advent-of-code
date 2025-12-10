@@ -1,7 +1,6 @@
-from based_utils.cli import animated
+from based_utils.cli import animate, animated
 from based_utils.cli.animation import AnimParams, changing_colors, fuck_me_sideways
 
-from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem
 
 FUBAR = {"=": -2, "-": -1, "0": 0, "1": 1, "2": 2}
@@ -58,7 +57,7 @@ class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
         anim = animated(GNOME.splitlines(), fuck_me_sideways, changing_colors())
-        log.debug_animated(anim, params=AnimParams(fps=30))
+        animate(anim, params=AnimParams(fps=30))
 
 
 TEST_INPUT = """

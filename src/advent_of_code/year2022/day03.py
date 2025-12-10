@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.data.strings import PRE_A, PRE_a
+from based_utils.data import PRE_A, PRE_a
 
 from advent_of_code.problems import MultiLineProblem
 

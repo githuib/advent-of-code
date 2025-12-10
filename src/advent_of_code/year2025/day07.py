@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.calx import InterpolationBounds, LogarithmicInterpolationBounds
+from based_utils.calx import LinearMapping, LogarithmicMapping
 from based_utils.cli import Colored
 from based_utils.colors import Color
 from more_itertools import last
@@ -19,9 +19,10 @@ def parse(s: str) -> int:
 
 
 # Maximum value v will have with my input
-VALUE_MAPPING = LogarithmicInterpolationBounds(1.01, 2205720519616)
-HUE_MAPPING = InterpolationBounds(0.8, -0.1)
-SHADE_MAPPING = InterpolationBounds(0.3, 0.6)
+VALUE_MAPPING = LogarithmicMapping(1, 2205720519616)
+START_HUE = C.purple.blend(C.pink, 0.44).hue
+HUE_MAPPING = LinearMapping(START_HUE, START_HUE - 4)
+SHADE_MAPPING = LinearMapping(0.25, 0.75)
 
 C_SPLITTER = C.blue.dark.saturated(0.6)
 C_BACKGROUND = C.blue.very_dark
@@ -32,8 +33,8 @@ def fmt(_p: P2, v: int, _colored: Colored) -> Colored:
         return Colored("^", C_SPLITTER)
     if v == 0:
         return Colored(".", C_BACKGROUND)
-    f = VALUE_MAPPING.inverse_interpolate(v)
-    hue, shade = HUE_MAPPING.interpolate(f), SHADE_MAPPING.interpolate(f)
+    f = VALUE_MAPPING.position_of(v)
+    hue, shade = HUE_MAPPING.value_at(f), SHADE_MAPPING.value_at(f)
     return Colored("|", Color(hue=hue, lightness=shade))
 
 
