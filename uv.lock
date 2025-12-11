@@ -4,7 +4,7 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "advent-of-code"
-version = "808.303"
+version = "808.303.1"
 source = { editable = "." }
 dependencies = [
     { name = "based-utils" },
@@ -332,7 +332,7 @@ wheels = [
 
 [[package]]
 name = "kleur"
-version = "1.2.6"
+version = "1.2.7"
 source = { editable = "../kleur" }
 dependencies = [
     { name = "hsluv" },
@@ -788,7 +788,7 @@ wheels = [
 
 [[package]]
 name = "ternimator"
-version = "0.0.4"
+version = "0.0.6"
 source = { editable = "../ternimator" }
 dependencies = [
     { name = "kleur" },
