@@ -3,10 +3,10 @@ from enum import IntEnum
 from itertools import pairwise
 from typing import TYPE_CHECKING
 
-from based_utils.cli.animation import AnimParams
 from based_utils.data.iterators import smart_range
 from kleur import Colored
 from parse import parse  # type: ignore[import-untyped]
+from ternimator import AnimParams
 
 from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem

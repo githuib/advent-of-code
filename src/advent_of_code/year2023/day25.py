@@ -1,8 +1,7 @@
 from math import prod
 
-from based_utils.cli import animate, animated
-from based_utils.cli.animation import AnimParams, flashing
 from igraph import Graph  # type: ignore[import-untyped]
+from ternimator import AnimParams, animate, animated, flashing
 
 from advent_of_code.problems import MultiLineProblem
 

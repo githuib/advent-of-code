@@ -4,14 +4,14 @@ from logging import Formatter, LogRecord
 from pprint import pformat
 from typing import TYPE_CHECKING
 
-from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister, animate_iter
+from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister
 from kleur import Colored, Colors
-from more_itertools.recipes import consume
+from ternimator import animate_iter, consume
 
 import advent_of_code
 
 if TYPE_CHECKING:
-    from based_utils.cli.animation import AnimParams, LazyItems
+    from ternimator import AnimParams, LazyItems
 
 
 class LogFormatter(Formatter):

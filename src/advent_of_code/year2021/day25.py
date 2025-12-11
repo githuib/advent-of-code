@@ -1,15 +1,9 @@
 from collections.abc import Set
 from typing import TYPE_CHECKING
 
-from based_utils.cli.animation import (
-    AnimParams,
-    animate,
-    animated,
-    flashing,
-    moving_forward,
-)
 from based_utils.data.iterators import first_duplicate
 from kleur import Colored
+from ternimator import AnimParams, animate, animated, flashing, moving_forward
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem, MultiLineProblem

@@ -13,6 +13,7 @@ dependencies = [
   "more-itertools",
   "parse",
   "simpleeval",
+  "ternimator",
 ]
 
 [dependency-groups]
@@ -29,6 +30,7 @@ dev = [
 based-utils = { path = "../based-utils", editable = true }
 kleur = { path = "../kleur", editable = true }
 powerchord = { path = "../powerchord", editable = true }
+ternimator = { path = "../ternimator", editable = true }
 
 [project.scripts]
 aoc_solve = "advent_of_code.cli:main"

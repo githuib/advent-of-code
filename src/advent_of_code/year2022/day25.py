@@ -1,5 +1,4 @@
-from based_utils.cli import animate, animated
-from based_utils.cli.animation import AnimParams, changing_colors, fuck_me_sideways
+from ternimator import AnimParams, animate, animated, changing_colors, fuck_me_sideways
 
 from advent_of_code.problems import MultiLineProblem
 
