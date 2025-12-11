@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.calx import LinearMapping, LogarithmicMapping
-from based_utils.cli import Colored
-from based_utils.colors import Color
+from kleur import Color, Colored
+from kleur.interpol import LinearMapping, LogarithmicMapping
 from more_itertools import last
 
 from advent_of_code import C, log

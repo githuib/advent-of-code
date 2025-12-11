@@ -8,6 +8,7 @@ dependencies = [
   "based-utils",
   "cairocffi",
   "igraph",
+  "kleur",
   "matplotlib",
   "more-itertools",
   "parse",
@@ -26,6 +27,7 @@ dev = [
 
 [tool.uv.sources]
 based-utils = { path = "../based-utils", editable = true }
+kleur = { path = "../kleur", editable = true }
 powerchord = { path = "../powerchord", editable = true }
 
 [project.scripts]

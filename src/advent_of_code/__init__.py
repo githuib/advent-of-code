@@ -3,8 +3,8 @@ from importlib import import_module
 from os import get_terminal_size, terminal_size
 from typing import TYPE_CHECKING
 
-from based_utils.colors import Colors
 from gaffe import raises
+from kleur import Colors
 
 from .logs import AppLogger
 

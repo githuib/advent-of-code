@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.calx import LinearMapping, NumberMapping
-from based_utils.cli import Colored
 from based_utils.data.iterators import polarized
+from kleur import Colored
+from kleur.interpol import LinearMapping, NumberMapping
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem

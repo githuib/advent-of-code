@@ -10,6 +10,7 @@ dependencies = [
     { name = "based-utils" },
     { name = "cairocffi" },
     { name = "igraph" },
+    { name = "kleur" },
     { name = "matplotlib" },
     { name = "more-itertools" },
     { name = "parse" },
@@ -31,6 +32,7 @@ requires-dist = [
     { name = "based-utils", editable = "../based-utils" },
     { name = "cairocffi" },
     { name = "igraph" },
+    { name = "kleur", editable = "../kleur" },
     { name = "matplotlib" },
     { name = "more-itertools" },
     { name = "parse" },
@@ -49,11 +51,12 @@ dev = [
 
 [[package]]
 name = "based-utils"
-version = "0.10.6"
+version = "0.10.8"
 source = { editable = "../based-utils" }
 dependencies = [
     { name = "gaffe" },
     { name = "hsluv" },
+    { name = "kleur" },
     { name = "more-itertools" },
 ]
 
@@ -61,6 +64,7 @@ dependencies = [
 requires-dist = [
     { name = "gaffe" },
     { name = "hsluv" },
+    { name = "kleur" },
     { name = "more-itertools" },
 ]
 
@@ -325,6 +329,25 @@ wheels = [
 ]
 
 [[package]]
+name = "kleur"
+version = "1.2.3"
+source = { editable = "../kleur" }
+dependencies = [
+    { name = "hsluv" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "hsluv" }]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy" },
+    { name = "powerchord" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
+
+[[package]]
 name = "librt"
 version = "0.7.3"
 source = { registry = "https://pypi.org/simple" }
@@ -586,12 +609,13 @@ wheels = [
 
 [[package]]
 name = "powerchord"
-version = "0.4.4"
+version = "0.4.6"
 source = { editable = "../powerchord" }
 dependencies = [
     { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
+    { name = "kleur" },
 ]
 
 [package.metadata]
@@ -599,6 +623,7 @@ requires-dist = [
     { name = "based-utils" },
     { name = "chili" },
     { name = "gaffe" },
+    { name = "kleur" },
 ]
 
 [package.metadata.requires-dev]

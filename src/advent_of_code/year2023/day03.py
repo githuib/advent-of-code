@@ -1,6 +1,6 @@
 from abc import ABC
 
-from based_utils.cli import Colored
+from kleur import Colored
 
 from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem

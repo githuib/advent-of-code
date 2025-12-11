@@ -11,7 +11,8 @@ from based_utils.cli import (
     killed_by_errors,
     timed,
 )
-from based_utils.cli.formats import FAIL, OK, align_left, str_len
+from based_utils.cli.tables import align_left, str_len
+from kleur.formatting import FAIL, OK
 
 from advent_of_code import C
 

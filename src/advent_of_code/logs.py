@@ -4,8 +4,8 @@ from logging import Formatter, LogRecord
 from pprint import pformat
 from typing import TYPE_CHECKING
 
-from based_utils.cli import Colored, ConsoleHandlers, LogLevel, LogMeister, animate_iter
-from based_utils.colors import Colors
+from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister, animate_iter
+from kleur import Colored, Colors
 from more_itertools.recipes import consume
 
 import advent_of_code

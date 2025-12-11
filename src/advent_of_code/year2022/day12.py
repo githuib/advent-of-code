@@ -2,10 +2,10 @@ from abc import ABC
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, NamedTuple
 
-from based_utils.algo import AStarState, BFSState, DijkstraState
-from based_utils.algo.paths import State
-from based_utils.cli import Colored, format_table, human_readable_duration, timed
+from based_utils.algo import AStarState, BFSState, DijkstraState, State
+from based_utils.cli import format_table, human_readable_duration, timed
 from based_utils.data import PRE_a
+from kleur import Colored
 
 from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem
@@ -14,7 +14,7 @@ from advent_of_code.utils.geo2d import P2, NumGrid2
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from based_utils.colors import Color
+    from kleur import Color
 
 
 @dataclass

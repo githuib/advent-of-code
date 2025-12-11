@@ -5,7 +5,7 @@ from math import lcm
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import AStarState
-from based_utils.cli import Colored
+from kleur import Colored
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem

@@ -6,9 +6,9 @@ from functools import cached_property
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import DijkstraState
-from based_utils.cli import Colored
 from based_utils.cli.animation import AnimParams
 from based_utils.data import PRE_A
+from kleur import Colored
 
 from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem

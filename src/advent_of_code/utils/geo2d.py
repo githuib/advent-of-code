@@ -5,15 +5,15 @@ from functools import cache, cached_property
 from math import hypot
 from typing import TYPE_CHECKING, Literal, Self
 
-from based_utils.calx import LinearMapping, NumberMapping, randf
-from based_utils.cli import Colored
-from based_utils.colors import Color
+from based_utils.calx import randf
 from based_utils.data.iterators import (
     Predicate,
     pairwise_circular,
     tripletwise_circular,
 )
 from based_utils.data.mixins import WithClearablePropertyCache
+from kleur import Color, Colored
+from kleur.interpol import LinearMapping, NumberMapping
 
 from advent_of_code import C, term_size
 

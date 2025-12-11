@@ -1,4 +1,4 @@
-from based_utils.cli import Colored
+from kleur import Colored
 from more_itertools import first_true
 
 from advent_of_code import C
