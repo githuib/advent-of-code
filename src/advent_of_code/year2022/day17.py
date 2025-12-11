@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 from based_utils.algo import detect_cycle
 from more_itertools import nth_or_last, unzip
+from ternimator import AnimParams
 
 from advent_of_code import log
 from advent_of_code.problems import OneLineProblem
@@ -94,7 +95,7 @@ class _Problem(OneLineProblem[int], ABC):
                 for c in range(6, -1, -1)
             ).to_lines()
 
-        it = log.debug_animated_iter(self.play, format_state)
+        it = log.debug_animated_iter(self.play(), AnimParams(format_item=format_state))
         state_at_t = nth_or_last(it, t - 1)
         log.lazy_debug(lambda: format_state(state_at_t))
         height, *_ = state_at_t

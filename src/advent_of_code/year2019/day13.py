@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from based_utils.calx import compare
 from more_itertools import last
+from ternimator import AnimParams
 
 from advent_of_code import log
 from advent_of_code.utils.geo2d import MutableCharGrid2
@@ -55,11 +56,13 @@ class Problem2(Problem1):
     def solution(self) -> int:
         def fmt(item: tuple[Iterator[str], int]) -> Iterator[str]:
             lines, score = item
-            yield " "
+            yield ""
             yield from lines
+            yield ""
             yield f"Score: {score:05d}".center(44)
 
-        _grid, final_score = last(log.debug_animated_iter(self.grids, fmt))
+        grids = log.debug_animated_iter(self.grids(), AnimParams(format_item=fmt))
+        _grid, final_score = last(grids)
         return final_score
 
 

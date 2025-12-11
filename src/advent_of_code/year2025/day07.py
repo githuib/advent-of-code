@@ -12,6 +12,8 @@ from advent_of_code.utils.geo2d import P2, MutableNumGrid2
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from ternimator import Lines
+
 
 def parse(s: str) -> int:
     return -1 if s == "^" else 1 if s == "S" else 0
@@ -27,7 +29,7 @@ C_SPLITTER = C.blue.dark.saturated(0.6)
 C_BACKGROUND = C.blue.very_dark
 
 
-def fmt(_p: P2, v: int, _colored: Colored) -> Colored:
+def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
     if v == -1:
         return Colored("^", C_SPLITTER)
     if v == 0:
@@ -40,11 +42,9 @@ def fmt(_p: P2, v: int, _colored: Colored) -> Colored:
 class _Problem(MultiLineProblem[int], ABC):
     def __init__(self) -> None:
         self.grid = MutableNumGrid2.from_lines(self.lines[::2], parse_value=parse)
-        log.debug_animated(
-            self.manifold, lambda _: self.grid.to_lines(format_value=fmt)
-        )
+        log.debug_animated(self._manifold())
 
-    def manifold(self) -> Iterator[None]:
+    def _manifold(self) -> Iterator[Lines]:
         for y, row in enumerate(self.grid.rows):
             if y == 0:
                 continue
@@ -57,7 +57,7 @@ class _Problem(MultiLineProblem[int], ABC):
                     self.grid[x + 1, y] += above
                 else:
                     self.grid[x, y] += above
-            yield
+            yield self.grid.to_lines(format_value=format_value)
 
     @abstractmethod
     def values(self) -> Iterator[int]: ...

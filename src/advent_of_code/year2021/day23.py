@@ -6,9 +6,9 @@ from functools import cached_property
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import DijkstraState
-from based_utils.cli.animation import AnimParams
 from based_utils.data import PRE_A
 from kleur import Colored
+from ternimator import AnimParams
 
 from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
@@ -209,9 +209,7 @@ class _Problem(MultiLineProblem[int], ABC):
             yield from state.to_lines()
             yield ""
 
-        log.debug_animated(
-            lambda: enumerate(path.states), fmt, params=AnimParams(fps=10)
-        )
+        log.debug_animated(enumerate(path.states), AnimParams(format_item=fmt, fps=10))
         return path.length
 
 

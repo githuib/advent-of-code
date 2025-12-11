@@ -1,15 +1,10 @@
 from collections.abc import Set
 from typing import TYPE_CHECKING
 
-from based_utils.cli.animation import (
-    AnimParams,
-    animate,
-    animated,
-    flashing,
-    moving_forward,
-)
 from based_utils.data.iterators import first_duplicate
 from kleur import Colored
+from ternimator import AnimParams, animate, animated_lines
+from ternimator.animations import flashing, moving_forward
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem, MultiLineProblem
@@ -63,11 +58,9 @@ class Problem1(CharGridProblem[int]):
             yield prev
 
     def solution(self) -> int:
-        n, sea_cucumbers = first_duplicate(
-            log.debug_animated_iter(
-                self.sea_cucumbers, board_str, params=AnimParams(only_every_nth=10)
-            )
-        )
+        params = AnimParams(format_item=board_str, only_every_nth=10)
+        it = log.debug_animated_iter(self.sea_cucumbers(), params)
+        n, sea_cucumbers = first_duplicate(it)
         log.lazy_debug(lambda: board_str(sea_cucumbers))
         return n
 
@@ -85,8 +78,8 @@ class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
         flash = flashing(fg=C.poison.very_bright, bg=C.ocean)
-        anim = animated(POSEIDON.splitlines(), moving_forward, flash)
-        animate(anim, params=AnimParams(fps=10))
+        anim = animated_lines(POSEIDON.splitlines(), moving_forward(), flash)
+        animate(anim, AnimParams(fps=10))
 
 
 TEST_INPUT = """

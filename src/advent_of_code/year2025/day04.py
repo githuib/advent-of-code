@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from based_utils.data.iterators import polarized
 from kleur import Colored
 from kleur.interpol import LinearMapping, NumberMapping
+from ternimator import AnimParams
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem
@@ -58,7 +59,9 @@ class _Problem(CharGridProblem[int], ABC):
         yield f"Removed: {len(list(removed))}"
 
     def solution(self) -> int:
-        return sum(len(r) for r in log.debug_animated_iter(self.removed, self.grid_str))
+        params = AnimParams(format_item=self.grid_str)
+        removed = log.debug_animated_iter(self.removed(), params)
+        return sum(len(r) for r in removed)
 
 
 class Problem1(_Problem):

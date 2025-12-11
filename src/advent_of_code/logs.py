@@ -1,17 +1,17 @@
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Callable, Iterator
 from functools import cached_property
 from logging import Formatter, LogRecord
 from pprint import pformat
 from typing import TYPE_CHECKING
 
-from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister, animate_iter
+from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister
 from kleur import Colored, Colors
-from more_itertools.recipes import consume
+from ternimator import animate_iter, consume
 
 import advent_of_code
 
 if TYPE_CHECKING:
-    from based_utils.cli.animation import AnimParams, LazyItems
+    from ternimator import AnimParams
 
 
 class LogFormatter(Formatter):
@@ -89,27 +89,13 @@ class AppLogger(LogMeister):
         return cb() if self._main_logger.level == LogLevel.DEBUG else None
 
     def debug_animated_iter[T](
-        self,
-        items: LazyItems[T],
-        format_item: Callable[[T], Iterable[str]] = None,
-        *,
-        params: AnimParams = None,
+        self, items: Iterator[T], params: AnimParams = None
     ) -> Iterator[T]:
         yield from (
-            animate_iter(items, format_item, params=params)
+            animate_iter(items, params)
             if self._main_logger.level == LogLevel.DEBUG
-            else items()
+            else items
         )
 
-    def debug_animated[T](
-        self,
-        items: LazyItems[T],
-        format_item: Callable[[T], Iterable[str]] = None,
-        *,
-        params: AnimParams = None,
-    ) -> None:
-        consume(
-            self.debug_animated_iter(items, format_item, params=params)
-            if self._main_logger.level == LogLevel.DEBUG
-            else items()
-        )
+    def debug_animated[T](self, items: Iterator[T], params: AnimParams = None) -> None:
+        consume(self.debug_animated_iter(items, params))

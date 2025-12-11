@@ -1,5 +1,5 @@
-from based_utils.cli import animate, animated
-from based_utils.cli.animation import AnimParams, changing_colors, fuck_me_sideways
+from ternimator import AnimParams, animate, animated_lines
+from ternimator.animations import changing_colors, fuck_me_sideways
 
 from advent_of_code.problems import MultiLineProblem
 
@@ -56,8 +56,8 @@ GNOME = r"""
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-        anim = animated(GNOME.splitlines(), fuck_me_sideways, changing_colors())
-        animate(anim, params=AnimParams(fps=30))
+        animations = fuck_me_sideways(), changing_colors()
+        animate(animated_lines(GNOME.splitlines(), *animations), AnimParams(fps=30))
 
 
 TEST_INPUT = """
