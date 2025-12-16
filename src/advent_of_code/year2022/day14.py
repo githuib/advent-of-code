@@ -4,7 +4,7 @@ from itertools import pairwise
 from typing import TYPE_CHECKING
 
 from based_utils.data.iterators import smart_range
-from kleur import Colored
+from kleur import GREY, Colored
 from parse import parse  # type: ignore[import-untyped]
 from ternimator import AnimParams
 
@@ -29,7 +29,7 @@ START = START_X, START_Y = 500, 0
 def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
     if 0 <= v < 4:
         c, s = {
-            Material.AIR: (C.grey.very_dark, "."),
+            Material.AIR: (GREY.very_dark, "."),
             Material.ROCK: (C.pink.dark, "#"),
             Material.SAND: (C.brown.saturated(0.33).very_bright, "o"),
             Material.SOURCE: (C.blue, "+"),

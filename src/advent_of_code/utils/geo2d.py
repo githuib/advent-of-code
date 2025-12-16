@@ -351,7 +351,7 @@ class Grid2[T](Mapping[P2, T], ABC):
             if format_value:
                 s = format_value(pos, value, s)
             if pos in (highlighted or {}):
-                c = (s.color or C.green).very_bright
+                c = (s.fg or C.green).very_bright
                 s = s.with_color(c).with_background(c.darker())
             return str(s)
 
