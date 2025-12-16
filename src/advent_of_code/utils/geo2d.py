@@ -175,14 +175,6 @@ def intersect_segments_2(line_1: Line2, line_2: Line2) -> tuple[float, float] | 
     return intersect_2(line_1, line_2, segments=True)
 
 
-@dataclass(frozen=True)
-class Crop:
-    left: int = 0
-    right: int = 0
-    top: int = 0
-    bottom: int = 0
-
-
 class Grid2[T](Mapping[P2, T], ABC):
     _default_value: T
 
@@ -324,39 +316,43 @@ class Grid2[T](Mapping[P2, T], ABC):
         *,
         format_value: Callable[[P2, T, Colored], Colored] = None,
         highlighted: Set[P2] = None,
-        crop: Crop = None,
         crop_to_terminal: bool = True,
+        crop_lines: int = 0,
+        keep_in_crop: P2 = None,
     ) -> Iterator[str]:
-        (x_lo, y_lo), (x_hi, y_hi) = self.span
+        lo, hi = self.span
+        cropped = size = self.width - 1, self.height - 1
 
         if crop_to_terminal:
-            max_width, max_height = term_size()
-            # Keep centered horizontally
-            x_cropped = max(0, self.width - max_width)
-            x_lo += x_cropped // 2
-            x_hi -= (x_cropped - 1) // 2 + 1
-            # Crop from bottom
-            y_cropped = max(0, self.height - max_height + 1)
-            y_hi -= y_cropped
+            (w, h), (w_max, h_max) = size, term_size()
+            cropped = (min(w, w_max - 1), min(h, h_max - crop_lines - 2))
 
-        if crop:
-            x_lo += crop.left
-            x_hi -= crop.right
-            y_lo += crop.top
-            y_hi -= crop.bottom
+        sample_ratios = [(n / c) for n, c in zip(size, cropped, strict=True)]
+        coords = [
+            [round(cl + i * sr) for i in range(c)] + [ch]
+            for i, (cl, ch, c, sr) in enumerate(
+                zip(lo, hi, cropped, sample_ratios, strict=True)
+            )
+        ]
+
+        if keep_in_crop:
+            for cs, k in zip(coords, keep_in_crop, strict=True):
+                _, idx = min((abs(c - k), i) for i, c in enumerate(cs))
+                cs[idx] = k
 
         def fmt(pos: P2) -> str:
             value = self[pos]
-            s = self._format_value(pos, value)
+            vf = self._format_value(pos, value)
             if format_value:
-                s = format_value(pos, value, s)
+                vf = format_value(pos, value, vf)
             if pos in (highlighted or {}):
-                c = (s.fg or C.green).very_bright
-                s = s.with_color(c).with_background(c.darker())
-            return str(s)
+                c = (vf.fg or C.green).very_bright
+                vf = vf.with_color(c).with_background(c.darker())
+            return vf
 
-        for y in range(y_lo, y_hi + 1):
-            yield "".join(fmt((x, y)) for x in range(x_lo, x_hi + 1))
+        xs, ys = coords
+        for y in ys:
+            yield "".join(fmt((x, y)) for x in xs)
 
 
 @cache

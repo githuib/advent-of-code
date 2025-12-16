@@ -152,11 +152,11 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         dot = C.poison.very_dark
         amph = C.pink
 
-        w = str(Colored("#", edge, edge.darker()))
+        w = Colored("#", edge, edge.darker())
 
         def colored_char(c: str) -> str:
             color = dot if c == "." else amph
-            return str(Colored(c, color.contrasting_shade, color))
+            return Colored(c, color.contrasting_shade, color)
 
         def colored(cs: str) -> str:
             return "".join(colored_char(c) for c in cs)

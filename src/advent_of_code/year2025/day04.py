@@ -8,7 +8,7 @@ from ternimator import AnimParams
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem
-from advent_of_code.utils.geo2d import P2, Crop, MutableNumGrid2, all_directions
+from advent_of_code.utils.geo2d import P2, MutableNumGrid2, all_directions
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Iterator
@@ -54,7 +54,7 @@ class _Problem(CharGridProblem[int], ABC):
                 return Colored(".", C.blue.shade(0.25))
             return Colored(str(v), C.green.shade(SHADES_MAPPING.map(v)))
 
-        yield from self.num_grid.to_lines(format_value=fmt, crop=Crop(bottom=2))
+        yield from self.num_grid.to_lines(format_value=fmt, crop_lines=2)
         yield ""
         yield f"Removed: {len(list(removed))}"
 

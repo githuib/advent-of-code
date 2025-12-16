@@ -33,7 +33,7 @@ def format_char(s: str) -> str:
         return s
 
     c = C.yellow.very_bright if s == "#" else C.blue.dark
-    return str(Colored(s, c, c.darker()))
+    return Colored(s, c, c.darker())
 
 
 def colored(s: str) -> str:

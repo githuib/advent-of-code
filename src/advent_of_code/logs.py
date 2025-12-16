@@ -43,7 +43,7 @@ class LogFormatter(Formatter):
             LogLevel.ERROR: Colors.red,
             LogLevel.CRITICAL: Colors.red,
         }[LogLevel(record.levelno)]
-        return str(Colored(msg, color))
+        return Colored(msg, color)
 
 
 class AppLogger(LogMeister):
