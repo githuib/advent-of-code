@@ -102,15 +102,8 @@ def area(points: Iterable[P2]) -> int:
     >>> area([(6, 0), (6, 5), (4, 5), (4, 7), (0, 5), (2, 5), (2, 2), (0, 2), (0, 0)])
     28
     """
-    return (
-        abs(
-            sum(
-                x2 * (y3 - y1)
-                for (_, y1), (x2, _), (_, y3) in tripletwise_circular(points)
-            )
-        )
-        // 2
-    )
+    ps = tripletwise_circular(points)
+    return abs(sum(x2 * (y3 - y1) for (_, y1), (x2, _), (_, y3) in ps)) // 2
 
 
 def grid_area(points: Iterable[P2], *, include_loop: bool = True) -> int:
@@ -320,6 +313,16 @@ class Grid2[T](Mapping[P2, T], ABC):
         crop_lines: int = 0,
         keep_in_crop: P2 = None,
     ) -> Iterator[str]:
+        def format_value_(pos: P2) -> str:
+            v = self[pos]
+            v_formatted = self._format_value(pos, v)
+            if format_value:
+                v_formatted = format_value(pos, v, v_formatted)
+            if pos in (highlighted or {}):
+                c = (v_formatted.fg or C.green).very_bright
+                v_formatted = v_formatted.with_color(c).with_background(c.darker())
+            return v_formatted
+
         lo, hi = self.span
         cropped = size = self.width - 1, self.height - 1
 
@@ -328,31 +331,20 @@ class Grid2[T](Mapping[P2, T], ABC):
             cropped = (min(w, w_max - 1), min(h, h_max - crop_lines - 2))
 
         sample_ratios = [(n / c) for n, c in zip(size, cropped, strict=True)]
-        coords = [
-            [round(cl + i * sr) for i in range(c)] + [ch]
-            for i, (cl, ch, c, sr) in enumerate(
+        xs, ys = [
+            [round(c_lo + i * sample_ratio) for i in range(c)] + [c_hi]
+            for i, (c_lo, c_hi, c, sample_ratio) in enumerate(
                 zip(lo, hi, cropped, sample_ratios, strict=True)
             )
         ]
 
         if keep_in_crop:
-            for cs, k in zip(coords, keep_in_crop, strict=True):
+            for cs, k in zip((xs, ys), keep_in_crop, strict=True):
                 _, idx = min((abs(c - k), i) for i, c in enumerate(cs))
                 cs[idx] = k
 
-        def fmt(pos: P2) -> str:
-            value = self[pos]
-            vf = self._format_value(pos, value)
-            if format_value:
-                vf = format_value(pos, value, vf)
-            if pos in (highlighted or {}):
-                c = (vf.fg or C.green).very_bright
-                vf = vf.with_color(c).with_background(c.darker())
-            return vf
-
-        xs, ys = coords
         for y in ys:
-            yield "".join(fmt((x, y)) for x in xs)
+            yield "".join(format_value_((x, y)) for x in xs)
 
 
 @cache
