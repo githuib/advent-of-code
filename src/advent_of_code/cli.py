@@ -1,7 +1,6 @@
 import sys
 from argparse import ArgumentParser, Namespace
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from based_utils.cli import (
@@ -112,8 +111,6 @@ def _parse_args() -> Namespace:
     year = y if is_aoc_month else y - 1
     day = d if is_aoc_day else 25
 
-    Path().glob("year*")
-
     parser = ArgumentParser()
     parser.add_argument(
         "--year",
@@ -146,15 +143,4 @@ def main() -> None:
     puzzle_data = PuzzleData(args.year, args.day, args.part, input_mode)
     with log.context(LogLevel.DEBUG if args.debugging else LogLevel.INFO):
         success = solve(load_problem(puzzle_data))
-    sys.exit(not success)
-
-
-@killed_by_errors(FileNotFoundError, ModuleNotFoundError, NoSolutionFoundError)
-def main_quiet() -> None:
-    args = _parse_args()
-    input_mode: InputMode = (
-        "none" if args.no_input else "test" if args.test else "puzzle"
-    )
-    puzzle_data = PuzzleData(args.year, args.day, args.part, input_mode)
-    success = solve(load_problem(puzzle_data))
     sys.exit(not success)

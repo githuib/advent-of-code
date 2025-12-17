@@ -36,7 +36,7 @@ def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
         return Colored(".", C_BACKGROUND)
     f = VALUE_MAPPING.position_of(v)
     hue, shade = HUE_MAPPING.value_at(f), SHADE_MAPPING.value_at(f)
-    return Colored("|", Color(hue=hue, lightness=shade))
+    return Colored("╻", Color(hue=hue, lightness=shade))
 
 
 class _Problem(MultiLineProblem[int], ABC):
