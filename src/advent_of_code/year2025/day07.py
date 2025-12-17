@@ -32,11 +32,19 @@ C_BACKGROUND = C.blue.very_dark
 def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
     if v == -1:
         return Colored("^", C_SPLITTER)
-    if v == 0:
-        return Colored(".", C_BACKGROUND)
-    f = VALUE_MAPPING.position_of(v)
-    hue, shade = HUE_MAPPING.value_at(f), SHADE_MAPPING.value_at(f)
-    return Colored("╻", Color(hue=hue, lightness=shade))
+
+    is_beam = v > 0
+    if is_beam or v < -1:
+        f = VALUE_MAPPING.position_of(v if is_beam else -v - 1)
+        hue, shade = HUE_MAPPING.value_at(f), SHADE_MAPPING.value_at(f)
+        return Colored("╻" if is_beam else "^", Color(hue=hue, lightness=shade))
+
+    if v > 0:
+        f = VALUE_MAPPING.position_of(v)
+        hue, shade = HUE_MAPPING.value_at(f), SHADE_MAPPING.value_at(f)
+        return Colored("╻", Color(hue=hue, lightness=shade))
+
+    return Colored(".", C_BACKGROUND)
 
 
 class _Problem(MultiLineProblem[int], ABC):
@@ -52,7 +60,8 @@ class _Problem(MultiLineProblem[int], ABC):
                 above = self.grid[x, y - 1]
                 if above <= 0:
                     continue
-                if val == -1:
+                if val < 0:
+                    self.grid[x, y] -= above
                     self.grid[x - 1, y] += above
                     self.grid[x + 1, y] += above
                 else:
@@ -72,7 +81,7 @@ class Problem1(_Problem):
 
     def values(self) -> Iterator[int]:
         for (x, y), v in self.grid.items():
-            if v > 0 and self.grid.get((x, y + 1), 0) == -1:
+            if v > 0 and self.grid.get((x, y + 1), 0) < 0:
                 yield 1
 
 

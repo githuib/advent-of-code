@@ -82,7 +82,7 @@ class _Problem(CharGridProblem[int], ABC):
                 if v in DIRECTION_TILES:
                     c = C.yellow.shade(0.45).saturated(0.75)
                     color = {
-                        s: c.adjust(hue=i / 36) for i, s in enumerate(DIRECTION_TILES)
+                        s: c.with_hue(hue=i / 36) for i, s in enumerate(DIRECTION_TILES)
                     }[v]
                 else:
                     color = C.blue.dark if v == "." else C.pink.dark

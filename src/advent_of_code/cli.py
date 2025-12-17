@@ -111,6 +111,8 @@ def _parse_args() -> Namespace:
     year = y if is_aoc_month else y - 1
     day = d if is_aoc_day else 25
 
+    # Path().glob("year*")
+
     parser = ArgumentParser()
     parser.add_argument(
         "--year",
