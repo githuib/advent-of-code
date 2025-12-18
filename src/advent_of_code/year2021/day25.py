@@ -15,20 +15,20 @@ if TYPE_CHECKING:
 
 type SeaCucumbers = tuple[Set[P2], Set[P2]]
 
+COLORS = {
+    ".": C.ocean.bright,
+    ">": C.pink.slightly_bright.saturated(0.5),
+    "v": C.purple.slightly_dark.saturated(0.75),
+}
+
 
 def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     east, south = sea_cucumbers
-    board = CharGrid2(
-        dict.fromkeys(east, ">") | dict.fromkeys(south, "v"), default_value="."
-    )
-    colors = {
-        ".": C.ocean.very_bright,
-        ">": C.pink.saturated(0.5),
-        "v": C.purple.dark.saturated(0.5),
-    }
+    d = dict.fromkeys(east, ">") | dict.fromkeys(south, "v")
+    board = CharGrid2(d, default_value=".")
 
     def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
-        c = colors[v]
+        c = COLORS[v]
         return Colored(v, c, c.darker())
 
     return board.to_lines(format_value=format_value)
@@ -77,8 +77,8 @@ POSEIDON = r"""
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
-        flash = flashing(fg=C.poison.very_bright, bg=C.ocean)
-        anim = animated_lines(POSEIDON.splitlines(), moving_forward(), flash)
+        fg, bg = C.poison.very_bright, C.ocean
+        anim = animated_lines(POSEIDON, moving_forward(), flashing(fg=fg, bg=bg))
         animate(anim, AnimParams(fps=10))
 
 

@@ -25,7 +25,7 @@ START_HUE = C.purple.blend(C.pink, 0.44).hue
 HUE_MAPPING = LinearMapping(START_HUE, START_HUE - 4)
 SHADE_MAPPING = LinearMapping(0.25, 0.75)
 
-C_SPLITTER = C.blue.dark.saturated(0.6)
+C_SPLITTER = C.blue.dark.saturated(0.75)
 C_BACKGROUND = C.blue.very_dark
 
 

@@ -43,7 +43,7 @@ build-backend = "uv_build"
 tasks = ["mypy", "pytest", "ruff check", "ruff format"]
 
 [tool.mypy]
-files = ["src"] #, "tests"]
+files = ["src"]
 implicit_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true

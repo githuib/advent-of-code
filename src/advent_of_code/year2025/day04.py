@@ -21,6 +21,7 @@ def remove_rolls(grid_items: Iterable[tuple[P2, int]]) -> tuple[Rolls, Rolls]:
 
 
 SHADES_MAPPING = NumberMapping(LinearMapping(4, 8), LinearMapping(0.3, 0.9))
+X_COLOR, DOT_COLOR, ROLLS_COLOR = C.pink, C.blue.dark, C.green
 
 
 class _Problem(CharGridProblem[int], ABC):
@@ -48,11 +49,10 @@ class _Problem(CharGridProblem[int], ABC):
     def grid_str(self, removed: Rolls) -> Iterator[str]:
         def fmt(p: P2, v: int, _c: Colored) -> Colored:
             if p in [p for p, _v in removed]:
-                cx = C.pink
-                return Colored("x", cx, cx.contrasting_shade)
+                return Colored("x", X_COLOR)
             if v == -1:
-                return Colored(".", C.blue.shade(0.25))
-            return Colored(str(v), C.green.shade(SHADES_MAPPING.map(v)))
+                return Colored(".", DOT_COLOR)
+            return Colored(v, ROLLS_COLOR.shade(SHADES_MAPPING.map(v)))
 
         yield from self.num_grid.to_lines(format_value=fmt, crop_lines=2)
         yield ""

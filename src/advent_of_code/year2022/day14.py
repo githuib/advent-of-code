@@ -23,17 +23,18 @@ class Material(IntEnum):
     SOURCE = 3
 
 
+MATERIAL_COLORS = {
+    Material.AIR: (GREY.very_dark, "."),
+    Material.ROCK: (C.pink.slightly_dark, "#"),
+    Material.SAND: (C.brown.saturated(0.33).very_bright, "o"),
+    Material.SOURCE: (C.blue, "+"),
+}
 START = START_X, START_Y = 500, 0
 
 
 def format_map_value(_p: P2, v: int, _colored: Colored) -> Colored:
     if 0 <= v < 4:
-        c, s = {
-            Material.AIR: (GREY.very_dark, "."),
-            Material.ROCK: (C.pink.dark, "#"),
-            Material.SAND: (C.brown.saturated(0.33).very_bright, "o"),
-            Material.SOURCE: (C.blue, "+"),
-        }[Material(v)]
+        c, s = MATERIAL_COLORS[Material(v)]
     else:
         return NotImplemented
     return Colored(s, c, c.darker())
@@ -89,7 +90,7 @@ class Problem1(_Problem):
 
     def solution(self) -> int:
         maps = self.go()
-        log.debug_animated(maps, AnimParams(fps=60, only_every_nth=50))
+        log.debug_animated(maps, AnimParams(fps=60, only_every_nth=20))
         return sum(m == Material.SAND for m in self.map.values())
 
 
@@ -108,7 +109,7 @@ class Problem2(_Problem):
             self.map[sx + x, y_max] = Material.ROCK
 
         maps = self.go()
-        log.debug_animated(maps, AnimParams(fps=60, only_every_nth=1000))
+        log.debug_animated(maps, AnimParams(fps=60, only_every_nth=500))
         return sum(m == Material.SAND for m in self.map.values())
 
 

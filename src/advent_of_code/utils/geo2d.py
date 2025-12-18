@@ -371,6 +371,7 @@ class CharGrid2(Grid2[str]):
 
 
 NUM_SHADES_MAPPING = NumberMapping(LinearMapping(1, 10), LinearMapping(0.2, 0.5))
+NUM_COLOR = C.green
 
 
 class NumGrid2(Grid2[int]):
@@ -383,8 +384,8 @@ class NumGrid2(Grid2[int]):
     def _format_value(self, _pos: P2, value: int) -> Colored:
         if value < 0:
             return Colored(".")
-        c = C.green.shade(NUM_SHADES_MAPPING.map(min(value, 10)))
-        return Colored(str(value) if value < 10 else "+", c)
+        c = NUM_COLOR.shade(NUM_SHADES_MAPPING.map(min(value, 10)))
+        return Colored(value if value < 10 else "+", c)
 
 
 class BitGrid2(Grid2[bool]):
