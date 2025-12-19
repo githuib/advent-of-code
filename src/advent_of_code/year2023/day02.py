@@ -3,7 +3,7 @@ from abc import ABC
 from math import prod
 from typing import TYPE_CHECKING
 
-from based_utils.data.conversion import grouped_pairs
+from based_utils.data.conversion import grouped_by_key
 
 from advent_of_code.problems import MultiLineProblem
 
@@ -19,7 +19,7 @@ def parsed_line(line: str) -> Iterator[tuple[str, int]]:
 class _Problem(MultiLineProblem[int], ABC):
     def parsed(self) -> Iterator[dict[str, int]]:
         for line in self.lines:
-            yield {k: max(vs) for k, vs in grouped_pairs(parsed_line(line)).items()}
+            yield {k: max(vs) for k, vs in grouped_by_key(parsed_line(line)).items()}
 
 
 class Problem1(_Problem):

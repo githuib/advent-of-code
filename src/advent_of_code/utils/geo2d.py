@@ -354,7 +354,7 @@ def _colors(n: int) -> list[Color]:
 
 
 class CharGrid2(Grid2[str]):
-    _default_value = ""
+    _default_value = "."
 
     @classmethod
     def _parse_value(cls, value_str: str) -> str:
