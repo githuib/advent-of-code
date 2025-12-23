@@ -5,10 +5,11 @@ from pprint import pformat
 from typing import TYPE_CHECKING
 
 from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister
+from based_utils.data import consume
 from kleur import GREY, Colored, Colors
-from ternimator import animate_iter, consume
+from ternimator import animate_iter
 
-import advent_of_code
+from advent_of_code.utils import term_size
 
 if TYPE_CHECKING:
     from ternimator import AnimParams
@@ -28,7 +29,7 @@ class LogFormatter(Formatter):
                 record.msg = "".join(f"{line}\n" for line in record.msg)
             if isinstance(record.msg, str):
                 return Formatter("%(message)s").format(record)
-            max_width, _max_height = advent_of_code.term_size()
+            max_width, _max_height = term_size()
             return pformat(record.msg, width=max_width)
 
         # Warnings & errors (or external package loggings): add prefix and color
@@ -43,7 +44,7 @@ class LogFormatter(Formatter):
             LogLevel.ERROR: Colors.red,
             LogLevel.CRITICAL: Colors.red,
         }[LogLevel(record.levelno)]
-        return Colored(msg, color)
+        return Colored(color)(msg)
 
 
 class AppLogger(LogMeister):

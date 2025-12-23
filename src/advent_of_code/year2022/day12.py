@@ -3,12 +3,12 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import AStarState, BFSState, DijkstraState, State
-from based_utils.cli import format_table, human_readable_duration, timed
-from based_utils.data import PRE_a
-from kleur import Colored, Highlighter
+from based_utils.cli import Table, human_readable_duration, timed
+from kleur import Colored, ColorStr, Highlighter
 
 from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem
+from advent_of_code.utils import PRE_a
 from advent_of_code.utils.geo2d import P2, NumGrid2
 
 if TYPE_CHECKING:
@@ -111,8 +111,8 @@ class _Problem(NumGridProblem[int], ABC):
                 for p, h in self.grid.items()
             }
 
-            def cs(v: object, color: Color) -> Colored:
-                return Colored(v, color.slightly_darker, color)
+            def cs(color: Color) -> Colored:
+                return Colored(color.slightly_darker, color)
 
             hl_start = Highlighter(C.green.saturated(0.8))
             hl_end = Highlighter(C.blue.saturated(0.8))
@@ -122,7 +122,7 @@ class _Problem(NumGridProblem[int], ABC):
             c_bfs = c_dijkstra.slightly_darker
             c_a_star = c_dijkstra.slightly_brighter
 
-            def grid_cell_str(p: P2, default_val: int, _colored: Colored) -> Colored:
+            def grid_cell_str(p: P2, default_val: int, _colored: ColorStr) -> ColorStr:
                 v = hill_chars.get(p, default_val)
                 return (
                     hl_end(v)
@@ -131,33 +131,33 @@ class _Problem(NumGridProblem[int], ABC):
                     if (p in ep)
                     else hl_path(v)
                     if (p in p_points)
-                    else cs(v, c_a_star)
+                    else cs(c_a_star)(v)
                     if (p in visited_points_a_star)
-                    else cs(v, c_dijkstra)
+                    else cs(c_dijkstra)(v)
                     if (p in visited_points_dijkstra)
-                    else cs(v, c_bfs)
+                    else cs(c_bfs)(v)
                     if (p in visited_points_bfs)
-                    else Colored(v, c_bfs)
+                    else Colored(c_bfs)(v)
                 )
 
             yield from self.grid.to_lines(format_value=grid_cell_str)
             yield ""
-            yield from format_table(
+            yield from Table(column_splits=[1], style_table=Colored(c_dijkstra))(
                 ("Legend", "Algorithm", "Visited", "Path found in"),
                 (
-                    f"{cs('x', c_bfs)} visited by BFS",
+                    f"{cs(c_bfs)('x')} visited by BFS",
                     "BFS",
                     len(visited_points_bfs),
                     human_readable_duration(t_bfs),
                 ),
                 (
-                    f"{cs('y', c_dijkstra)} visited by Dijkstra & BFS",
+                    f"{cs(c_dijkstra)('y')} visited by Dijkstra & BFS",
                     "Dijkstra",
                     len(visited_points_dijkstra),
                     human_readable_duration(t_dijkstra),
                 ),
                 (
-                    f"{cs('z', c_a_star)} visited by A*, Dijkstra & BFS",
+                    f"{cs(c_a_star)('z')} visited by A*, Dijkstra & BFS",
                     "A*",
                     len(visited_points_a_star),
                     human_readable_duration(t_a_star),
@@ -167,9 +167,7 @@ class _Problem(NumGridProblem[int], ABC):
                 (f"{hl_start('S')} start",),
                 (f"{hl_end('E')} end",),
                 (f"{hl_path('p')} path",),
-                (f"{Colored('w', c_dijkstra)} wild, unexplored terrain",),
-                column_splits=[1],
-                color=c_dijkstra,
+                (f"{Colored(c_dijkstra)('w')} wild, unexplored terrain",),
             )
 
         log.lazy_debug(_debug_str)

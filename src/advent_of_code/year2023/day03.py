@@ -1,19 +1,22 @@
 from abc import ABC
 
-from kleur import Colored
+from kleur import Colored, ColorStr, Highlighter
 
 from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem
 from advent_of_code.utils.geo2d import P2, all_directions
 
+dot_color = Colored(C.blue.dark.saturated(0.66))
+num_color = Colored(C.green.bright)
+special_color = Highlighter(C.red.bright)
 
-def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
+
+def format_value(_p: P2, v: int, _colored: ColorStr) -> ColorStr:
     if v == 10:
-        return Colored(".", C.blue.dark.saturated(0.66))
-    if v > 10:
-        c_special = C.red.bright
-        return Colored(chr(v), c_special, c_special.contrasting_shade)
-    return Colored(v, C.green.bright)
+        return dot_color(".")
+    if v < 10:
+        return num_color(v)
+    return special_color(chr(v), inverted=True)
 
 
 class _Problem(NumGridProblem[int], ABC):

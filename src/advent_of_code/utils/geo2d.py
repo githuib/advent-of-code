@@ -5,17 +5,14 @@ from functools import cache, cached_property
 from math import hypot
 from typing import TYPE_CHECKING, Literal, Self
 
-from based_utils.calx import randf
-from based_utils.data.iterators import (
-    Predicate,
-    pairwise_circular,
-    tripletwise_circular,
-)
-from based_utils.data.mixins import WithClearablePropertyCache
-from kleur import Color, Colored
-from kleur.interpol import LinearMapping, NumberMapping
+from based_utils.class_utils import WithClearablePropertyCache
+from based_utils.interpol import LinearMapping, NumberMapping
+from based_utils.iterators import Predicate, pairwise_circular, tripletwise_circular
+from based_utils.math import randf
+from kleur import Color, Colored, ColorStr
 
-from advent_of_code import C, term_size
+from advent_of_code import C
+from advent_of_code.utils import lowlighted, term_size
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator
@@ -302,12 +299,12 @@ class Grid2[T](Mapping[P2, T], ABC):
         )
 
     @abstractmethod
-    def _format_value(self, pos: P2, value: T) -> Colored: ...
+    def _format_value(self, pos: P2, value: T) -> ColorStr: ...
 
     def to_lines(
         self,
         *,
-        format_value: Callable[[P2, T, Colored], Colored] = None,
+        format_value: Callable[[P2, T, ColorStr], ColorStr] = None,
         highlighted: Set[P2] = None,
         crop_to_terminal: bool = True,
         crop_lines: int = 0,
@@ -360,14 +357,13 @@ class CharGrid2(Grid2[str]):
     def _parse_value(cls, value_str: str) -> str:
         return value_str
 
-    def _format_value(self, _pos: P2, value: str) -> Colored:
+    def _format_value(self, _pos: P2, value: str) -> ColorStr:
         values = ".#^"
         try:
             n = values.index(value)
         except ValueError:
             n = 3
-        color = _colors(5)[n]
-        return Colored(value, color, color.darker())
+        return lowlighted(_colors(5)[n])(value)
 
 
 NUM_SHADES_MAPPING = NumberMapping(LinearMapping(1, 10), LinearMapping(0.2, 0.5))
@@ -381,11 +377,11 @@ class NumGrid2(Grid2[int]):
     def _parse_value(cls, value_str: str) -> int:
         return int(value_str)
 
-    def _format_value(self, _pos: P2, value: int) -> Colored:
+    def _format_value(self, _pos: P2, value: int) -> ColorStr:
         if value < 0:
-            return Colored(".")
-        c = NUM_COLOR.shade(NUM_SHADES_MAPPING.map(min(value, 10)))
-        return Colored(value if value < 10 else "+", c)
+            return ColorStr(".")
+        c = Colored(NUM_COLOR.shade(NUM_SHADES_MAPPING.map(min(value, 10))))
+        return c(value if value < 10 else "+")
 
 
 class BitGrid2(Grid2[bool]):
@@ -399,10 +395,9 @@ class BitGrid2(Grid2[bool]):
         self,
         _pos: P2,
         value: bool,  # noqa: FBT001
-    ) -> Colored:
+    ) -> ColorStr:
         c_bad, c_good, _ = _colors()
-        color = c_good if value else c_bad
-        return Colored("#" if value else ".", color, color.darker())
+        return lowlighted(c_good if value else c_bad)("#" if value else ".")
 
 
 class _MutableGrid2[T](

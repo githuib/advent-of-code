@@ -1,39 +1,31 @@
 from abc import ABC, abstractmethod
 from itertools import pairwise
-from typing import TYPE_CHECKING, Literal, TypeGuard
+from typing import TYPE_CHECKING
 
-from kleur import GREY, Color, Colored
+from kleur import GREY, ColorStr
 from parse import parse  # type: ignore[import-untyped]
 from ternimator import AnimParams
 
 from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
+from advent_of_code.utils import lowlighted
 from advent_of_code.utils.geo2d import P2, MutableCharGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-
-# air, rock, sand, source
-type Material = Literal[".", "#", "o", "+"]
-MATERIAL_COLORS: dict[Material, Color] = {
-    ".": GREY.very_dark,
-    "#": C.pink.slightly_dark,
-    "o": C.brown.saturated(0.33).very_bright,
-    "+": C.blue,
-}
+MC = [
+    (".", GREY.very_dark),  # air
+    ("#", C.pink.slightly_dark),  # rock
+    ("o", C.brown.saturated(0.33).very_bright),  # sand
+    ("+", C.blue),  # source
+]
+MATERIAL_COLORS = {m: lowlighted(c)(m) for m, c in MC}
 START = START_X, START_Y = 500, 0
 
 
-def is_material(s: str) -> TypeGuard[Material]:
-    return s in ".#o+"
-
-
-def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
-    if not is_material(v):
-        return NotImplemented
-    c = MATERIAL_COLORS[v]
-    return Colored(v, c, c.darker())
+def format_value(_p: P2, v: str, _colored: ColorStr) -> ColorStr:
+    return MATERIAL_COLORS[v]
 
 
 class _Problem(MultiLineProblem[int], ABC):

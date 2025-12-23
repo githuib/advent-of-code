@@ -1,6 +1,6 @@
 from abc import ABC
 
-from based_utils.data.iterators import repeat_transform
+from based_utils.iterators import repeat_transform
 from more_itertools import last
 
 from advent_of_code import log

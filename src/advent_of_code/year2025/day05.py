@@ -1,6 +1,6 @@
 from abc import ABC
 
-from based_utils.data.iterators import polarized, split_items
+from based_utils.iterators import polarized, split_items
 
 from advent_of_code.problems import MultiLineProblem
 

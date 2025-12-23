@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.data.conversion import bits_to_int
+from based_utils.data import bits_to_int
 
 from advent_of_code.problems import MultiLineProblem
 

@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from based_utils.data.iterators import polarized
-from kleur import Colored
-from kleur.interpol import LinearMapping, NumberMapping
+from based_utils.interpol import LinearMapping, NumberMapping
+from based_utils.iterators import polarized
+from kleur import Colored, ColorStr
 from ternimator import AnimParams
 
 from advent_of_code import C, log
@@ -21,7 +21,7 @@ def remove_rolls(grid_items: Iterable[tuple[P2, int]]) -> tuple[Rolls, Rolls]:
 
 
 SHADES_MAPPING = NumberMapping(LinearMapping(4, 8), LinearMapping(0.3, 0.9))
-X_COLOR, DOT_COLOR, ROLLS_COLOR = C.pink, C.blue.dark, C.green
+x_color, dot_color, ROLLS_COLOR = Colored(C.pink), Colored(C.blue.dark), C.green
 
 
 class _Problem(CharGridProblem[int], ABC):
@@ -47,12 +47,12 @@ class _Problem(CharGridProblem[int], ABC):
     def removed(self) -> Iterator[Rolls]: ...
 
     def grid_str(self, removed: Rolls) -> Iterator[str]:
-        def fmt(p: P2, v: int, _c: Colored) -> Colored:
+        def fmt(p: P2, v: int, _c: ColorStr) -> ColorStr:
             if p in [p for p, _v in removed]:
-                return Colored("x", X_COLOR)
+                return x_color("x")
             if v == -1:
-                return Colored(".", DOT_COLOR)
-            return Colored(v, ROLLS_COLOR.shade(SHADES_MAPPING.map(v)))
+                return dot_color(".")
+            return Colored(ROLLS_COLOR.shade(SHADES_MAPPING.map(v)))(v)
 
         yield from self.num_grid.to_lines(format_value=fmt, crop_lines=2)
         yield ""

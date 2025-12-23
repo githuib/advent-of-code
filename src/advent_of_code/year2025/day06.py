@@ -1,11 +1,7 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterable, Iterator
 
-from based_utils.data.iterators import (
-    equalized_lines,
-    filter_non_empty,
-    split_when_changed,
-)
+from based_utils.iterators import equalized_lines, filter_non_empty, split_when_changed
 from more_itertools import split_into, transpose
 from simpleeval import simple_eval  # type: ignore[import-untyped]
 

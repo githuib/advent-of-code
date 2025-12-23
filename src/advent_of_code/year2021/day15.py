@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import DijkstraState
-from based_utils.calx import mods
+from based_utils.math import mods
 
 from advent_of_code import log
 from advent_of_code.problems import NumGridProblem

@@ -2,7 +2,7 @@ import re
 from abc import ABC
 from math import ceil, prod, sqrt
 
-from based_utils.data.conversion import compose_number
+from based_utils.data import compose_number
 from more_itertools import transpose
 
 from advent_of_code import log

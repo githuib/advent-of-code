@@ -1,7 +1,7 @@
 from itertools import pairwise
 from typing import TYPE_CHECKING
 
-from based_utils.data.mixins import Unique
+from based_utils.class_utils import Unique
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem

@@ -2,7 +2,7 @@ from abc import ABC
 from typing import TYPE_CHECKING, NamedTuple, Self
 
 from based_utils.algo import BFSState
-from based_utils.data.iterators import repeat_transform
+from based_utils.iterators import repeat_transform
 from more_itertools import last
 
 from advent_of_code import log

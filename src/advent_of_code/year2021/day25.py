@@ -1,17 +1,19 @@
 from collections.abc import Set
 from typing import TYPE_CHECKING
 
-from based_utils.data.iterators import first_duplicate
-from kleur import Colored
+from based_utils.iterators import first_duplicate
 from ternimator import AnimParams, animate, animated_lines
 from ternimator.animations import flashing, moving_forward
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem, MultiLineProblem
+from advent_of_code.utils import lowlighted
 from advent_of_code.utils.geo2d import P2, CharGrid2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
+
+    from kleur import ColorStr
 
 type SeaCucumbers = tuple[Set[P2], Set[P2]]
 
@@ -27,9 +29,9 @@ def board_str(sea_cucumbers: SeaCucumbers) -> Iterator[str]:
     d = dict.fromkeys(east, ">") | dict.fromkeys(south, "v")
     board = CharGrid2(d, default_value=".")
 
-    def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
+    def format_value(_p: P2, v: str, _colored: ColorStr) -> ColorStr:
         c = COLORS[v]
-        return Colored(v, c, c.darker())
+        return lowlighted(c)(v)
 
     return board.to_lines(format_value=format_value)
 

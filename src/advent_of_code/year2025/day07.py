@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from kleur import Color, Colored
-from kleur.interpol import LinearMapping, LogarithmicMapping
+from based_utils.interpol import LinearMapping, LogarithmicMapping
+from kleur import Color, Colored, ColorStr
 from more_itertools import last
 
 from advent_of_code import C, log
@@ -12,7 +12,7 @@ from advent_of_code.utils.geo2d import P2, MutableNumGrid2
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
-    from ternimator import Lines
+    from based_utils.cli import Lines
 
 
 def parse(s: str) -> int:
@@ -25,26 +25,21 @@ START_HUE = C.purple.blend(C.pink, 0.44).hue
 HUE_MAPPING = LinearMapping(START_HUE, START_HUE - 4)
 SHADE_MAPPING = LinearMapping(0.25, 0.75)
 
-C_SPLITTER = C.blue.dark.saturated(0.75)
-C_BACKGROUND = C.blue.very_dark
+c_splitter = Colored(C.blue.dark.saturated(0.75))
+c_background = Colored(C.blue.very_dark)
 
 
-def format_value(_p: P2, v: int, _colored: Colored) -> Colored:
+def format_value(_p: P2, v: int, _colored: ColorStr) -> ColorStr:
     if v == -1:
-        return Colored("^", C_SPLITTER)
+        return c_splitter("^")
+
+    if v == 0:
+        return c_background(".")
 
     is_beam = v > 0
-    if is_beam or v < -1:
-        f = VALUE_MAPPING.position_of(v if is_beam else -v - 1)
-        hue, shade = HUE_MAPPING.value_at(f), SHADE_MAPPING.value_at(f)
-        return Colored("╻" if is_beam else "^", Color(hue=hue, lightness=shade))
-
-    if v > 0:
-        f = VALUE_MAPPING.position_of(v)
-        hue, shade = HUE_MAPPING.value_at(f), SHADE_MAPPING.value_at(f)
-        return Colored("╻", Color(hue=hue, lightness=shade))
-
-    return Colored(".", C_BACKGROUND)
+    f = VALUE_MAPPING.position_of(v if is_beam else -v - 1)
+    c = Color(HUE_MAPPING.value_at(f), 1, SHADE_MAPPING.value_at(f))
+    return Colored(c)("╻" if is_beam else "^")
 
 
 class _Problem(MultiLineProblem[int], ABC):

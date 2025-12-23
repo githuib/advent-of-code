@@ -1,6 +1,6 @@
 from abc import ABC
 
-from based_utils.data.conversion import compose_number
+from based_utils.data import compose_number
 
 from advent_of_code.problems import OneLineProblem
 

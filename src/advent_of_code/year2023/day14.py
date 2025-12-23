@@ -3,7 +3,7 @@ from collections.abc import Iterable, Iterator
 from itertools import groupby
 
 from based_utils.algo import detect_cycle
-from based_utils.data.iterators import repeat_transform, rotated_cw
+from based_utils.iterators import repeat_transform, rotated_cw
 from more_itertools import last
 
 from advent_of_code import log

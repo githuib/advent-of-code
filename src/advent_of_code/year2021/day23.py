@@ -6,12 +6,12 @@ from functools import cached_property
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import DijkstraState
-from based_utils.data import PRE_A
-from kleur import Colored
+from kleur import Highlighter
 from ternimator import AnimParams
 
 from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
+from advent_of_code.utils import PRE_A, lowlighted
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -151,12 +151,11 @@ class AmphipodState(DijkstraState[Constants, Variables]):
         edge = C.indigo.dark
         dot = C.poison.very_dark
         amph = C.pink
-
-        w = Colored("#", edge, edge.darker())
+        w = lowlighted(edge)("#")
 
         def colored_char(c: str) -> str:
             color = dot if c == "." else amph
-            return Colored(c, color.contrasting_shade, color)
+            return Highlighter(color)(c)
 
         def colored(cs: str) -> str:
             return "".join(colored_char(c) for c in cs)

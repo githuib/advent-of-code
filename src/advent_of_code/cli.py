@@ -5,17 +5,17 @@ from typing import TYPE_CHECKING
 
 from based_utils.cli import (
     LogLevel,
-    format_table,
+    Table,
     human_readable_duration,
     killed_by_errors,
     timed,
 )
-from kleur.formatting import FAIL, OK
+from kleur.formatting import FAIL, OK, Colored
 
 from advent_of_code import C
 
-from . import load_problem, log
-from .problems import InputMode, NoSolutionFoundError, Problem, PuzzleData
+from . import log
+from .problems import InputMode, NoSolutionFoundError, PuzzleData, load_problem
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -35,8 +35,6 @@ def solution_lines[T](my_solution: T, actual_solution: T | None) -> Iterator[str
         yield from mine
 
     else:
-        my_answer = f"{FAIL} Your answer:"
-        actual_answer = f"{OK} Correct answer:"
         yield "Wrong solution! 💀"
 
         actual: list[str] = (
@@ -45,6 +43,8 @@ def solution_lines[T](my_solution: T, actual_solution: T | None) -> Iterator[str
             else [str(actual_solution)]
         )
 
+        my_answer = f"{FAIL} Your answer:"
+        actual_answer = f"{OK} Correct answer:"
         if len(mine) == 1 and len(actual) == 1:
             w = max(len(my_answer), len(actual_answer))
             yield f"{my_answer.ljust(w)} {mine[0]}"
@@ -81,8 +81,12 @@ def output_lines[T](
     yield from duration_lines(duration)
 
 
+table = Table(style_table=Colored(C.blue.dark))
+
+
 # @raises(FileNotFoundError, NoSolutionFoundError)
-def solve[T](problem_cls: type[Problem[T]]) -> bool:
+def solve(puzzle_data: PuzzleData) -> bool:
+    problem_cls = load_problem(puzzle_data)
     problem, dur_init = timed(problem_cls)
     sol_actual = problem.actual_solution
     sol_mine, dur_solution = timed(problem.solution)
@@ -95,7 +99,7 @@ def solve[T](problem_cls: type[Problem[T]]) -> bool:
     duration = dur_init + dur_solution
 
     table_rows = ([line] for line in output_lines(mine, actual, duration))
-    log.info(format_table(*table_rows, color=C.blue.dark))
+    log.info(table(*table_rows))
 
     return mine == actual
 
@@ -143,5 +147,5 @@ def main() -> None:
     )
     puzzle_data = PuzzleData(args.year, args.day, args.part, input_mode)
     with log.context(LogLevel.DEBUG if args.debugging else LogLevel.INFO):
-        success = solve(load_problem(puzzle_data))
+        success = solve(puzzle_data)
     sys.exit(not success)

@@ -2,7 +2,7 @@ from abc import ABC
 from functools import cache
 from itertools import product
 
-from based_utils.calx import mods
+from based_utils.math import mods
 
 from advent_of_code.problems import ParsedProblem
 

@@ -1,4 +1,4 @@
-from based_utils.data.iterators import repeat_transform
+from based_utils.iterators import repeat_transform
 
 from advent_of_code.problems import MultiLineProblem
 

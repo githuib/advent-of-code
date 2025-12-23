@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING
 
-from based_utils.data.conversion import compose_number, invert_dict
+from based_utils.data import compose_number, invert_dict
 from more_itertools import partition
 
 from advent_of_code.problems import ParsedProblem

@@ -1,7 +1,7 @@
 from abc import ABC
 from typing import TYPE_CHECKING, Self
 
-from based_utils.data.conversion import bits_to_int
+from based_utils.data import bits_to_int
 
 from advent_of_code import log
 from advent_of_code.problems import MultiLineProblem

@@ -1,4 +1,4 @@
-from based_utils.data.iterators import (
+from based_utils.iterators import (
     equalized_lines,
     split_at,
     split_items,

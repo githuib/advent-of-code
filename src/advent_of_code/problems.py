@@ -1,6 +1,7 @@
 import sys
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from importlib import import_module
 from pathlib import Path
 from typing import ClassVar, Literal, Self
 
@@ -8,8 +9,12 @@ from gaffe import raises
 from more_itertools import strip
 from parse import findall  # type: ignore[import-untyped]
 
+import advent_of_code
+
 from .utils.geo2d import BitGrid2, CharGrid2, Grid2, NumGrid2
 from .utils.geo3d import P3D
+
+PKG_NAME = advent_of_code.__name__
 
 
 class NoSolutionFoundError(Exception):
@@ -50,9 +55,6 @@ class Problem[T](ABC):
             self._load_input()
         return self
 
-    def var[V](self, *, test: V, puzzle: V) -> V:
-        return test if self.is_test_run else puzzle
-
     @raises(FileNotFoundError)
     def _load_input(self) -> None:
         if self.is_test_run:
@@ -61,11 +63,9 @@ class Problem[T](ABC):
             self._load_puzzle_input()
 
     def _load_test_input(self) -> None:
-        module = sys.modules[self.__module__]
-        input_prefix = "TEST_INPUT"
-        part_input = f"{input_prefix}_{self.data.part}"
-        input_var = part_input if (part_input in dir(module)) else input_prefix
-        self._set_input(getattr(module, input_var))
+        module, v = sys.modules[self.__module__], "TEST_INPUT"
+        v_part = f"{v}_{self.data.part}"
+        self._set_input(getattr(module, v_part if (v_part in dir(module)) else v))
 
     def _load_puzzle_input(self) -> None:
         path = Path("input") / f"{self.data.year}" / f"{self.data.day:02d}.txt"
@@ -78,17 +78,28 @@ class Problem[T](ABC):
         self.line_count = self.corrected_input.count("\n")
         self.process_input()
 
-    @property
-    def actual_solution(self) -> T | None:
-        return self.test_solution if self.is_test_run else self.puzzle_solution
+    def var[V](self, *, test: V, puzzle: V) -> V:
+        return test if self.is_test_run else puzzle
 
     @abstractmethod
     def process_input(self) -> None:
         pass
 
+    @property
+    def actual_solution(self) -> T | None:
+        return self.test_solution if self.is_test_run else self.puzzle_solution
+
     @abstractmethod
     def solution(self) -> T:
         pass
+
+
+@raises(ModuleNotFoundError)
+def load_problem[T](data: PuzzleData) -> type[Problem[T]]:
+    y, d, p = f"year{data.year}", f"day{data.day:02d}", f"Problem{data.part}"
+    problem_cls: type[Problem[T]] = getattr(import_module(f".{y}.{d}", PKG_NAME), p)
+    problem_cls.data = data
+    return problem_cls
 
 
 class OneLineProblem[T](Problem[T], ABC):

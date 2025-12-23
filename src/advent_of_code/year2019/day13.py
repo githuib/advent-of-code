@@ -2,7 +2,7 @@ from enum import IntEnum
 from itertools import batched
 from typing import TYPE_CHECKING
 
-from based_utils.calx import compare
+from based_utils.math import compare
 from more_itertools import last
 from ternimator import AnimParams
 

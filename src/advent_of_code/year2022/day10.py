@@ -2,7 +2,7 @@ from abc import ABC
 from itertools import batched
 from typing import TYPE_CHECKING
 
-from based_utils.data.conversion import try_convert
+from based_utils.data import try_convert
 
 from advent_of_code.problems import MultiLineProblem
 

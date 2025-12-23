@@ -1,8 +1,8 @@
-from kleur import Colored
 from more_itertools import first_true
 
 from advent_of_code import C
 from advent_of_code.problems import NoSolutionFoundError, OneLineProblem
+from advent_of_code.utils import lowlighted
 
 W, H = 25, 6
 N = W * H
@@ -32,8 +32,7 @@ def format_char(s: str) -> str:
     if s not in ".#":
         return s
 
-    c = C.yellow.very_bright if s == "#" else C.blue.dark
-    return Colored(s, c, c.darker())
+    return lowlighted(C.yellow.very_bright if s == "#" else C.blue.dark)(s)
 
 
 def colored(s: str) -> str:

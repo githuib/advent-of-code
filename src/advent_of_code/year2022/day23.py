@@ -3,7 +3,7 @@ from collections import defaultdict
 from itertools import count
 from typing import TYPE_CHECKING
 
-from based_utils.data.iterators import first_duplicate
+from based_utils.iterators import first_duplicate
 from more_itertools import nth_or_last
 
 from advent_of_code import log

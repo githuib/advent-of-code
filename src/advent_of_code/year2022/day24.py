@@ -5,18 +5,29 @@ from math import lcm
 from typing import TYPE_CHECKING, NamedTuple
 
 from based_utils.algo import AStarState
-from kleur import Colored
+from kleur import Color
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem
+from advent_of_code.utils import lowlighted
 from advent_of_code.utils.geo2d import DOWN, LEFT, P2, RIGHT, UP, manhattan_dist_2
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
 
+    from kleur import ColorStr
+
 DIRECTION_TILES: list[str] = ["^", "v", "<", ">"]
 TILES = [*DIRECTION_TILES, "."]
 DIRECTIONS: dict[str, P2] = {"^": UP, "v": DOWN, "<": LEFT, ">": RIGHT}
+
+DCs = [
+    (s, Color(hue=i / 10, saturation=0.75, lightness=0.4))
+    for i, s in enumerate(DIRECTION_TILES, 2)
+]
+COLORS = {
+    v: lowlighted(c)(v) for v, c in [*DCs, (".", C.blue.dark), ("#", C.pink.dark)]
+}
 
 
 @dataclass
@@ -76,24 +87,10 @@ class _Problem(CharGridProblem[int], ABC):
         self.path = ValleyState.find_path(Variables(), self.constants)
 
         def grid_str() -> Iterator[str]:
+            def format_value(_p: P2, v: str, _colored: ColorStr) -> ColorStr:
+                return COLORS[v]
+
             positions = {s.v.pos for s in self.path.states}
-
-            def format_value(_p: P2, v: str, _colored: Colored) -> Colored:
-                if v in DIRECTION_TILES:
-                    c = C.yellow.shade(0.45).saturated(0.75)
-                    color = {
-                        s: c.with_hue(hue=i / 36) for i, s in enumerate(DIRECTION_TILES)
-                    }[v]
-                else:
-                    color = C.blue.dark if v == "." else C.pink.dark
-                return Colored(v, color, color.darker())
-                # on_path = p in positions
-                # return Colored(
-                #     v,
-                #     c_fg_on if on_path else c_fg_off,
-                #     c_bg_on if on_path else c_bg_off,
-                # )
-
             return self.grid.to_lines(format_value=format_value, highlighted=positions)
 
         log.lazy_debug(grid_str)

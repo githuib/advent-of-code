@@ -3,7 +3,7 @@ from abc import ABC
 from math import prod
 from typing import TYPE_CHECKING
 
-from based_utils.data.conversion import grouped_by_key
+from based_utils.data import grouped_by_key
 
 from advent_of_code.problems import MultiLineProblem
 
