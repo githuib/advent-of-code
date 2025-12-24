@@ -81,7 +81,7 @@ class Problem2(MultiLineProblem[None]):
         """Day 25 didn't have a part 2."""
         fg, bg = C.poison.very_bright, C.ocean
         anim = animated_lines(POSEIDON, moving_forward(), flashing(fg=fg, bg=bg))
-        animate(anim, AnimParams(fps=10))
+        animate(anim, AnimParams(fps=10, loop=True))
 
 
 TEST_INPUT = """

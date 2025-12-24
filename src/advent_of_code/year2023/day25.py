@@ -54,7 +54,7 @@ HOCKEY = r"""
 
 class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
-        animate(animated_lines(HOCKEY, flashing()), AnimParams(fps=30))
+        animate(animated_lines(HOCKEY, flashing()), AnimParams(fps=30, loop=True))
 
 
 TEST_INPUT = """

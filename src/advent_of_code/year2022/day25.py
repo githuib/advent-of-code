@@ -57,7 +57,7 @@ class Problem2(MultiLineProblem[None]):
     def solution(self) -> None:
         """Day 25 didn't have a part 2."""
         anim = animated_lines(GNOME, fuck_me_sideways(), changing_colors())
-        animate(anim, AnimParams(fps=30))
+        animate(anim, AnimParams(fps=30, loop=True))
 
 
 TEST_INPUT = """
