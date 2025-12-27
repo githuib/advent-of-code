@@ -61,7 +61,7 @@ class Problem2(Problem1):
             yield ""
             yield f"Score: {score:05d}".center(44)
 
-        grids = log.debug_animated_iter(self.grids(), AnimParams(format_item=fmt))
+        grids = log.debug_animated_iter(self.grids(), AnimParams(item_to_lines=fmt))
         _grid, final_score = last(grids)
         return final_score
 

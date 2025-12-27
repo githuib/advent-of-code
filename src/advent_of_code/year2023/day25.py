@@ -1,8 +1,8 @@
 from math import prod
 
 from igraph import Graph  # type: ignore[import-untyped]
-from ternimator import AnimParams, animate, animated_lines
-from ternimator.animations import flashing
+from ternimator import AnimParams, animate
+from ternimator.animations import animated_lines, flashing
 
 from advent_of_code.problems import MultiLineProblem
 

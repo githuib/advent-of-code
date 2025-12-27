@@ -59,7 +59,7 @@ class _Problem(CharGridProblem[int], ABC):
         yield f"Removed: {len(list(removed))}"
 
     def solution(self) -> int:
-        params = AnimParams(format_item=self.grid_str)
+        params = AnimParams(item_to_lines=self.grid_str)
         removed = log.debug_animated_iter(self.removed(), params)
         return sum(len(r) for r in removed)
 

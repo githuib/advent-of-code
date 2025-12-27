@@ -11,7 +11,7 @@ from ternimator import AnimParams
 
 from advent_of_code import C, log
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import PRE_A, lowlighted
+from advent_of_code.utils import lowlighted, upper_to_num
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -191,7 +191,7 @@ class _Problem(MultiLineProblem[int], ABC):
             *(line[3:10:2] for line in self._input_lines), strict=True
         )
         for content in room_input:
-            yield [ord(c) - PRE_A for c in content]
+            yield [upper_to_num(c) for c in content]
 
     def solution(self) -> int:
         room_size = len(self._input_lines)
@@ -208,7 +208,9 @@ class _Problem(MultiLineProblem[int], ABC):
             yield from state.to_lines()
             yield ""
 
-        log.debug_animated(enumerate(path.states), AnimParams(format_item=fmt, fps=10))
+        log.debug_animated(
+            enumerate(path.states), AnimParams(item_to_lines=fmt, fps=10)
+        )
         return path.length
 
 

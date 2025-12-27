@@ -56,11 +56,16 @@ class _Problem(MultiLineProblem[int], ABC):
 
     def go(self) -> Iterator[Iterator[str]]:
         x, y = START
+        rocks = self.map.points_with_value("#")
+        keep_x = [x, *sorted(x for x, _ in rocks)]
+        keep_y = [y, *sorted(y for _, y in rocks)]
         while self.keep_going(x, y):
             np = self.next_pos(x, y)
             if np == START:
                 self.map[x, y] = "o"
-                yield self.map.to_lines(format_value=format_value, keep_in_crop=START)
+                yield self.map.to_lines(
+                    format_value=format_value, keep_x=keep_x, keep_y=keep_y
+                )
             x, y = np
 
 

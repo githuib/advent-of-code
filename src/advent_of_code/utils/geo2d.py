@@ -6,13 +6,15 @@ from math import hypot
 from typing import TYPE_CHECKING, Literal, Self
 
 from based_utils.class_utils import WithClearablePropertyCache
+from based_utils.cli import term_size
+from based_utils.data import resample
 from based_utils.interpol import LinearMapping, NumberMapping
 from based_utils.iterators import Predicate, pairwise_circular, tripletwise_circular
 from based_utils.math import randf
 from kleur import Color, Colored, ColorStr
 
 from advent_of_code import C
-from advent_of_code.utils import lowlighted, term_size
+from advent_of_code.utils import lowlighted
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable, Iterator
@@ -194,8 +196,8 @@ class Grid2[T](Mapping[P2, T], ABC):
         if self.cyclic:
             x, y = x % self.width, y % self.height
         else:
-            (x_min, y_min), (x_max, y_max) = self.span
-            if not (x_min <= x <= x_max and y_min <= y <= y_max):
+            (x_lo, y_lo), (x_hi, y_hi) = self.span
+            if not (x_lo <= x <= x_hi and y_lo <= y <= y_hi):
                 raise KeyError(pos)
 
         try:
@@ -225,19 +227,23 @@ class Grid2[T](Mapping[P2, T], ABC):
 
     @cached_property
     def span(self) -> tuple[P2, P2]:
-        x_min, x_max = self.x_range
-        y_min, y_max = self.y_range
-        return (x_min, y_min), (x_max, y_max)
+        (x_lo, x_hi), (y_lo, y_hi) = self.x_range, self.y_range
+        return (x_lo, y_lo), (x_hi, y_hi)
+
+    @cached_property
+    def origin(self) -> P2:
+        p, _ = self.span
+        return p
 
     @cached_property
     def width(self) -> int:
-        x_min, x_max = self.x_range
-        return x_max - x_min + 1
+        x_lo, x_hi = self.x_range
+        return x_hi - x_lo + 1
 
     @cached_property
     def height(self) -> int:
-        y_min, y_max = self.y_range
-        return y_max - y_min + 1
+        y_lo, y_hi = self.y_range
+        return y_hi - y_lo + 1
 
     @cached_property
     def size(self) -> P2:
@@ -249,15 +255,15 @@ class Grid2[T](Mapping[P2, T], ABC):
 
     @property
     def rows(self) -> Iterator[list[T]]:
-        (x_min, y_min), (x_max, y_max) = self.span
-        for y in range(y_min, y_max + 1):
-            yield [self[x, y] for x in range(x_min, x_max + 1)]
+        (x_lo, y_lo), (x_hi, y_hi) = self.span
+        for y in range(y_lo, y_hi + 1):
+            yield [self[x, y] for x in range(x_lo, x_hi + 1)]
 
     @property
     def columns(self) -> Iterator[list[T]]:
-        (x_min, y_min), (x_max, y_max) = self.span
-        for x in range(x_min, x_max + 1):
-            yield [self[x, y] for y in range(y_min, y_max + 1)]
+        (x_lo, y_lo), (x_hi, y_hi) = self.span
+        for x in range(x_lo, x_hi + 1):
+            yield [self[x, y] for y in range(y_lo, y_hi + 1)]
 
     def point_with_value(self, value: T) -> P2:
         try:
@@ -301,14 +307,15 @@ class Grid2[T](Mapping[P2, T], ABC):
     @abstractmethod
     def _format_value(self, pos: P2, value: T) -> ColorStr: ...
 
-    def to_lines(
+    def to_lines(  # noqa: PLR0913
         self,
         *,
         format_value: Callable[[P2, T, ColorStr], ColorStr] = None,
         highlighted: Set[P2] = None,
         crop_to_terminal: bool = True,
         crop_lines: int = 0,
-        keep_in_crop: P2 = None,
+        keep_x: Iterable[int] = None,
+        keep_y: Iterable[int] = None,
     ) -> Iterator[str]:
         def format_value_(pos: P2) -> str:
             v = self[pos]
@@ -320,28 +327,11 @@ class Grid2[T](Mapping[P2, T], ABC):
                 v_formatted = v_formatted.with_color(c).with_background(c.darker())
             return v_formatted
 
-        lo, hi = self.span
-        cropped = size = self.width - 1, self.height - 1
-
-        if crop_to_terminal:
-            (w, h), (w_max, h_max) = size, term_size()
-            cropped = (min(w, w_max - 1), min(h, h_max - crop_lines - 2))
-
-        sample_ratios = [(n / c) for n, c in zip(size, cropped, strict=True)]
-        xs, ys = [
-            [round(c_lo + i * sample_ratio) for i in range(c)] + [c_hi]
-            for i, (c_lo, c_hi, c, sample_ratio) in enumerate(
-                zip(lo, hi, cropped, sample_ratios, strict=True)
-            )
-        ]
-
-        if keep_in_crop:
-            for cs, k in zip((xs, ys), keep_in_crop, strict=True):
-                _, idx = min((abs(c - k), i) for i, c in enumerate(cs))
-                cs[idx] = k
-
-        for y in ys:
-            yield "".join(format_value_((x, y)) for x in xs)
+        s, o = self.size, self.origin
+        wc, hc = term_size() if crop_to_terminal else s
+        hc -= 1 + crop_lines
+        for row in resample(s, (wc, hc), origin=o, keep_x=keep_x, keep_y=keep_y):
+            yield "".join(format_value_(p) for p in row)
 
 
 @cache
@@ -631,7 +621,7 @@ class P2D:
 #
 #     @cached_property
 #     def width(self) -> int:
-#         p_min, p_max = self.span
+#         p_min p_max = self.span
 #         return p_max.x - p_min.x + 1
 #
 #     @cached_property

@@ -8,7 +8,7 @@ from kleur import Colored, ColorStr, Highlighter
 
 from advent_of_code import C, log
 from advent_of_code.problems import NumGridProblem
-from advent_of_code.utils import PRE_a
+from advent_of_code.utils import lower_to_num, num_to_lower
 from advent_of_code.utils.geo2d import P2, NumGrid2
 
 if TYPE_CHECKING:
@@ -70,7 +70,7 @@ class _AStarState(_State, AStarState[AStarConstants, Variables]):
 
 class _Problem(NumGridProblem[int], ABC):
     def parse_value(self, c: str) -> int:
-        return {"S": 0, "E": 27}.get(c, ord(c) - PRE_a)
+        return {"S": 0, "E": 27}.get(c, lower_to_num(c))
 
     def shortest_path(self, start: str, end: str) -> int:
         start_val, end_val = self.parse_value(start), self.parse_value(end)
@@ -107,7 +107,7 @@ class _Problem(NumGridProblem[int], ABC):
 
             p_points: set[P2] = {s.v.pos for s in p_bfs.states}
             hill_chars = {
-                p: {0: "S", 27: "E"}.get(h, chr(h + PRE_a))
+                p: {0: "S", 27: "E"}.get(h, num_to_lower(h))
                 for p, h in self.grid.items()
             }
 

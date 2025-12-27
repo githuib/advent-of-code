@@ -1,5 +1,5 @@
-from ternimator import AnimParams, animate, animated_lines
-from ternimator.animations import changing_colors, fuck_me_sideways
+from ternimator import AnimParams, animate
+from ternimator.animations import animated_lines, changing_colors, fuck_me_sideways
 
 from advent_of_code.problems import MultiLineProblem
 

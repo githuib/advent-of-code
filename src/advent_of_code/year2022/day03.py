@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 from advent_of_code.problems import MultiLineProblem
-from advent_of_code.utils import PRE_A, PRE_a
+from advent_of_code.utils import lower_to_num, upper_to_num
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 class _Problem(MultiLineProblem[int]):
     def __init__(self) -> None:
         self.converted_lines = [
-            [ord(c) - (PRE_a if c.islower() else PRE_A - 26) for c in line]
+            [lower_to_num(c) if c.islower() else (upper_to_num(c) + 26) for c in line]
             for line in self.lines
         ]
 

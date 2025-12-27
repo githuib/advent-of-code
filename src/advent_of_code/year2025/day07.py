@@ -76,7 +76,7 @@ class Problem1(_Problem):
 
     def values(self) -> Iterator[int]:
         for (x, y), v in self.grid.items():
-            if v > 0 and self.grid.get((x, y + 1), 0) < 0:
+            if v > 0 > self.grid.get((x, y + 1), 0):
                 yield 1
 
 

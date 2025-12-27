@@ -4,12 +4,10 @@ from logging import Formatter, LogRecord
 from pprint import pformat
 from typing import TYPE_CHECKING
 
-from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister
+from based_utils.cli import ConsoleHandlers, LogLevel, LogMeister, term_size
 from based_utils.data import consume
 from kleur import GREY, Colored, Colors
 from ternimator import animate_iter
-
-from advent_of_code.utils import term_size
 
 if TYPE_CHECKING:
     from ternimator import AnimParams

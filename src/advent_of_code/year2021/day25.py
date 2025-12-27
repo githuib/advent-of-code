@@ -2,8 +2,8 @@ from collections.abc import Set
 from typing import TYPE_CHECKING
 
 from based_utils.iterators import first_duplicate
-from ternimator import AnimParams, animate, animated_lines
-from ternimator.animations import flashing, moving_forward
+from ternimator import AnimParams, animate
+from ternimator.animations import animated_lines, flashing, moving_forward
 
 from advent_of_code import C, log
 from advent_of_code.problems import CharGridProblem, MultiLineProblem
@@ -60,7 +60,7 @@ class Problem1(CharGridProblem[int]):
             yield prev
 
     def solution(self) -> int:
-        params = AnimParams(format_item=board_str, only_every_nth=10)
+        params = AnimParams(item_to_lines=board_str, only_every_nth=10)
         it = log.debug_animated_iter(self.sea_cucumbers(), params)
         n, sea_cucumbers = first_duplicate(it)
         log.lazy_debug(lambda: board_str(sea_cucumbers))
